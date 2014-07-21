@@ -1,0 +1,4 @@
+﻿from MainHandler import MainHandler
+from TutorialHandler import TutorialHandler
+from AboutHandler import AboutHandler
+from ContactHandler import ContactHandler
