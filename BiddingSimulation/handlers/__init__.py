@@ -1,4 +1,5 @@
 ﻿from MainHandler import MainHandler
-from TutorialHandler import TutorialHandler
+from TutorialHandler import BidFormTutorialHandler, WorkSheetTutorialHandler
 from AboutHandler import AboutHandler
 from ContactHandler import ContactHandler
+from realtimeSimulation import RealtimeSimulationHandler, RealTimeSimulationSocketHandler

@@ -7,7 +7,10 @@ if __name__ == "__main__":
     settings = { "static_path" : os.path.join(os.path.dirname(__file__), "static")}
     application = tornado.web.Application([
         (r"/", MainHandler), 
-        (r"/tutorial", TutorialHandler),
+        (r"/tutorial-bid-form", BidFormTutorialHandler),
+        (r"/tutorial-worksheet", WorkSheetTutorialHandler),
+        (r"/realtime", RealtimeSimulationHandler),
+        (r"/realtimeSocket", RealTimeSimulationSocketHandler),
         (r"/about", AboutHandler),
         (r"/contact", ContactHandler)
         ], debug = True, **settings)

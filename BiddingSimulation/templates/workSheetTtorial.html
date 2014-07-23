@@ -1,0 +1,127 @@
+﻿<!{% extends "base.html" %}
+
+{% block css%}
+<link href="../static/css/wizard.css" rel="stylesheet">
+{% endblock%}
+
+{% block javascript%}
+<script src="../static/js/jquery.steps.min.js"></script>
+<script src="../static/js/wordMath.jquery.min.js"></script>
+<script>
+    // load wizard
+    $(function () {
+        $("#wizard").steps({
+            headerTag: "h2",
+            bodyTag: "section",
+            transitionEffect: "slideLeft"
+        });
+    });
+
+    // load tooltips 
+    $(function () {
+        $("#invitationNum").tooltip();
+        $("#contractorSign").tooltip();
+        $("#bidAmount").tooltip();
+        $("#bidAmountWord").tooltip();
+    });
+
+    // input control
+    $(document).ready(function () {
+        $("#bidAmount").change(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                return false;
+            }
+            else{
+                $('#bidAmountWord').val($.wordMath.toString($("#bidAmount").val()));
+            }
+        })
+    });
+</script>
+{% endblock%}
+
+{% block content %}
+<div class="well">
+    <div id="wizard">
+        <h2>First Step (Name please)</h2>
+        <section>
+            <h4>Something here</h4>
+            <hr />
+            <div class="well">
+                <h5>Example:</h5>
+                <form role="form">
+                    <div class="form-group">
+                        <label for="invitationNum">Invitation Number</label>
+                        <input type="number" class="form-control" placeholder="220" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="contractorSign">Contractor</label>
+                        <input type="text" class="form-control" id="contractorSign1" placeholder="Keyi Zhang" disabled>
+
+                    </div>
+                </form>
+            </div>
+            <hr />
+            <form role="form">
+                <div class="form-group">
+                    <label for="invitationNum">Invitation Number</label>
+                    <input type="number" class="form-control" id="invitationNum" placeholder="Number (I don't know what should I put here)"
+                           data-toggle="tooltip" data-placement="top" title="This should be some tooltip, though I have no idea what to fill in.">
+                </div>
+                <div class="form-group">
+                    <label for="contractorSign">Contractor</label>
+                    <input type="text" class="form-control" id="contractorSign" placeholder="Keyi Zhang"
+                           data-toggle="tooltip" data-placement="top" title="This should be some tooltip, though I have no idea what to fill in.">
+                </div>
+            </form>
+        </section>
+
+        <h2>Second Step (Name please)</h2>
+        <section>
+            <h4>Something here</h4>
+            <hr />
+            <div class="well">
+                <form role="form">
+                    <div class="form-group">
+                        <label for="bidAmount">Bid Amount</label>
+                        <input type="number" class="form-control" placeholder="123456789" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="bidAmountWord">Bid Amount</label>
+                        <input type="text" class="form-control" placeholder="twelve thousand three hundred forty five" disabled>
+                    </div>
+                </form>
+            </div>
+            <form role="form">
+                <div class="form-group">
+                    <label for="bidAmount">Bid Amount</label>
+                    <input type="number" class="form-control" id="bidAmount" placeholder="123456789"
+                           data-toggle="tooltip" data-placement="top" title="This should be some tooltip, though I have no idea what to fill in.">
+                </div>
+                <div class="form-group">
+                    <label for="bidAmountWord">Bid Amount</label>
+                    <input type="text" class="form-control" id="bidAmountWord" placeholder="" disabled>
+                </div>
+            </form>
+        </section>
+
+        <h2>Third Step (Name please)</h2>
+        <section>
+            <p>
+                Morbi ornare tellus at elit ultrices id dignissim lorem elementum. Sed eget nisl at justo condimentum dapibus. Fusce eros justo,
+                pellentesque non euismod ac, rutrum sed quam. Ut non mi tortor. Vestibulum eleifend varius ullamcorper. Aliquam erat volutpat.
+                Donec diam massa, porta vel dictum sit amet, iaculis ac massa. Sed elementum dui commodo lectus sollicitudin in auctor mauris
+                venenatis.
+            </p>
+        </section>
+
+        <h2>Forth Step (Name please)</h2>
+        <section>
+            <p>
+                Quisque at sem turpis, id sagittis diam. Suspendisse malesuada eros posuere mauris vehicula vulputate. Aliquam sed sem tortor.
+                Quisque sed felis ut mauris feugiat iaculis nec ac lectus. Sed consequat vestibulum purus, imperdiet varius est pellentesque vitae.
+                Suspendisse consequat cursus eros, vitae tempus enim euismod non. Nullam ut commodo tortor.
+            </p>
+        </section>
+    </div>
+</div>
+{% endblock %}
