@@ -23,7 +23,7 @@ class RealtimeSimulationHandler(tornado.web.RequestHandler):
         return
 
     def initialize(self):
-        self.TEMPLATE_FILE = "realTimeSimulation.html"
+        self.TEMPLATE_FILE = "realtimeSimulation.html"
         self.templateLoader = FileSystemLoader( searchpath="templates/" )
         self.templateEnv = Environment( loader=self.templateLoader )
         self.template = self.templateEnv.get_template(self.TEMPLATE_FILE)
