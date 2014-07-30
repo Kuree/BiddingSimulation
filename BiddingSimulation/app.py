@@ -15,5 +15,5 @@ if __name__ == "__main__":
         (r"/about", AboutHandler),
         (r"/contact", ContactHandler)
         ], debug = True, **settings)
-    application.listen(8888)
+    application.listen(80)
     tornado.ioloop.IOLoop.instance().start()
