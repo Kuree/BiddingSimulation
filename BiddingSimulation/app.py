@@ -11,6 +11,7 @@ if __name__ == "__main__":
         (r"/tutorial-worksheet", WorkSheetTutorialHandler),
         (r"/realtime", RealtimeSimulationHandler),
         (r"/realtimeSocket", RealTimeSimulationSocketHandler),
+        (r"/tutorialtest", TuturialTestHandler),
         (r"/about", AboutHandler),
         (r"/contact", ContactHandler)
         ], debug = True, **settings)

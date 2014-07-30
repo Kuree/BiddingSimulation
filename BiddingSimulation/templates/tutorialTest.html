@@ -1,0 +1,303 @@
+﻿<!{% extends "base.html" %}
+{% block javascript%}
+<script src="../static/js/bootbox.min.js"></script>
+<script>
+    // all the firms we have right now
+    firm1 = { name: "Test Firm 1", bondCapacity: 100000, OHRatio: 0.05, bondCostRatio: 0.08 };
+    firm2 = { name: "Test Firm 2", bondCapacity: 200000, OHRatio: 0.08, bondCostRatio: 0.04 };
+    firm3 = { name: "Test Firm 3", bondCapacity: 300000, OHRatio: 0.1, bondCostRatio: 0.03 };
+    firm4 = { name: "Test Firm 4", bondCapacity: 400000, OHRatio: 0.10, bondCostRatio: 0.02 };
+
+
+    // count
+    count = 0;
+    // should update the table
+    shouldUpdate = true;
+    // firm list
+    firmList = [firm1, firm2, firm3, firm4];
+
+    // this is for the firm result
+    result = { };
+    // current bond capacity for each firm
+    bondCapacity = [];
+    // current money for each firm
+    money = [];
+    // max bid
+    maxBid = 10;
+
+    // the firm that user plays, index from 0;
+    userFirm = 0;
+
+    // function to update total cost
+    function updateTotalCost() {
+        var cost = parseFloat($('#directCost').val());
+        var firm = firmList[userFirm];
+        var bondCost = (firm["bondCostRatio"] * cost).toFixed(2);
+        var ohCost = (firm["OHRatio"] * cost).toFixed(2);
+        $('#totalCost').val((parseFloat(cost) + parseFloat(bondCost) + parseFloat(ohCost) + parseFloat($('#inputProfit').val()) * cost / 100).toFixed(2));
+    }
+
+    // function to update bond cost, oh cost, etc.
+    function update() {
+        if (count < maxBid) {
+
+            var cost = Math.floor((100 + Math.random() * 20000 + Math.random() * 4000));
+            var firm = firmList[userFirm];
+            var bondCost = (firm["bondCostRatio"] * cost).toFixed(2);
+            var ohCost = (firm["OHRatio"] * cost).toFixed(2);
+
+            $('#invitation').val(count);
+            $('#directCost').val(cost);
+            $('#bondCost').val(bondCost);
+            $('#ohCost').val(ohCost);
+            updateTotalCost();
+
+        }
+        else {
+            alert("Game over. No reward, kid! It's just a simulation");
+        }
+
+    }
+
+    function startBid(){
+        var offer = [0, 0, 0, 0];
+        var directCost = parseFloat( $('#directCost').val());
+        for (var i = 0; i < 4; i++) {
+            if (i == userFirm) {
+                offer[userFirm] = parseFloat($('#totalCost').val());
+            } else {
+                var profitRatio = Math.random() / 5 + firmList[i]["OHRatio"] + firmList[i]["bondCostRatio"];
+                offer[i] = directCost * profitRatio;
+            }
+        }
+        var minIndex = offer.indexOf(Math.min.apply(Math, offer));
+        var message = "";
+        if (minIndex == userFirm) {
+            message = "You got it";
+        } else{
+            message = "You didn't get it";
+        }
+
+        // update the progress information
+        var resultList = []
+        for (var i = 0; i < 4; i++) {
+            if (i == minIndex) {
+                resultList.push("<span class='glyphicon glyphicon-ok'></span>");
+            } else {
+                resultList.push("");
+            }
+        }
+        result[count] = resultList;
+
+        // update the bond capacity
+        bondCapacity[minIndex] -= directCost * firmList[minIndex]["bondCostRatio"];
+
+        // update profit. we need to compute the profit from result
+        var profit = offer[minIndex] - firmList[minIndex]["bondCostRatio"] * directCost - firmList[minIndex]["OHRatio"] * directCost;
+        money[minIndex] += profit;
+
+
+        // update the count
+
+        // show the dialog 
+        bootbox.dialog({
+            message: message,
+            title: "Bidding Result",
+            main: {
+                label: "Okay",
+                className: "btn-primary",
+                callback: update()
+            }
+        });
+
+
+        shouldUpdate = true;
+        count++;
+        
+    }
+
+    $(function () {
+        $.each(firmList, function (i, firm) {
+            bondCapacity.push(firm.bondCapacity);
+            money.push(0);
+        });
+
+
+        // randomly choose a firm
+        userFirm = Math.floor((Math.random() * 4));
+        bootbox.dialog({
+            message: "You are now firm " + (userFirm + 1).toString(),
+            title: "Hello",
+            main: {
+                label: "Okay",
+                className: "btn-primary"
+            }
+        });
+
+
+        // update the status
+        update();
+
+        // hook up the profit form
+        $('#inputProfit').change(function () {
+            updateTotalCost();
+        });
+
+        $('#inputProfit').keyup(function (e) {
+            updateTotalCost();
+        });
+
+        // check function
+        $('#check').click(function () {
+            if (shouldUpdate) {
+                var bidTable = $('#bid-table-body');
+                bidTable.empty();
+                $.each(result, function (key, value) {
+                    var string = "<tr>\
+                          <td>" + key + "</td>\
+                          <td>" + value[0] + "</td>\
+                          <td>" + value[1] + "</td>\
+                          <td>" + value[2] + "</td>\
+                          <td>" + value[3] + "</td>\
+                        </tr>";
+                    bidTable.append(string);
+                });
+
+                $('#bond-table-body').append("<tr><td>" + count + "</td>\
+                          <td>" + bondCapacity[0] + "</td>\
+                          <td>" + bondCapacity[1] + "</td>\
+                          <td>" + bondCapacity[2] + "</td>\
+                          <td>" + bondCapacity[3] + "</td>\
+                          </tr>");
+
+                $('#money-table-body').append("<tr><td>" + count + "</td>\
+                          <td>" + money[0].toFixed(2) + "</td>\
+                          <td>" + money[1].toFixed(2) + "</td>\
+                          <td>" + money[2].toFixed(2) + "</td>\
+                          <td>" + money[3].toFixed(2) + "</td>\
+                          </tr>");
+
+                shouldUpdate = false;
+            }
+        });
+
+        // start bid function
+        $('#bid').click(function () {
+            if (count < maxBid) {
+                startBid();
+            }
+        })
+
+    })
+
+    
+
+</script>
+{% endblock%}
+
+{% block content %}
+<div>
+    <div class="well">
+        <div>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0;">
+                    <span class="sr-only">0% Complete</span>
+                </div>
+            </div>
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-example-modal-lg" id="check">Check Progress</button>
+            <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <h4>Bidding Results</h4>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Firm 1</th>
+                                    <th>Firm 2</th>
+                                    <th>Firm 3</th>
+                                    <th>Firm 4</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bid-table-body"></tbody>
+                        </table>
+                        <hr />
+                        <h4>Bond Status</h4>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Firm 1</th>
+                                    <th>Firm 2</th>
+                                    <th>Firm 3</th>
+                                    <th>Firm 4</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bond-table-body"></tbody>
+                        </table>
+                        <hr />
+                        <h4>Money Status</h4>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Firm 1</th>
+                                    <th>Firm 2</th>
+                                    <th>Firm 3</th>
+                                    <th>Firm 4</th>
+                                </tr>
+                            </thead>
+                            <tbody id="money-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="well clearfix">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="invitation" class="col-sm-2 control-label">Invitation: </label>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="invitation" placeholder="You shouldn't see this'" disabled />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="directCost" class="col-sm-2 control-label">Direct Cost: </label>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="directCost" placeholder="You shouldn't see this'" disabled />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bondCost" class="col-sm-2 control-label">Bond Cost: </label>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="bondCost" placeholder="You shouldn't see this" disabled />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ohCost" class="col-sm-2 control-label">G&A OH</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="ohCost" placeholder="You shouldn't see this" disabled />
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="form-group">
+                        <label for="inputProfit" class="col-sm-2 control-label">Profit Percentage (%): </label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="inputProfit" value="10">
+                        </div>
+                        <hr />
+                        <label for="totalCost" class="col-sm-2 control-label">Total Cost: </label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="totalCost" value="10" disabled>
+                        </div>
+                    </div>
+                    <div class="col-sm-10">
+                        <button id="bid" type="button" class="btn btn-default pull-right">Start to bid</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
