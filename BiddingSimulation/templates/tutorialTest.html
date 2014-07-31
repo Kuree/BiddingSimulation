@@ -17,7 +17,7 @@
     firmList = [firm1, firm2, firm3, firm4];
 
     // this is for the firm result
-    result = { };
+    result = {};
     // current bond capacity for each firm
     bondCapacity = [];
     // current money for each firm
@@ -59,9 +59,59 @@
 
     }
 
-    function startBid(){
+    function updateUI() {
+        var bidTable = $('#bid-table-body');
+        bidTable.empty();
+        $.each(result, function (key, value) {
+            var string = "<tr>\
+                          <td>" + key + "</td>\
+                          <td>" + value[0] + "</td>\
+                          <td>" + value[1] + "</td>\
+                          <td>" + value[2] + "</td>\
+                          <td>" + value[3] + "</td>\
+                        </tr>";
+            bidTable.append(string);
+        });
+
+        // update bond table
+        $('#bond-table-body').append("<tr><td>" + count + "</td>\
+                          <td>" + bondCapacity[0] + "</td>\
+                          <td>" + bondCapacity[1] + "</td>\
+                          <td>" + bondCapacity[2] + "</td>\
+                          <td>" + bondCapacity[3] + "</td>\
+                          </tr>");
+
+        // update money table
+        $('#money-table-body').append("<tr><td>" + count + "</td>\
+                          <td>" + money[0].toFixed(2) + "</td>\
+                          <td>" + money[1].toFixed(2) + "</td>\
+                          <td>" + money[2].toFixed(2) + "</td>\
+                          <td>" + money[3].toFixed(2) + "</td>\
+                          </tr>");
+
+        // update current projects
+        var countProjects = [0, 0, 0, 0];
+        $.each(result, function (key, value) {
+            for (var i = 0; i < 4; i++) {
+                if (value[i] != "") {
+                    countProjects[i] += 1;
+                }
+            }
+        });
+        $('#current-project-table-body').empty();
+        $('#current-project-table-body').append("<tr><td>" + "now" + "</td>\
+                          <td>" + countProjects[0] + "</td>\
+                          <td>" + countProjects[1] + "</td>\
+                          <td>" + countProjects[2] + "</td>\
+                          <td>" + countProjects[3] + "</td>\
+                          </tr>");
+
+    }
+
+
+    function startBid() {
         var offer = [0, 0, 0, 0];
-        var directCost = parseFloat( $('#directCost').val());
+        var directCost = parseFloat($('#directCost').val());
         for (var i = 0; i < 4; i++) {
             if (i == userFirm) {
                 offer[userFirm] = parseFloat($('#totalCost').val());
@@ -74,7 +124,7 @@
         var message = "";
         if (minIndex == userFirm) {
             message = "You got it";
-        } else{
+        } else {
             message = "You didn't get it";
         }
 
@@ -99,7 +149,7 @@
 
         // update the count
 
-        // show the dialog 
+        // show the dialog
         bootbox.dialog({
             message: message,
             title: "Bidding Result",
@@ -111,9 +161,9 @@
         });
 
 
-        shouldUpdate = true;
+        updateUI();
         count++;
-        
+
     }
 
     $(function () {
@@ -147,36 +197,12 @@
             updateTotalCost();
         });
 
+    
+
         // check function
         $('#check').click(function () {
             if (shouldUpdate) {
-                var bidTable = $('#bid-table-body');
-                bidTable.empty();
-                $.each(result, function (key, value) {
-                    var string = "<tr>\
-                          <td>" + key + "</td>\
-                          <td>" + value[0] + "</td>\
-                          <td>" + value[1] + "</td>\
-                          <td>" + value[2] + "</td>\
-                          <td>" + value[3] + "</td>\
-                        </tr>";
-                    bidTable.append(string);
-                });
-
-                $('#bond-table-body').append("<tr><td>" + count + "</td>\
-                          <td>" + bondCapacity[0] + "</td>\
-                          <td>" + bondCapacity[1] + "</td>\
-                          <td>" + bondCapacity[2] + "</td>\
-                          <td>" + bondCapacity[3] + "</td>\
-                          </tr>");
-
-                $('#money-table-body').append("<tr><td>" + count + "</td>\
-                          <td>" + money[0].toFixed(2) + "</td>\
-                          <td>" + money[1].toFixed(2) + "</td>\
-                          <td>" + money[2].toFixed(2) + "</td>\
-                          <td>" + money[3].toFixed(2) + "</td>\
-                          </tr>");
-
+                
                 shouldUpdate = false;
             }
         });
@@ -190,52 +216,35 @@
 
     })
 
-    
+
 
 </script>
 {% endblock%}
 
 {% block content %}
 <div>
-    <div class="well">
+    <div class="well clearfix">
         <div>
             <div class="progress">
                 <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0;">
                     <span class="sr-only">0% Complete</span>
                 </div>
             </div>
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-example-modal-lg" id="check">Check Progress</button>
-            <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="btn-toolbar" role="toolbar">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-current-bid-lg" id="check">Current Bid</button>
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-historical-bid-lg" id="check">Historical Bid</button>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-active-projects-lg" id="check">Active Projects</button>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-income-statement-lg" id="check">Your Income Statement</button>
+                </div>
+            </div>
+            <div class="modal fade bs-current-bid-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
-                        <h4>Bidding Results</h4>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Firm 1</th>
-                                    <th>Firm 2</th>
-                                    <th>Firm 3</th>
-                                    <th>Firm 4</th>
-                                </tr>
-                            </thead>
-                            <tbody id="bid-table-body"></tbody>
-                        </table>
-                        <hr />
-                        <h4>Bond Status</h4>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Firm 1</th>
-                                    <th>Firm 2</th>
-                                    <th>Firm 3</th>
-                                    <th>Firm 4</th>
-                                </tr>
-                            </thead>
-                            <tbody id="bond-table-body"></tbody>
-                        </table>
-                        <hr />
                         <h4>Money Status</h4>
                         <table class="table">
                             <thead>
@@ -252,51 +261,116 @@
                     </div>
                 </div>
             </div>
+            <div class="modal fade bs-historical-bid-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <h4>Bidding Results</h4>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Firm 1</th>
+                                    <th>Firm 2</th>
+                                    <th>Firm 3</th>
+                                    <th>Firm 4</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bid-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade bs-active-projects-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <h4>Current Projects</h4>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Firm 1</th>
+                                    <th>Firm 2</th>
+                                    <th>Firm 3</th>
+                                    <th>Firm 4</th>
+                                </tr>
+                            </thead>
+                            <tbody id="current-project-table-body"></tbody>
+                        </table>
+                        <hr />
+                        <h4>Bond Status</h4>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Firm 1</th>
+                                    <th>Firm 2</th>
+                                    <th>Firm 3</th>
+                                    <th>Firm 4</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bond-table-body"></tbody>
+                        </table>
+                        <hr />
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade bs-income-statement-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content" style="align-content:center"">
+                        <h4>Income Statement</h4>
+                        <ul class="list-group" >
+                            <li class="list-group-item">Max Work (Bond Capacity)</li>
+                            <li class="list-group-item">Dapibus ac facilisis in</li>
+                            <li class="list-group-item">Morbi leo risus</li>
+                            <li class="list-group-item">Porta ac consectetur ac</li>
+                            <li class="list-group-item">Vestibulum at eros</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
             <hr />
-            <div class="well clearfix">
-                <form class="form-horizontal" role="form">
-                    <div class="form-group">
-                        <label for="invitation" class="col-sm-2 control-label">Invitation: </label>
-                        <div class="col-sm-8">
-                            <input class="form-control" id="invitation" placeholder="You shouldn't see this'" disabled />
-                        </div>
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label for="invitation" class="col-sm-2 control-label">Invitation: </label>
+                    <div class="col-sm-8">
+                        <input class="form-control" id="invitation" placeholder="You shouldn't see this'" disabled />
                     </div>
-                    <div class="form-group">
-                        <label for="directCost" class="col-sm-2 control-label">Direct Cost: </label>
-                        <div class="col-sm-8">
-                            <input class="form-control" id="directCost" placeholder="You shouldn't see this'" disabled />
-                        </div>
+                </div>
+                <div class="form-group">
+                    <label for="directCost" class="col-sm-2 control-label">Direct Cost: </label>
+                    <div class="col-sm-8">
+                        <input class="form-control" id="directCost" placeholder="You shouldn't see this'" disabled />
                     </div>
-                    <div class="form-group">
-                        <label for="bondCost" class="col-sm-2 control-label">Bond Cost: </label>
-                        <div class="col-sm-8">
-                            <input class="form-control" id="bondCost" placeholder="You shouldn't see this" disabled />
-                        </div>
+                </div>
+                <div class="form-group">
+                    <label for="bondCost" class="col-sm-2 control-label">Bond Cost: </label>
+                    <div class="col-sm-8">
+                        <input class="form-control" id="bondCost" placeholder="You shouldn't see this" disabled />
                     </div>
-                    <div class="form-group">
-                        <label for="ohCost" class="col-sm-2 control-label">G&A OH</label>
-                        <div class="col-sm-8">
-                            <input class="form-control" id="ohCost" placeholder="You shouldn't see this" disabled />
-                        </div>
+                </div>
+                <div class="form-group">
+                    <label for="ohCost" class="col-sm-2 control-label">G&A OH</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" id="ohCost" placeholder="You shouldn't see this" disabled />
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group">
+                    <label for="inputProfit" class="col-sm-2 control-label">Profit Percentage (%): </label>
+                    <div class="col-sm-8">
+                        <input type="number" class="form-control" id="inputProfit" value="10">
                     </div>
                     <hr />
-                    <div class="form-group">
-                        <label for="inputProfit" class="col-sm-2 control-label">Profit Percentage (%): </label>
-                        <div class="col-sm-8">
-                            <input type="number" class="form-control" id="inputProfit" value="10">
-                        </div>
-                        <hr />
-                        <label for="totalCost" class="col-sm-2 control-label">Total Cost: </label>
-                        <div class="col-sm-8">
-                            <input type="number" class="form-control" id="totalCost" value="10" disabled>
-                        </div>
+                    <label for="totalCost" class="col-sm-2 control-label">Total Cost: </label>
+                    <div class="col-sm-8">
+                        <input type="number" class="form-control" id="totalCost" value="10" disabled>
                     </div>
-                    <div class="col-sm-10">
-                        <button id="bid" type="button" class="btn btn-default pull-right">Start to bid</button>
-                    </div>
-                </form>
+                </div>
+                <div class="col-sm-10">
+                    <button id="bid" type="button" class="btn btn-default pull-right">Start to bid</button>
+                </div>
+            </form>
 
-            </div>
         </div>
     </div>
 </div>
