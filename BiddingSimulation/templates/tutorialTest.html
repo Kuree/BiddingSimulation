@@ -102,21 +102,13 @@
                           <td>" + money[3].toFixed(0) + "</td>\
                           </tr>");
 
-        // update current projects
-        var countProjects = [0, 0, 0, 0];
-        $.each(result, function (key, value) {
-            for (var i = 0; i < 4; i++) {
-                if (value[i] != "") {
-                    countProjects[i] += 1;
-                }
-            }
-        });
+
         $('#current-project-table-body').empty();
         $('#current-project-table-body').append("<tr><td>" + "now" + "</td>\
-                          <td>" + countProjects[0] + "</td>\
-                          <td>" + countProjects[1] + "</td>\
-                          <td>" + countProjects[2] + "</td>\
-                          <td>" + countProjects[3] + "</td>\
+                          <td>" + firmList[0]["projects"].length + "</td>\
+                          <td>" + firmList[1]["projects"].length + "</td>\
+                          <td>" + firmList[2]["projects"].length + "</td>\
+                          <td>" + firmList[3]["projects"].length + "</td>\
                           </tr>");
 
     }
