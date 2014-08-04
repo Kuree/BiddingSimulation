@@ -1,0 +1,26 @@
+﻿[
+    {
+        "name": "Test Firm 1",
+        "bondCapacity": 100000,
+        "OHRatio": 0.05,
+        "bondCostRatio": 0.08
+    },
+    {
+        "name": "Test Firm 2",
+        "bondCapacity": 100000,
+        "OHRatio": 0.05,
+        "bondCostRatio": 0.08
+    },
+    {
+        "name": "Test Firm 3",
+        "bondCapacity": 100000,
+        "OHRatio": 0.05,
+        "bondCostRatio": 0.08
+    },
+    {
+        "name": "Test Firm 4",
+        "bondCapacity": 100000,
+        "OHRatio": 0.05,
+        "bondCostRatio": 0.08
+    }
+]

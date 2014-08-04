@@ -13,7 +13,8 @@ if __name__ == "__main__":
         (r"/realtimeSocket", RealTimeSimulationSocketHandler),
         (r"/tutorialtest", TuturialTestHandler),
         (r"/about", AboutHandler),
-        (r"/contact", ContactHandler)
+        (r"/contact", ContactHandler),
+        (r'/(favicon.ico)', tornado.web.StaticFileHandler, {"path": "favicon.ico"}),
         ], debug = True, **settings)
     application.listen(80)
     tornado.ioloop.IOLoop.instance().start()
