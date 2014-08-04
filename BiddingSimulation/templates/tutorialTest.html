@@ -111,6 +111,11 @@
                           <td>" + firmList[3]["projects"].length + "</td>\
                           </tr>");
 
+
+        // progress bar
+        var value = (count + 1) / maxBid * 100;
+        $('#bidding-progress').css('width', value + '%').attr('aria-valuenow', value);
+        $('#progressbar-span').text(value.toFixed(0) + "% Complete")
     }
 
 
@@ -218,7 +223,6 @@
         var event = events[Math.floor(Math.random() * events.length)];
         if (Math.random() < event["base chance"] * factor) {
             money[firmIndex] -= event["effect"] * project["cost"];
-            console.log("Yep you got one");
             if (firmIndex == userFirm) {
                 // oops, you got the event
                 bootbox.dialog({
@@ -354,8 +358,8 @@
     <div class="well clearfix">
         <div>
             <div class="progress">
-                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0;">
-                    <span class="sr-only">0% Complete</span>
+                <div class="progress-bar" id="bidding-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0;">
+                    <span class="sr-only" id="progressbar-span">0% Complete</span>
                 </div>
             </div>
             <div class="btn-toolbar" role="toolbar">
