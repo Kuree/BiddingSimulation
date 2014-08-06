@@ -9,6 +9,8 @@
     firm3 = { name: "Test Firm 3", bondCapacity: 300000, OHRatio: 0.1, bondCostRatio: 0.03, projects: [] };
     firm4 = { name: "Test Firm 4", bondCapacity: 400000, OHRatio: 0.10, bondCostRatio: 0.02, projects: [] };
 
+    firmChance = undefined
+    
 
     // count
     count = 0;
@@ -32,6 +34,11 @@
     // the current project
     currentProject = undefined;
 
+    // the current bid
+    currentBid = undefined;
+
+    offer = []
+
     // function to update total cost
     function updateTotalCost() {
         var cost = parseFloat($('#directCost').val());
@@ -46,7 +53,7 @@
         if (count < maxBid) {
 
             currentProject = createProject();
-            var cost = currentProject["cost"];
+            var cost = currentProject["totalCost"];
             var firm = firmList[userFirm];
             var bondCost = (firm["bondCostRatio"] * cost).toFixed(0);
             var ohCost = (firm["OHRatio"] * cost).toFixed(0);
@@ -116,12 +123,14 @@
         var value = (count + 1) / maxBid * 100;
         $('#bidding-progress').css('width', value + '%').attr('aria-valuenow', value);
         $('#progressbar-span').text(value.toFixed(0) + "% Complete")
+
+        update();
     }
 
 
     function startBid() {
 
-        var offer = [0, 0, 0, 0];
+        offer = [0, 0, 0, 0];
         var directCost = parseFloat($('#directCost').val());
         for (var i = 0; i < 4; i++) {
             if (i == userFirm) {
@@ -137,12 +146,20 @@
                 }
             }
         }
+
+        currentBid = []
+        for (var i = 0; i < firmList.length; i++)
+        {
+            currentBid.push({ "firm id": i, "offer": offer[i] });
+        }
+
         var minIndex = offer.indexOf(Math.min.apply(Math, offer));
+        currentProject["ownerIndex"] = minIndex;
         var message = "";
         if (minIndex == userFirm) {
-            message = "You got project " + count.toString();
+            currentProject["isCurrentUserOwned"] = true;
         } else {
-            message = "You didn't get project " + count.toString();
+            currentProject["isCurrentUserOwned"] = false;
         }
 
         // update the progress information
@@ -156,36 +173,23 @@
         }
 
         // push to firm project list
-        firmList[minIndex]["projects"].push(currentProject);
+        firmList[minIndex]["projects"].push($.extend({}, currentProject));
 
         result[count] = resultList;
 
+        // give them money
+        money[minIndex] += offer[minIndex];
+
         // update the bond capacity
         bondCapacity[minIndex] -= directCost * firmList[minIndex]["bondCostRatio"];
-
-        // update profit. we need to compute the profit from result
-        var profit = offer[minIndex] - (1 + firmList[minIndex]["bondCostRatio"] + firmList[minIndex]["OHRatio"]) * directCost;
-        money[minIndex] += profit;
+        
+        // update the count
+        count++;
 
         processProjects(); // need to update the UI after the changes money
 
-        // show the dialog
-        bootbox.dialog({
-            message: message,
-            title: "Bidding Result",
-            main: {
-                label: "Okay",
-                className: "btn-primary",
-                callback: update()
-            }
-        });
-
-
-
         updateUI();
 
-        // update the count
-        count++;
 
     }
 
@@ -220,21 +224,102 @@
             factor = 4;
         }
 
-        var event = events[Math.floor(Math.random() * events.length)];
+        var event = $.extend({}, events[Math.floor(Math.random() * events.length)]);
         if (Math.random() < event["base chance"] * factor) {
-            money[firmIndex] -= event["effect"] * project["cost"];
-            if (firmIndex == userFirm) {
-                // oops, you got the event
-                bootbox.dialog({
-                    message: "When conducting project " + project["number"] + ", your company just got an unexpected event: " + event["name"] + "</br>Your company lost/gained " + (event["effect"] * project["cost"]).toFixed(0),
-                    title: "Unexpected event...",
-                    main: {
-                        label: "Okay",
-                        className: "btn-primary",
-                    }
-                });
+            //money[firmIndex] -= event["effect"] * project["cost"];
+            //if (firmIndex == userFirm) {
+            //    // oops, you got the event
+            //    bootbox.dialog({
+            //        message: "When conducting project " + project["number"] + ", your company just got an unexpected event: " + event["name"] + "</br>Your company lost/gained " + (event["effect"] * project["cost"]).toFixed(0),
+            //        title: "Unexpected event...",
+            //        main: {
+            //            label: "Okay",
+            //            className: "btn-primary",
+            //        }
+            //    });
+            //}
+
+            event["message"] = event.name + ". Your company just gained/lost " + (event["effect"] * project["cost"]).toFixed(0);
+            event["totalCost"] += event["effect"] * project["cost"];
+            project["cost"] += event["effect"] * project["cost"];
+            // clear event list
+            while (project.events.length > 0) {
+                project.events.pop();
             }
+            project.events.push($.extend({}, event));
         }
+    }
+
+
+    function getProgressReport() {
+        var message = "<h4>Bidding Offering</h4>\
+                        <table class='table'>\
+                            <thead>\
+                                <tr>\
+                                    <th>Firm 1</th>\
+                                    <th>Firm 2</th>\
+                                    <th>Firm 3</th>\
+                                    <th>Firm 4</th>\
+                                </tr>\
+                            </thead>\
+                            <tbody><tr>";
+        $.each(offer, function (i) {
+            message += "<td>" + offer[i].toFixed(0) + "</td>";
+        });
+
+        message += "</td></tr></tbody></table><hr>";
+
+        message += "<h4>Bidding result Report</h4>";
+
+        if (currentProject["isCurrentUserOwned"]) {
+            message += "<p>You got the project</p><hr>";
+        } else {
+            message += "<p>You didn't get the project</p><hr>";
+        }
+
+        if ($('#showProgress')[0].checked) {
+
+ 
+            message += "<h4>Quarter Progress Report</h4>\
+                        <table class='table'>\
+                            <thead>\
+                                <tr>\
+                                    <th>Project #</th>\
+                                    <th>Project Period Length</th>\
+                                    <th>Project Period Left</th>\
+                                    <th>Quarter Direct Cost</th>\
+                                    <th>Total Direct Cost</th>\
+                                    <th>Current Status</th>\
+                                </tr>\
+                            </thead>\
+                            <tbody>";
+            $.each(firmList[userFirm]["projects"], function (i, project) {
+                message += "<tr><td>" + project["number"] + "</td>";
+                message += "<td>" + project["totalLength"] + "</td>";
+                message += "<td>" + project["length"] + "</td>";
+                message += "<td>" + project["cost"].toFixed(0) + "</td>";
+                message += "<td>" + project["totalCost"].toFixed(0) + "</td><td>";
+                if (project["events"].length > 0) {
+                    $.each(project["events"], function (j, event) {
+                        message += "<p>" + event["message"] + "</p>";
+                    })
+                }
+                else {
+                    message += "<p>Good</p>";
+                }
+
+            })
+            message += "</td></tr></tbody></table>";
+        }
+        bootbox.dialog({
+            message: message,
+            title: "Bidding Status",
+            main: {
+                label: "Okay",
+                className: "btn-primary"
+            }
+        });
+
     }
 
     function processProjects() {
@@ -251,6 +336,8 @@
         })
 
         purageProejcts();
+
+        getProgressReport();
     }
 
     function createOwner() {
@@ -260,9 +347,9 @@
 
     function createProject() {
         var cost = Math.floor((100 + Math.random() * 20000 + Math.random() * 1000000));
-        var length = Math.floor(Math.random() * 4);
+        var length = Math.floor( 2 + Math.random() * 3);
         var owner = createOwner();
-        var result = { "cost": cost, "length": length, "owner": owner, "number": count }
+        var result = { "cost": cost / length, "length": length, "owner": owner, "number": count, "events": [], "isCurrentUserOwned": false, "totalLength": length, "totalCost": cost, "ownerIndex": -1 };
         return result;
     }
 
@@ -271,9 +358,12 @@
             if (firmList[i]["projects"].length > 0) {
                 var popList = []
                 $.each(firmList[i]["projects"], function (j, project) {
+                    // I need some money
+                    money[project["ownerIndex"]] -= project["cost"];
                     if (project["length"] > 0) {
                         project["length"] -= 1;
                     } else {
+                        // okay need to deduct the money                        
                         popList.push(j)
                     }
                 })
@@ -296,6 +386,12 @@
     }
 
     $(function () {
+
+        // get firm change
+        $.getJSON("/data?arg=firmChance", function (data) {
+            firmChance = data;
+        });
+
         $.each(firmList, function (i, firm) {
             bondCapacity.push(firm.bondCapacity);
             money.push(0);
@@ -514,8 +610,11 @@
                 <div class="col-sm-8">
                     <input type="number" class="form-control" id="totalCost" value="10" disabled>
                 </div>
+
             </div>
             <div class="col-sm-10">
+                <div class="col-sm-2"></div>
+                <input type="checkbox" id="showProgress"> Show quarter progress report</>
                 <button id="bid" type="button" class="btn btn-default pull-right">Start to bid</button>
             </div>
         </form>

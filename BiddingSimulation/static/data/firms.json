@@ -3,24 +3,28 @@
         "name": "Test Firm 1",
         "bondCapacity": 100000,
         "OHRatio": 0.05,
-        "bondCostRatio": 0.08
+        "bondCostRatio": 0.08,
+        "sweetspot": 1
     },
     {
         "name": "Test Firm 2",
         "bondCapacity": 100000,
         "OHRatio": 0.05,
-        "bondCostRatio": 0.08
+        "bondCostRatio": 0.08,
+        "sweetspot": 2
     },
     {
         "name": "Test Firm 3",
         "bondCapacity": 100000,
         "OHRatio": 0.05,
-        "bondCostRatio": 0.08
+        "bondCostRatio": 0.08,
+        "sweetspot": 3
     },
     {
         "name": "Test Firm 4",
         "bondCapacity": 100000,
         "OHRatio": 0.05,
-        "bondCostRatio": 0.08
+        "bondCostRatio": 0.08,
+        "sweetspot": 4
     }
 ]

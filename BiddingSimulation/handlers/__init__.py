@@ -4,3 +4,4 @@ from AboutHandler import AboutHandler
 from ContactHandler import ContactHandler
 from realtimeSimulation import RealtimeSimulationHandler, RealTimeSimulationSocketHandler
 from TutorialTestHandler import TuturialTestHandler
+from DataHandler import DataHandler

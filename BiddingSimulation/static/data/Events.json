@@ -1,17 +1,1 @@
-﻿[
-    {
-        "name": "Got delayed",
-        "base chance": 0.5,
-        "effect": -0.1
-    },
-    {
-        "name": "Got stolen",
-        "base chance": 0.5,
-        "effect": -0.05
-    },
-    {
-        "name": "Cheap material used",
-        "base chance": 0.5,
-        "effect": 0.2
-    }
-]
+﻿
