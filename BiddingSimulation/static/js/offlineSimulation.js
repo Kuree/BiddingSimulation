@@ -35,13 +35,13 @@ offer = [];
 ownerList = [];
 
 // projects
-projectList = []
+projectList = [];
 
 // event list
-eventList = []
+eventList = {};
 
 // firm chance list
-firmChance = {}
+firmChance = {};
 
 
 
@@ -90,7 +90,7 @@ function updateUI() {
     var string = "<tr>\
                           <td>" + (count - 1) + "</td>" + "<td>" + currentProject["totalCost"] + "</td>";
     $.each(offer, function (i) {
-        if (i == minIndex) {
+        if (i === minIndex) {
             string += "<td><b>" + offer[i].toFixed(0) + "</b></td>";
         } else {
             string += "<td>" + offer[i].toFixed(0) + "</td>";
@@ -251,7 +251,11 @@ function randomEvent(firmIndex, project) {
     if (effectChance != 0) {
         var choice = (effectChance > 0) ? "+" : "-";
         addiitonalCost = effectChance * project["quarterCost"];
-        event["message"] = eventList[eventType][choice][Math.floor(eventList[eventType][choice].length * Math.random())];
+        var eventListFromRandom = eventList[eventType];
+        if (eventListFromRandom == undefined) {
+            console.log("error");
+        }
+        event["message"] = eventListFromRandom[choice][Math.floor(eventListFromRandom[choice].length * Math.random())];
         event["additionalCost"] += addiitonalCost
         project["quarterCost"] += addiitonalCost
         project["totalCost"] += addiitonalCost
@@ -331,12 +335,14 @@ function getProgressReport() {
         buttons: {
             main: {
                 label: "Okay",
-                className: "btn-primary"
+                className: "btn-default"
             }
         }
     });
 
 }
+
+
 
 function processProjects() {
     $.each(firmList, function (i) {
@@ -410,9 +416,14 @@ function showrWinner() {
 
 $(function () {
 
-    // get firm change
-    $.getJSON("/data?arg=firmChance", function (data) {
-        firmChance = data;
+    // // get firm change
+    $.ajax({
+        url: "/data?arg=firmChance",
+        dataType: 'json',
+        success: function (data) {
+            firmChance = data;
+        },
+        async: false
     });
 
     // get owner list
@@ -482,7 +493,7 @@ $(function () {
         buttons: {
             main: {
                 label: "Okay",
-                className: "btn-primary"
+                className: "btn-default"
             }
         }
     });
@@ -501,14 +512,21 @@ $(function () {
     });
 
 
-
-    // check function
-    $('#check').click(function () {
-        if (shouldUpdate) {
-
-            shouldUpdate = false;
-        }
-    });
+    // start bid function
+    $('#check-income-statement').click(function () {
+        $.ajax({
+            type: "POST",
+            url: "income-statement",
+            async: false,
+            success: function (data) {
+                var win = window.open();
+                win.document.write(data);
+            },
+            error: function () {
+                alert("error");
+            }
+        })
+    })
 
     // start bid function
     $('#bid').click(function () {

@@ -23,6 +23,7 @@ if __name__ == "__main__":
         (r"/contact", ContactHandler),
         (r'/(favicon.ico)', tornado.web.StaticFileHandler, {"path": "favicon.ico"}),
         (r"/data", DataHandler),
+        (r"/income-statement", IncomeStatementHandler),
         ], debug = True, **settings)
     application.listen(80)
     tornado.ioloop.IOLoop.instance().start()

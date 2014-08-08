@@ -1,33 +1,49 @@
-﻿{
+{
     "owner": {
         "+": [
-            "Unreasonably limiting working hours",
-            "Unreasonably limiting utility outages",
-            "Requiring all project vehicles to use an inconvenient gate to access the site",
-            "Allowing too little amount of land adjacent to the site to be used for material storage",
-            "Requiring all workers to undergo 4 hours of facility-specific training",
-            "Constantly demanding minor changes in project scope",
-            "Delaying or accelerating portions of the work that require too many crews working in limited spaces.",
-            "Demanding crews work overtime after the project fell behind schedule due to weather.",
-            "Unreasonably interpreting technical specifications.",
-            "Delaying material deliveries through excessively long searches at facility gate."
+            "Owner limited working hours",
+            "Owner limited utility outages",
+            "Owner required all project vehicles to use inconvenient gate to access site",
+            "Owner allowed too little land for material storage.",
+            "Owner required all workers to undergo 4 hours of facility-specific training.",
+            "Owner constantly demanded changes in project scope.",
+            "Owner required too many crews to work in limited spaces.",
+            "Owner demanded crews work overtime after the project fell behind.",
+            "Owner unreasonably interpreted tech specs."
         ],
         "-": [
-            "Allowed longer utility outage than planned.",
-            "Allowed project vehicles to use a more convenient gate into the facility.",
-            "Relaxed several technical specifications that were unnecessarily stringent."
+            "Owner allowed longer utility outage than planned.",
+            "Owner allowed project vehicles to use more convenient gate into facility.",
+            "Owner relaxed tech specs that were unnecessarily stringent."
         ]
     },
     "project type": {
         "+": [
-            "None"
+            "bad estimate due to no historical data.",
+            "stringent owner's rep.",
+            "different trade contractors involved.",
+            "materials had to be purchased from unfamiliar vendors.",
+            "owner's rep stringently enforced tech specs.",
+            "bad estimate due to no historical data."
         ],
-        "-": [ "None" ]
+        "-": [
+            "None"
+        ]
     },
     "project size": {
         "+": [
-            "None"
+            "less room for crews to grow in productivity over time.",
+            "unable to get lower unit costs associated with buying in bulk.",
+            "mobilization costs cannot be spread over large number of work ",
+            "project complexity induces poor crew scheduling.",
+            "project complexity induces poor site layout decisions.",
+            "wage rates escalate over life of project.",
+            "unit costs escalated over duration of project.",
+            "rental costs escalated over duration of project."
         ],
-        "-": [ "None" ]
+        "-": [
+            "crews better benefit from the learning curve.",
+            "better unit prices than expected."
+        ]
     }
 }
