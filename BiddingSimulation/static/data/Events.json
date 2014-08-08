@@ -1,1 +1,33 @@
-﻿
+﻿{
+    "owner": {
+        "+": [
+            "Unreasonably limiting working hours",
+            "Unreasonably limiting utility outages",
+            "Requiring all project vehicles to use an inconvenient gate to access the site",
+            "Allowing too little amount of land adjacent to the site to be used for material storage",
+            "Requiring all workers to undergo 4 hours of facility-specific training",
+            "Constantly demanding minor changes in project scope",
+            "Delaying or accelerating portions of the work that require too many crews working in limited spaces.",
+            "Demanding crews work overtime after the project fell behind schedule due to weather.",
+            "Unreasonably interpreting technical specifications.",
+            "Delaying material deliveries through excessively long searches at facility gate."
+        ],
+        "-": [
+            "Allowed longer utility outage than planned.",
+            "Allowed project vehicles to use a more convenient gate into the facility.",
+            "Relaxed several technical specifications that were unnecessarily stringent."
+        ]
+    },
+    "project type": {
+        "+": [
+            "None"
+        ],
+        "-": [ "None" ]
+    },
+    "project size": {
+        "+": [
+            "None"
+        ],
+        "-": [ "None" ]
+    }
+}
