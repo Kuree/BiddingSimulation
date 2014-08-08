@@ -2,7 +2,6 @@
 from  jinja2 import Environment, FileSystemLoader
 import json
 import os
-import ujson
 
 class DataHandler(tornado.web.RequestHandler):
     def get(self):
