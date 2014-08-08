@@ -141,15 +141,14 @@ function startBid() {
     for (var i = 0; i < 4; i++) {
         if (i == userFirm) {
             var currentBondCost = parseFloat($('#bondCost').val());
-            if (currentBondCost > bondCapacity[userFirm]) { offer[userFirm] = Number.MAX_VALUE; }
+            if (currentBondCost > bondCapacity[userFirm]) { offer[userFirm] = parseFloat($('#totalCost').val()) * 1.1; }
             else { offer[userFirm] = parseFloat($('#totalCost').val()); }
         } else {
             var currentBondCost = directCost * firmList[i]["bondCostRatio"];
-            if (currentBondCost > bondCapacity[i]) { offer[i] = Number.MAX_VALUE; }
-            else {
-                var profitRatio = (Math.random() + firmList[i]["OHRatio"] + firmList[i]["bondCostRatio"]) * (bondCapacity[i]) / firmList[i]["bondCapacity"];
-                offer[i] = directCost * (1 + profitRatio);
-            }
+
+            var profitRatio = (Math.random() + firmList[i]["OHRatio"] + firmList[i]["bondCostRatio"]) * (bondCapacity[i]) / firmList[i]["bondCapacity"];
+            offer[i] = directCost * (1 + profitRatio);
+            if (currentBondCost > bondCapacity[i]) { offer[i] *= 1.1; }
         }
     }
 
