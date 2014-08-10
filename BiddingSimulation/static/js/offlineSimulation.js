@@ -1,14 +1,6 @@
-﻿// all the firms we have right now
-//firm1 = { name: "Test Firm 1", bondCapacity: 100000, OHRatio: 0.05, bondCostRatio: 0.08, projects: [] };
-//firm2 = { name: "Test Firm 2", bondCapacity: 200000, OHRatio: 0.08, bondCostRatio: 0.04, projects: [] };
-//firm3 = { name: "Test Firm 3", bondCapacity: 300000, OHRatio: 0.1, bondCostRatio: 0.03, projects: [] };
-//firm4 = { name: "Test Firm 4", bondCapacity: 400000, OHRatio: 0.10, bondCostRatio: 0.02, projects: [] };
-
-
-
-
+﻿
 // count
-count = 0;
+count = 1;
 // should update the table
 shouldUpdate = true;
 // firm list
@@ -19,7 +11,7 @@ bondCapacity = [];
 // current money for each firm
 money = [];
 // max bid
-maxBid = 10;
+maxBid = 41;
 
 // the firm that user plays, index from 0;
 userFirm = 0;

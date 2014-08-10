@@ -6,7 +6,8 @@
         "bondCostRatio": 0.08,
         "type": "1",
         "size": "1",
-        "projects": []
+        "projects": [ ],
+        "GA":  100000
     },
     {
         "name": "Firm 2",
@@ -15,7 +16,8 @@
         "bondCostRatio": 0.08,
         "type": "2",
         "size" : "2",
-        "projects": []
+        "projects": [ ],
+        "GA":  100000
     },
     {
         "name": "Firm 3",
@@ -24,7 +26,8 @@
         "bondCostRatio": 0.08,
         "type": "3",
         "size" : "3",
-        "projects": []
+        "projects": [ ],
+        "GA":  100000
     },
     {
         "name": "Firm 4",
@@ -33,6 +36,7 @@
         "bondCostRatio": 0.08,
         "type": "2",
         "size" : "1",
-        "projects": []
+        "projects": [ ],
+        "GA":  100000
     }
 ]

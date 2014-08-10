@@ -1,126 +1,282 @@
 [
-    {
-        "Direct Cost": 628000,
-        "Project Type": 1
-    },
-    {
-        "Direct Cost": 833000,
-        "Project Type": 3
-    },
-    {
-        "Direct Cost": 350000,
-        "Project Type": 1
-    },
-    {
-        "Direct Cost": 1500000,
-        "Project Type": 3
-    },
-        {
-        "Direct Cost": 750000,
-        "Project Type":  3
-    },
-        {
-        "Direct Cost": 947500,
-        "Project Type":  2
-    },
-        {
-        "Direct Cost": 742100,
-        "Project Type":  2
-    },
-        {
-        "Direct Cost": 961000,
-        "Project Type":  2
-    },
-        {
-        "Direct Cost": 977355,
-        "Project Type":  2
-    },
-        {
-        "Direct Cost": 1149400,
-        "Project Type":  2
-    },
-        {
-        "Direct Cost": 943300,
-        "Project Type":  1
-    },
-        {
-        "Direct Cost": 1261200,
-        "Project Type":  3
-    },
-    {
-        "Direct Cost": 933300,
-        "Project Type": 3
-    },
-    {
-        "Direct Cost": 879248,
-        "Project Type":  2
-    },
-    {
-        "Direct Cost": 821100,
-        "Project Type": 3
-    },
-    {
-        "Direct Cost": 821100,
-        "Project Type": 3
-    },
-    {
-        "Direct Cost": 991000,
-        "Project Type": 2
-    },
-    {
-        "Direct Cost": 812600,
-        "Project Type": 2
-    },
-    {
-        "Direct Cost": 1148400,
-        "Project Type": 1
-    },
-    {
-        "Direct Cost": 579700,
-        "Project Type": 2
-    },
-    {
-        "Direct Cost": 1174500,
-        "Project Type": 3
-    },
-    {
-        "Direct Cost": 979500,
-        "Project Type": 1
-    },
-    {
-        "Direct Cost": 664950,
-        "Project Type": 2
-    },
-    {
-        "Direct Cost": 589100,
-        "Project Type": 3
-    },
-    {
-        "Direct Cost": 627200,
-        "Project Type": 2
-    },
-    {
-        "Direct Cost": 719285,
-        "Project Type": 2
-    },
-    {
-        "Direct Cost": 1326600,
-        "Project Type": 2
-    },
-    {
-        "Direct Cost": 803455,
-        "Project Type": 1
-    },
-    {
-        "Direct Cost": 562310,
-        "Project Type": 2
-    },
-    {
-        "Direct Cost": 1079542,
-        "Project Type": 3
-    },
-    {
-        "Direct Cost": 879105,
-        "Project Type": 1
-    }
+   {
+      "Direct Cost":628000,
+      "Owner Class":"A",
+      "Project Size":1,
+      "Project Type":1,
+      "Project Description":"Office Building"
+   },
+   {
+      "Direct Cost":742100,
+      "Owner Class":"B",
+      "Project Size":1,
+      "Project Type":2,
+      "Project Description":"Highway"
+   },
+   {
+      "Direct Cost":771755,
+      "Owner Class":"A",
+      "Project Size":1,
+      "Project Type":3,
+      "Project Description":"Petroleum Refinery"
+   },
+   {
+      "Direct Cost":579700,
+      "Owner Class":"A",
+      "Project Size":1,
+      "Project Type":1,
+      "Project Description":"Commercial Mall"
+   },
+   {
+      "Direct Cost":664950,
+      "Owner Class":"B",
+      "Project Size":1,
+      "Project Type":2,
+      "Project Description":"Bridge"
+   },
+   {
+      "Direct Cost":651445,
+      "Owner Class":"C",
+      "Project Size":1,
+      "Project Type":3,
+      "Project Description":"Chemical Processing Plant"
+   },
+   {
+      "Direct Cost":627200,
+      "Owner Class":"B",
+      "Project Size":1,
+      "Project Type":1,
+      "Project Description":"Sports Stadium"
+   },
+   {
+      "Direct Cost":719285,
+      "Owner Class":"B",
+      "Project Size":1,
+      "Project Type":2,
+      "Project Description":"Dam"
+   },
+   {
+      "Direct Cost":562310,
+      "Owner Class":"B",
+      "Project Size":1,
+      "Project Type":3,
+      "Project Description":"Automobile Production Factory"
+   },
+   {
+      "Direct Cost":623435,
+      "Owner Class":"C",
+      "Project Size":1,
+      "Project Type":1,
+      "Project Description":"Apartment Complex"
+   },
+   {
+      "Direct Cost":708620,
+      "Owner Class":"C",
+      "Project Size":1,
+      "Project Type":2,
+      "Project Description":"Highway Tunnel"
+   },
+   {
+      "Direct Cost":537925,
+      "Owner Class":"A",
+      "Project Size":1,
+      "Project Type":3,
+      "Project Description":"Steel Mill"
+   },
+   {
+      "Direct Cost":639260,
+      "Owner Class":"C",
+      "Project Size":1,
+      "Project Type":1,
+      "Project Description":"High School"
+   },
+   {
+      "Direct Cost":833000,
+      "Owner Class":"C",
+      "Project Size":2,
+      "Project Type":1,
+      "Project Description":"University Dorm Building"
+   },
+   {
+      "Direct Cost":947500,
+      "Owner Class":"B",
+      "Project Size":2,
+      "Project Type":2,
+      "Project Description":"Canal"
+   },
+   {
+      "Direct Cost":961000,
+      "Owner Class":"B",
+      "Project Size":2,
+      "Project Type":3,
+      "Project Description":"Brewery"
+   },
+   {
+      "Direct Cost":977355,
+      "Owner Class":"B",
+      "Project Size":2,
+      "Project Type":1,
+      "Project Description":"Theater Complex"
+   },
+   {
+      "Direct Cost":933300,
+      "Owner Class":"C",
+      "Project Size":2,
+      "Project Type":2,
+      "Project Description":"Bridge"
+   },
+   {
+      "Direct Cost":879248,
+      "Owner Class":"B",
+      "Project Size":2,
+      "Project Type":3,
+      "Project Description":"Electricity Generation Plant"
+   },
+   {
+      "Direct Cost":821100,
+      "Owner Class":"C",
+      "Project Size":2,
+      "Project Type":1,
+      "Project Description":"Office Building"
+   },
+   {
+      "Direct Cost":879248,
+      "Owner Class":"B",
+      "Project Size":2,
+      "Project Type":2,
+      "Project Description":"Roadway"
+   },
+   {
+      "Direct Cost":979500,
+      "Owner Class":"A",
+      "Project Size":2,
+      "Project Type":3,
+      "Project Description":"Chemical Laboratory "
+   },
+   {
+      "Direct Cost":803455,
+      "Owner Class":"A",
+      "Project Size":2,
+      "Project Type":1,
+      "Project Description":"Shopping Mall"
+   },
+   {
+      "Direct Cost":879105,
+      "Owner Class":"A",
+      "Project Size":2,
+      "Project Type":2,
+      "Project Description":"Bridge"
+   },
+   {
+      "Direct Cost":791480,
+      "Owner Class":"A",
+      "Project Size":2,
+      "Project Type":3,
+      "Project Description":"Industrial Factory"
+   },
+   {
+      "Direct Cost":743960,
+      "Owner Class":"B",
+      "Project Size":2,
+      "Project Type":1,
+      "Project Description":"Apartment Complex"
+   },
+   {
+      "Direct Cost":882900,
+      "Owner Class":"C",
+      "Project Size":2,
+      "Project Type":2,
+      "Project Description":"Roadway"
+   },
+   {
+      "Direct Cost":1149400,
+      "Owner Class":"B",
+      "Project Size":3,
+      "Project Type":1,
+      "Project Description":"University Academic Building"
+   },
+   {
+      "Direct Cost":1093400,
+      "Owner Class":"A",
+      "Project Size":3,
+      "Project Type":2,
+      "Project Description":"Roadway Tunnel"
+   },
+   {
+      "Direct Cost":1261200,
+      "Owner Class":"C",
+      "Project Size":3,
+      "Project Type":3,
+      "Project Description":"Steel Mill"
+   },
+   {
+      "Direct Cost":1238750,
+      "Owner Class":"B",
+      "Project Size":3,
+      "Project Type":1,
+      "Project Description":"Hospital"
+   },
+   {
+      "Direct Cost":1320660,
+      "Owner Class":"A",
+      "Project Size":3,
+      "Project Type":2,
+      "Project Description":"Dam"
+   },
+   {
+      "Direct Cost":1174500,
+      "Owner Class":"C",
+      "Project Size":3,
+      "Project Type":3,
+      "Project Description":"Automobile Production Factory"
+   },
+   {
+      "Direct Cost":1326600,
+      "Owner Class":"B",
+      "Project Size":3,
+      "Project Type":1,
+      "Project Description":"Hospital"
+   },
+   {
+      "Direct Cost":1187496,
+      "Owner Class":"C",
+      "Project Size":3,
+      "Project Type":2,
+      "Project Description":"Roadway"
+   },
+   {
+      "Direct Cost":1238860,
+      "Owner Class":"A",
+      "Project Size":3,
+      "Project Type":3,
+      "Project Description":"Computer Industrial Facility"
+   },
+   {
+      "Direct Cost":826325,
+      "Owner Class":"B",
+      "Project Size":3,
+      "Project Type":1,
+      "Project Description":"Office Building"
+   },
+   {
+      "Direct Cost":948710,
+      "Owner Class":"C",
+      "Project Size":3,
+      "Project Type":2,
+      "Project Description":"Roadway"
+   },
+   {
+      "Direct Cost":1302595,
+      "Owner Class":"A",
+      "Project Size":3,
+      "Project Type":3,
+      "Project Description":"Nuclear Power Plant"
+   },
+   {
+      "Direct Cost":1061735,
+      "Owner Class":"B",
+      "Project Size":3,
+      "Project Type":1,
+      "Project Description":"Apartment Complex"
+   }
 ]
