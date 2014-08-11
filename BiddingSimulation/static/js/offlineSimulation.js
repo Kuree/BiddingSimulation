@@ -1,5 +1,4 @@
-﻿
-// count
+﻿// count
 count = 1;
 // should update the table
 shouldUpdate = true;
@@ -35,7 +34,7 @@ eventList = {};
 // firm chance list
 firmChance = {};
 
-
+QUARTER_COUNT = 4;
 
 // function to update total cost
 function updateTotalCost() {
@@ -62,7 +61,6 @@ function update() {
         $('#ohCost').val(ohCost);
         updateTotalCost();
 
-
         // update contact info
         $('#fake_image').attr('src', currentProject["owner"]["ui"]);
         $('#owner-name').text("Name: " + currentProject["owner"]["name"]);
@@ -70,7 +68,9 @@ function update() {
         $('#owner-company').text("Company Name: " + currentProject["owner"]["company"]);
         $('#owner-Type').text("Owner Type: " + currentProject["owner"]["type"]);
         $('#info-cost').text("Bid direct cost: " + currentProject["quarterCost"].toFixed(0));
-
+        $('#info-project-type').text("Project Type: " + currentProject["type"]);
+        $('#info-project-size').text("Project Size: " + currentProject["size"]);
+        $('#info-project-description').text("Project Description: " + currentProject["description"]);
     }
 
 }
@@ -122,6 +122,10 @@ function updateUI() {
     $('#bidding-progress').css('width', value + '%').attr('aria-valuenow', value);
     $('#progressbar-span').text(value.toFixed(0) + "% Complete")
 
+    // quarter indicator
+    var indicator = "Year " + ((count % QUARTER_COUNT) != 0 ? (~~(count / QUARTER_COUNT) + 1) : (~~(count / QUARTER_COUNT))) + " Quarter: " + ((count % QUARTER_COUNT) != 0 ? (count % QUARTER_COUNT) : QUARTER_COUNT);
+    $('#quarter-indicator').text(indicator);
+
     update();
 }
 
@@ -133,12 +137,17 @@ function startBid() {
     for (var i = 0; i < 4; i++) {
         if (i == userFirm) {
             var currentBondCost = parseFloat($('#bondCost').val());
-            if (currentBondCost > bondCapacity[userFirm]) { offer[userFirm] = parseFloat($('#totalCost').val()) * 1.1; }
+            if (currentBondCost > bondCapacity[userFirm]) { offer[userFirm] = parseFloat($('#totalCost').val()) * 1.15; }
             else { offer[userFirm] = parseFloat($('#totalCost').val()); }
         } else {
             var currentBondCost = directCost * firmList[i]["bondCostRatio"];
 
             var profitRatio = (Math.random() + firmList[i]["OHRatio"] + firmList[i]["bondCostRatio"]) * (bondCapacity[i]) / firmList[i]["bondCapacity"];
+            if (profitRatio < 0) {
+                // reach the bond capacity
+                profitRatio = -profitRatio;
+                profitRatio *= 1.15
+            }
             offer[i] = directCost * (1 + profitRatio);
             if (currentBondCost > bondCapacity[i]) { offer[i] *= 1.1; }
         }
@@ -158,15 +167,7 @@ function startBid() {
         currentProject["isCurrentUserOwned"] = false;
     }
 
-    // update the progress information
-    //var resultList = []
-    //for (var i = 0; i < 4; i++) {
-    //    if (i == minIndex) {
-    //        resultList.push("<span class='glyphicon glyphicon-ok'></span>");
-    //    } else {
-    //        resultList.push("");
-    //    }
-    //}
+   
 
     // push to firm project list
     firmList[minIndex]["projects"].push($.extend({}, currentProject));
@@ -179,46 +180,29 @@ function startBid() {
     // update the bond capacity
     bondCapacity[minIndex] -= directCost * firmList[minIndex]["bondCostRatio"];
 
+    // cover some overhead
+    var overhead = parseFloat($('#inputGA').val());
+    firmList[minIndex]["gaOverhead"] += overhead;
+
     // update the count
     count++;
 
     processProjects(); // need to update the UI after the changes money
 
     updateUI();
+}
 
 
+function processGA()
+{
+    $.each(firmList, function (i, firm) {
+        money[i] -= (100 - firm["currentGA"]) * firm["GA"] / 100;
+    });
+
+    resetGAOverhead();
 }
 
 function randomEvent(firmIndex, project) {
-//    var factor = 0;
-//    var events = [
-//{
-//    "name": "Got delayed",
-//    "base chance": 0.5,
-//    "effect": -0.1
-//},
-//{
-//    "name": "Materials got stolen",
-//    "base chance": 0.5,
-//    "effect": -0.05
-//},
-//{
-//    "name": "Cheap material used",
-//    "base chance": 0.5,
-//    "effect": 0.2
-//}
-//    ]
-
-
-    //if (project["owner"]["type"] === "A") {
-    //    factor = 1;
-    //} else if (project["owner"]["type"] === "B") {
-    //    factor = 2;
-    //} else if (project["owner"]["type"] === "C") {
-    //    factor = 3;
-    //} else if (project["owner"]["type"] === "D") {
-    //    factor = 4;
-    //}
     
 
     // choose event type
@@ -350,14 +334,22 @@ function processProjects() {
     purageProejcts();
 
     getProgressReport();
+
+    // process G&A overhead
+    if (count != 1 && count % QUARTER_COUNT == 1) { // a year
+        processGA();
+        console.log("processed")
+    }
 }
 
-function createOwner() {
-    var typeArray = []
-    $.each(ownerList, function (key, value) {
-        typeArray.push(key);
+function resetGAOverhead() {
+    $.each(firmList, function (i, firm) {
+        firm["currentGA"] = 0;
     })
-    return { "name": faker.Name.findName(), "email": faker.Internet.email(), "ui": faker.Image.avatar(), "type": typeArray[Math.floor(Math.random() * typeArray.length)], "company": faker.Company.companyName() };
+}
+
+function createOwner(ownerClass) {
+    return { "name": faker.Name.findName(), "email": faker.Internet.email(), "ui": faker.Image.avatar(), "type": ownerClass, "company": faker.Company.companyName() };
 }
 
 function createProject() {
@@ -366,10 +358,14 @@ function createProject() {
     var cost = rawProject["Direct Cost"];
     var projectType = rawProject["Project Type"];
     var length = Math.floor(2 + Math.random() * 3);
-    var owner = createOwner();
+    var owner = createOwner(rawProject["Owner Class"]);
+    var projectSize = rawProject["Project Size"];
+    var projectDescription = rawProject["Project Description"]; 
+
     var result = {
         "quarterCost": cost / length, "length": length, "owner": owner, "number": count, "events": [], "isCurrentUserOwned": false,
-        "totalLength": length, "totalCost": cost, "ownerIndex": -1, "estimateCost": cost, "type": projectType
+        "totalLength": length, "totalCost": cost, "ownerIndex": -1, "estimateCost": cost, "type": projectType, "size": projectSize, "description": projectDescription,
+        "gaOverhead": 0
     };
     return result;
 }
@@ -380,7 +376,7 @@ function purageProejcts() {
             var popList = []
             $.each(firmList[i]["projects"], function (j, project) {
                 // I need some money
-                money[project["ownerIndex"]] -= project["quarterCost"];
+                money[project["ownerIndex"]] -= project["quarterCost"]; // remove some part of money
                 if (project["length"] > 0) {
                     project["length"] -= 1;
                 } else {
@@ -390,8 +386,16 @@ function purageProejcts() {
             })
 
             $.each(popList, function (j, index) {
-                firmList[i]["projects"].splice(index, 1);
+                //firmList[i]["projects"].splice(index, 1); ------> need to implement in safer way
+
+                // before delete, need to cover the G&A overhead
+                var project = firmList[i]["projects"][index];
+                firmList[i]["currentGA"] += project["gaOverhead"];
+                delete firmList[i]["projects"][index];
             })
+
+            // remove undefined
+            firmList[i]["projects"] = firmList[i]["projects"].filter(function (n) { return n != undefined });
         }
     })
 }
@@ -469,7 +473,8 @@ $(function () {
         async: false
     });
 
-
+    // reset the G&A overhead for each company.
+    resetGAOverhead();
 
     $.each(firmList, function (i, firm) {
         bondCapacity.push(firm.bondCapacity);
@@ -478,7 +483,7 @@ $(function () {
 
 
     // randomly choose a firm
-    userFirm = Math.floor((Math.random() * 4));
+    userFirm = Math.floor((Math.random() * firmList.length));
     bootbox.dialog({
         message: "You are now firm " + (userFirm + 1).toString(),
         title: "Hello",
@@ -493,6 +498,11 @@ $(function () {
 
     // update the status
     update();
+
+
+    // show the G&A
+    $('#TotalGA').val(firmList[userFirm]["GA"]);
+
 
     // hook up the profit form
     $('#inputProfit').change(function () {
