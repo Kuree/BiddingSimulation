@@ -1,42 +1,50 @@
 [
     {
         "name": "Firm 1",
-        "bondCapacity": 100000,
+        "bondCapacity": 10000000,
         "OHRatio": 0.05,
         "bondCostRatio": 0.08,
         "type": "1",
         "size": "1",
         "projects": [ ],
-        "GA":  100000
+        "GA": 100000,
+        "money": 0,
+        "sum": 0
     },
     {
         "name": "Firm 2",
-        "bondCapacity": 100000,
+        "bondCapacity": 10000000,
         "OHRatio": 0.05,
         "bondCostRatio": 0.08,
         "type": "2",
-        "size" : "2",
+        "size": "2",
         "projects": [ ],
-        "GA":  100000
+        "GA": 100000,
+        "money": 0,
+        "sum": 0
     },
     {
         "name": "Firm 3",
-        "bondCapacity": 100000,
+        "bondCapacity": 10000000,
         "OHRatio": 0.05,
         "bondCostRatio": 0.08,
         "type": "3",
-        "size" : "3",
+        "size": "3",
         "projects": [ ],
-        "GA":  100000
+        "GA": 100000,
+        "money": 0,
+        "sum": 0
     },
     {
         "name": "Firm 4",
-        "bondCapacity": 100000,
+        "bondCapacity": 10000000,
         "OHRatio": 0.05,
         "bondCostRatio": 0.08,
         "type": "2",
-        "size" : "1",
+        "size": "1",
         "projects": [ ],
-        "GA":  100000
+        "GA": 100000,
+        "money": 0,
+        "sum": 0
     }
 ]
