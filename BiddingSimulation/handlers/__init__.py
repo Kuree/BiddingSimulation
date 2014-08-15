@@ -1,7 +1,8 @@
 ﻿from MainHandler import MainHandler
-from AboutHandler import AboutHandler
+from FeedbackHandler import FeedbackHandler
 from ContactHandler import ContactHandler
 from realtimeSimulation import RealtimeSimulationHandler, RealTimeSimulationSocketHandler
-from TutorialTestHandler import TuturialTestHandler
+from PracticeSimulationHandler import PracticeSimulationHandler
 from DataHandler import DataHandler
 from IncomeStatementHandler import IncomeStatementHandler
+from DetailsHandler import DetailsHandler

@@ -18,7 +18,7 @@ class RealTimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
 
 class RealtimeSimulationHandler(tornado.web.RequestHandler):
     def get(self):
-        html_output = self.template.render(title="Realtime Simulation", ContentName="This is a demo of conversation between client and server")
+        html_output = self.template.render(title="Realtime Simulation", ContentName="This hasn't been implemented yet")
         self.write(html_output)
         return
 

@@ -16,14 +16,15 @@ if __name__ == "__main__":
     settings = { "static_path" : os.path.join(os.path.dirname(__file__), "static")}
     application = tornado.web.Application([
         (r"/", MainHandler), 
-        (r"/realtime", RealtimeSimulationHandler),
+        (r"/realtime-simulation", RealtimeSimulationHandler),
         (r"/realtimeSocket", RealTimeSimulationSocketHandler),
-        (r"/tutorialtest", TuturialTestHandler, dict(owner = owner, firmChance = firmChance)),
-        (r"/about", AboutHandler),
+        (r"/practice-simulation", PracticeSimulationHandler, dict(owner = owner, firmChance = firmChance)),
+        (r"/feedback", FeedbackHandler),
         (r"/contact", ContactHandler),
         (r'/(favicon.ico)', tornado.web.StaticFileHandler, {"path": "favicon.ico"}),
         (r"/data", DataHandler),
         (r"/income-statement", IncomeStatementHandler),
+        (r"/details", DetailsHandler),
         ], debug = True, **settings)
     application.listen(80)
     tornado.ioloop.IOLoop.instance().start()

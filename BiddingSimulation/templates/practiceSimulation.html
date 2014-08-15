@@ -2,6 +2,7 @@
 {% block javascript%}
 <script src="../static/js/bootbox.min.js"></script>
 <script src="../static/js/fake.min.js"></script>
+<script src="../static/js/simulation.core.js"></script>
 <script src="../static/js/offlineSimulation.js"></script>
 {% endblock%}
 
@@ -17,8 +18,9 @@
             <div>
                 <div class="btn-toolbar" role="toolbar">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-current-bid-lg" id="check">Current Bid</button>
-                        <button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-historical-bid-lg" id="check">Historical Bid</button>
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-firm-info-lg">Firm Information</button>
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-current-bid-lg">Current Bid</button>
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-historical-bid-lg">Historical Bid</button>
                     </div>
                     <div class="btn-group">
                         <button type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-active-projects-lg" id="check">Active Projects</button>
@@ -29,6 +31,24 @@
                     <div><span class="pull-right" id="quarter-indicator" style="margin-top:10px">Year 1, Quarter 1</span></div>
                 </div>
 
+            </div>
+            <div class="modal fade bs-firm-info-lg" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <h4>Firm Information (will be improved)</h4>
+                        <p id="firm-name"></p>
+                        <p id="firm-type"></p>
+                        <p id="firm-size"></p>
+                        <p id="firm-bond-capacity"></p>
+                        <p id="firm-bond-remaining"></p>
+                        <p id="firm-bond-low"></p>
+                        <p id="firm-bond-ratio-below"></p>
+                        <p id="firm-bond-ratio-close"></p>
+                        <p id="firm-bond-ratio-above"></p>
+                        <p id="firm-GA"></p>
+                        <p id="firm-current-GA"></p>
+                    </div>
+                </div>
             </div>
             <div class="modal fade bs-current-bid-lg" tabindex="-1" role="dialog">
                 <div class="modal-dialog modal-lg">
@@ -112,7 +132,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="ohCost" class="col-sm-2 control-label">Overhead</label>
+                <label for="ohCost" class="col-sm-2 control-label">Field OH</label>
                 <div class="col-sm-8">
                     <input class="form-control" id="ohCost" placeholder="You shouldn't see this" disabled />
                 </div>

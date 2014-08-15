@@ -1,57 +1,15 @@
-﻿// count
-count = 1;
-// should update the table
-shouldUpdate = true;
-// firm list
-firmList = []
-
-// current bond capacity for each firm
-bondCapacity = [];
-// max bid
-maxBid = 41;
-
-// the firm that user plays, index from 0;
-userFirm = 0;
-
-// the current project
-currentProject = undefined;
-
-// the current bid
-currentBid = undefined;
-
-offer = [];
-
-ownerList = [];
-
-// projects
-projectList = [];
-
-// event list
-eventList = {};
-
-// firm chance list
-firmChance = {};
-
-QUARTER_COUNT = 4;
-
-// function to update total cost
-function updateTotalCost() {
-    var cost = parseFloat($('#directCost').val());
-    var firm = firmList[userFirm];
-    var bondCost = (firm["bondCostRatio"] * cost).toFixed(0);
-    var ohCost = (firm["OHRatio"] * cost).toFixed(0);
-    var ga = parseFloat($('#inputGA').val()) * firm["GA"] / 100;
-    $('#totalCost').val((parseFloat(cost) + parseFloat(bondCost) + parseFloat(ohCost) + parseFloat($('#inputProfit').val()) * cost / 100 + ga).toFixed(0));
-}
+﻿
 
 // function to update bond cost, oh cost, etc.
 function update() {
     if (count < maxBid) {
 
+        //getBondCost(firm, directCost, bondCapacity)
+
         currentProject = createProject();
         var cost = currentProject["totalCost"];
         var firm = firmList[userFirm];
-        var bondCost = (firm["bondCostRatio"] * cost).toFixed(0);
+        var bondCost = (getBondCost(firm, cost, bondCapacity[userFirm])).toFixed(0);
         var ohCost = (firm["OHRatio"] * cost).toFixed(0);
 
         $('#invitation').val(count);
@@ -74,83 +32,7 @@ function update() {
 
 }
 
-function updateUI() {
-    var bidTable = $('#bid-table-body');
-    // get the main for offer
-    var minIndex = offer.indexOf(Math.min.apply(Math, offer));
-    var string = "<tr>\
-                          <td>" + (count - 1) + "</td>" + "<td>" + currentProject["totalCost"] + "</td>";
-    $.each(offer, function (i) {
-        if (i === minIndex) {
-            string += "<td><b>" + offer[i].toFixed(0) + "</b></td>";
-        } else {
-            string += "<td>" + offer[i].toFixed(0) + "</td>";
-        }
-    });
-    bidTable.append(string + "</tr>");
-    // update bond table
-    var append = "";
-    $('#bond-table-body').empty();
-    append = "<tr><td>" + count + "</td>";
-    $.each(firmList, function (i) {
-        append += "<td>" + bondCapacity[i].toFixed(0) + "</td>";
-    })
-    append += "</tr>";
 
-    $('#bond-table-body').append(append);
-
-    // update active projects
-    $('#money-table-body').empty();
-    append = "<tr><td>" + count + "</td>";
-    $.each(firmList, function (i) {
-        append += "<td>" + firmList[i]["money"].toFixed(0) + "</td>";
-    });
-    append += "</tr>";
-    $('#money-table-body').append(append);
-
-    $('#current-project-table-body').empty();
-    append = "<tr><td>" + "now" + "</td>";
-    $.each(firmList, function (i) {
-        var length = 0;
-        $.each(firmList[i]["projects"], function (i, project) {
-            if (project["length"] > 0) {
-                length += 1;
-            }
-        })
-        append += "<td>" + length + "</td>";
-    });
-    append += "</tr>";
-    $('#current-project-table-body').append(append);
-
-    append = "<tr><td>" + (count - 1) + "</td>";
-    $.each(firmList, function (i) {
-        if (i == minIndex) {
-            append += "<td>" + offer[i].toFixed(0) + "</td>";
-        } else {
-            append += "<td></td>";
-        }
-    })
-    append += "</tr>";
-    $('#project-stats-table-body').append(append);
-
-    append = "<tr><td>" + "Total" + "</td>";
-    $.each(firmList, function (i) {
-        append += "<td>" + firmList[i]["sum"] + "</td>";
-    });
-    $('#project-sum-table-body').empty();
-    $('#project-sum-table-body').append(append);
-
-    // progress bar
-    var value = (count + 1) / maxBid * 100;
-    $('#bidding-progress').css('width', value + '%').attr('aria-valuenow', value);
-    $('#progressbar-span').text(value.toFixed(0) + "% Complete")
-
-    // quarter indicator
-    var indicator = "Year " + ((count % QUARTER_COUNT) != 0 ? (~~(count / QUARTER_COUNT) + 1) : (~~(count / QUARTER_COUNT))) + " Quarter: " + ((count % QUARTER_COUNT) != 0 ? (count % QUARTER_COUNT) : QUARTER_COUNT);
-    $('#quarter-indicator').text(indicator);
-
-    update();
-}
 
 
 function startBid() {
@@ -162,27 +44,27 @@ function startBid() {
     for (var i = 0; i < firmList.length; i++) {
         if (i == userFirm) {
             var currentBondCost = parseFloat($('#bondCost').val());
-            if (currentBondCost > bondCapacity[userFirm]) { offer[userFirm] = parseFloat($('#totalCost').val()) * 1.15; }
-            else { offer[userFirm] = parseFloat($('#totalCost').val()); }
+            //if (currentBondCost > bondCapacity[userFirm]) { offer[userFirm] = parseFloat($('#totalCost').val()) * 1.15; }
+            offer[userFirm] = parseFloat($('#totalCost').val()); 
             console.log($('#inputProfit').val()/ 100);
             profit = $('#inputProfit').val() / 100;
             ga = parseFloat($('#inputGA').val());
         } else {
-            var currentBondCost = directCost * firmList[i]["bondCostRatio"];
+            var currentBondCost = directCost * firmList[i]["bondCostRatioBelow"];
             profit = Math.random() * 0.5;
-            var profitRatio = (firmList[i]["OHRatio"] + firmList[i]["bondCostRatio"]) * (bondCapacity[i]) / firmList[i]["bondCapacity"] + profit;
-            ga = 25;
+            var profitRatio = (firmList[i]["OHRatio"] + firmList[i]["bondCostRatioBelow"]) * (bondCapacity[i]) / firmList[i]["bondCapacity"] + profit;
+            ga = 30;
             if (profitRatio < 0) {
                 // reach the bond capacity
                 profitRatio = -profitRatio;
                 profitRatio *= 1.15
             }
             offer[i] = directCost * (1 + profitRatio) + ga * firmList[i]["GA"] / 100;
-            if (currentBondCost > bondCapacity[i]) { offer[i] *= 1.1; }
+            if (currentBondCost > bondCapacity[i]) { offer[i] += getBondCost(firmList[i], directCost, bondCapacity[i]); }
         }
     }
 
-    currentBid = []
+    currentBid = [];
     for (var i = 0; i < firmList.length; i++) {
         currentBid.push({ "firm id": i, "offer": offer[i] });
     }
@@ -215,11 +97,11 @@ function startBid() {
     firmList[minIndex]["money"] += offer[minIndex];
 
     // update the bond capacity
-    bondCapacity[minIndex] -= directCost * firmList[minIndex]["bondCostRatio"];
+    bondCapacity[minIndex] -= getBondCost(firmList[minIndex], directCost, bondCapacity[minIndex]);
 
     // cover some overhead
-    var overhead = minIndex == userFirm ? $('#inputGA').val() : 0.25;
-    firmList[minIndex]["gaOverhead"] += overhead;
+    var overhead = parseFloat(minIndex == userFirm ? $('#inputGA').val() : 25);
+    firmList[minIndex]["currentGA"] += overhead;
 
     
     // update the count
@@ -228,6 +110,7 @@ function startBid() {
     processProjects(); // need to update the UI after the changes money
 
     updateUI();
+    update();
 }
 
 
@@ -297,83 +180,7 @@ function randomEvent(firmIndex, project) {
 }
 
 
-function getProgressReport() {
-    var message = "<h4>Bidding Offering</h4>\
-                        <table class='table'>\
-                            <thead>\
-                                <tr>\
-                                    <th>Firm 1</th>\
-                                    <th>Firm 2</th>\
-                                    <th>Firm 3</th>\
-                                    <th>Firm 4</th>\
-                                </tr>\
-                            </thead>\
-                            <tbody><tr>";
-    $.each(offer, function (i) {
-        message += "<td>" + offer[i].toFixed(0) + "</td>";
-    });
 
-    message += "</td></tr></tbody></table><hr>";
-
-    message += "<h4>Bidding result Report</h4>";
-
-    if (currentProject["isCurrentUserOwned"]) {
-        message += "<p>You got the project</p>";
-    } else {
-        message += "<p>You didn't get the project</p>";
-    }
-
-    if ($('#showProgress')[0].checked) {
-
-
-        message += "<h4>Quarterly Job Cost Report</h4>\
-                        <table class='table'>\
-                            <thead>\
-                                <tr>\
-                                    <th>Project #</th>\
-                                    <th>Estimated Quarter Direct Cost</th>\
-                                    <th>Quarter Direct Cost</th>\
-                                    <th>Estimated Total Direct Cost</th>\
-                                    <th>Total Direct Cost</th>\
-                                    <th>Current Status</th>\
-                                </tr>\
-                            </thead>\
-                            <tbody>";
-        $.each(firmList[userFirm]["projects"], function (i, project) {
-            if (project["length"] > 0) {
-                message += "<tr><td>" + project["number"] + "</td>";
-                message += "<td>" + (project["estimateCost"] / project["totalLength"]).toFixed(0) + "</td>";
-                message += "<td>" + project["quarterCost"].toFixed(0) + "</td>";
-                message += "<td>" + project["estimateCost"] + "</td>";
-                message += "<td>" + project["totalCost"].toFixed(0) + "</td><td>";
-
-                if (project["events"].length > 0) {
-                    $.each(project["events"], function (j, event) {
-                        message += "<p>" + event["message"] + "</p>";
-                    })
-                }
-                else {
-                    message += "<p>Good</p>";
-                }
-            }
-
-        })
-        message += "</td></tr></tbody></table>";
-    }
-    bootbox.dialog({
-        message: message,
-        title: "Bidding Status",
-        buttons: {
-            main: {
-                label: "Okay",
-                className: "btn-default"
-            }
-        }
-    });
-
-
-
-}
 
 
 
@@ -392,11 +199,10 @@ function processProjects() {
 
     getProgressReport();
 
-    // process G&A overhead
-    if (count != 1 && count % QUARTER_COUNT == 1) { // a year
+    if (count != 1 && count % 4 == 1) {
         processGA();
-        console.log("processed")
     }
+
 }
 
 function resetGAOverhead() {
@@ -430,29 +236,15 @@ function createProject() {
 function purageProejcts() {
     $.each(firmList, function (i) {
         if (firmList[i]["projects"].length > 0) {
-            var popList = []
-            $.each(firmList[i]["projects"], function (j, project) {
-                // I need some money
-                firmList[project["ownerIndex"]]["money"] -= project["quarterCost"]; // remove some part of money
+            $.each(firmList[i]["projects"], function (j, project) {                
                 if (project["length"] > 0) {
                     project["length"] -= 1;
-                //} else {
-                //    // okay need to deduct the money                        
-                //    popList.push(j)
-                }
+                    firmList[project["ownerIndex"]]["money"] -= project["quarterCost"]; // remove some part of money
+                    project["quarterCost"] = project["estimateCost"] / project["totalLength"]; // reset the quarterCost
+                } 
             })
 
-            $.each(popList, function (j, index) {
-                // firmList[i]["projects"].splice(index, 1); ------> need to implement in safer way
-
-                // before delete, need to cover the G&A overhead
-                var project = firmList[i]["projects"][index];
-                firmList[i]["currentGA"] += project["gaOverhead"];
-                delete firmList[i]["projects"][index];
-            })
-
-            // remove undefined
-            firmList[i]["projects"] = firmList[i]["projects"].filter(function (n) { return n != undefined });
+            
         }
     })
 }
@@ -568,24 +360,6 @@ $(function () {
     $('#TotalGA').val(firmList[userFirm]["GA"]);
 
 
-    // hook up the bid total form
-    $('#inputProfit').change(function () {
-        updateTotalCost();
-    });
-
-    $('#inputProfit').keyup(function (e) {
-        updateTotalCost();
-    });
-
-    $('#inputGA').change(function () {
-        updateTotalCost();
-    });
-
-    $('#inputGA').keyup(function (e) {
-        updateTotalCost();
-    });
-
-
     // initialize the firm list in UI
     var tableContent = "<thead>\
                                 <tr>\
@@ -636,4 +410,6 @@ $(function () {
         }
     })
 
+
+    showFirmInfo();
 })
