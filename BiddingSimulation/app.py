@@ -2,14 +2,6 @@
 import tornado.ioloop
 from handlers import *
 import os
-import json
-# Load data files
-
-def readJSON(filename):
-    return json.load(open(filename))
-
-owner = readJSON("static/data/owner.json")
-firmChance = readJSON("static/data/firmChance.json")
 
 
 if __name__ == "__main__":
@@ -17,12 +9,13 @@ if __name__ == "__main__":
     application = tornado.web.Application([
         (r"/", MainHandler), 
         (r"/realtime-simulation", RealtimeSimulationHandler),
-        (r"/realtimeSocket", RealTimeSimulationSocketHandler),
-        (r"/practice-simulation", PracticeSimulationHandler, dict(owner = owner, firmChance = firmChance)),
+        (r"/realtimeSocket", RealtimeSimulationSocketHandler),
+        (r"/practice-simulation", PracticeSimulationHandler),
         (r"/feedback", FeedbackHandler),
         (r"/contact", ContactHandler),
         (r'/(favicon.ico)', tornado.web.StaticFileHandler, {"path": "favicon.ico"}),
         (r"/data", DataHandler),
+        (r"/admin", AdminHandler),
         (r"/income-statement", IncomeStatementHandler),
         (r"/details", DetailsHandler),
         ], debug = True, **settings)

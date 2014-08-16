@@ -1,16 +1,14 @@
-﻿import tornado.websocket
+﻿import tornado.web
 from  jinja2 import Environment, FileSystemLoader
-import json
 
-
-class PracticeSimulationHandler(tornado.web.RequestHandler):
+class AdminHandler(tornado.web.RequestHandler):
     def get(self):
-        html_output = self.template.render(title="Tutorial Test", ContentName="This is a test of tutorial competing with machine")
+        html_output = self.template.render(title="Admin", ContentName="Admin Panel")
         self.write(html_output)
         return
 
     def initialize(self):
-        self.TEMPLATE_FILE = "practiceSimulation.html"
+        self.TEMPLATE_FILE = "admin.html"
         self.templateLoader = FileSystemLoader( searchpath="templates/" )
         self.templateEnv = Environment( loader=self.templateLoader )
         self.template = self.templateEnv.get_template(self.TEMPLATE_FILE)

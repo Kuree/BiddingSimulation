@@ -268,7 +268,7 @@ function showrWinner() {
 
 $(function () {
 
-    // // get firm change
+    // // get firm chance
     $.ajax({
         url: "/data?arg=firmChance",
         dataType: 'json',
@@ -314,17 +314,6 @@ $(function () {
         dataType: 'json',
         success: function (data) {
             firmList = data;
-        },
-        async: false
-    });
-
-
-    // get firm chance list
-    $.ajax({
-        url: "/data?arg=firmChance",
-        dataType: 'json',
-        success: function (data) {
-            firmChance = data;
         },
         async: false
     });
