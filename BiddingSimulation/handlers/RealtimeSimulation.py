@@ -7,6 +7,7 @@ from faker import name, company, internet
 import urllib
 import requests
 import copy
+import sys
 
 #Format of message to be send to the clients
 #{
@@ -54,8 +55,8 @@ class CommandManager:
         return
 
     @staticmethod
-    def updateInformation(client, firmList, offer, currentProject, bondCapacity):
-        client._socketwrite_message(ujson.dumps({"command" : "update_info", "value" : {"firmList" : firmList, "offer" : offer, "currentPorject": currentProject, "bondCapacity" : bondCapacity}}))
+    def updateInformation(client, firmList, offer, currentProject, bondCapacity, count):
+        client._socket.write_message(ujson.dumps({"command" : "update_info", "value" : {"firmList" : firmList, "offer" : offer, "currentPorject": currentProject, "bondCapacity" : bondCapacity, "count": count}}))
         return
 
     
@@ -127,7 +128,7 @@ class SimulationInstance:
         #return True
         count = 0
         for offer in self.currentBid:
-            if offer != 0:
+            if offer != sys.maxint:
                 count += 1
         return count == SimulationInstance.MAX_CONNECTION
 
@@ -143,7 +144,9 @@ class SimulationInstance:
 
     def prepareToBid(self, firmList):
         self.firmList = copy.deepcopy(firmList)
-        self.currentBid = [0] * len(RealtimeSimulationSocketHandler.firmList)
+        self.currentBid = [sys.maxint] * len(RealtimeSimulationSocketHandler.firmList)
+        self.currentGAList = [0] * len(RealtimeSimulationSocketHandler.firmList)
+        self.currentProfitList = [0] * len(RealtimeSimulationSocketHandler.firmList)
         for i in range(len(self.firmList)):
             self.bondCapacity.append(self.firmList[i]["bondCapacity"])
 
@@ -167,7 +170,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
 
     instance = [SimulationInstance(0)]
     firmChance = ujson.load(open("static/data/firmChance.json"))
-    ownerList = ujson.load(open("static/data/firmChance.json"))
+    ownerList = ujson.load(open("static/data/owner.json"))
     eventList = ujson.load(open("static/data/events.json"))
     projectList = ujson.load(open("static/data/projects.json"))
     firmList = ujson.load(open("static/data/firms.json"))
@@ -181,7 +184,6 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
 
         if id != None: # make sure it is not a malicious connection
             find = RealtimeSimulationSocketHandler.instance[-1].findClient(id)
-            print RealtimeSimulationSocketHandler.instance[-1].clientLen()
             if find == None: # might because the old simulation
                 RealtimeSimulationSocketHandler.instance[-1].addClient(SimulationClient(self, id))
                 CommandManager.deleteCookie(self, id) # PROBLEM HERE TO RECONNECT
@@ -213,21 +215,23 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
             profit = value["profit"]
 
             currentInstance.currentBid[userFirm] = offer
-            currentInstance.currentGAList[usrFirm] = ga
-            currentInstance.currentProfitList[usrFirm] = profit
+            currentInstance.currentGAList[userFirm] = ga
+            currentInstance.currentProfitList[userFirm] = profit
 
-            print currentInstance.currentBid
 
             if currentInstance.isBiddingReady():
-                RealtimeSimulationSocketHandler.chooceAndProcessBidWinner() # choose winner
+                RealtimeSimulationSocketHandler.chooceAndProcessBidWinner(currentInstance) # choose winner
                 RealtimeSimulationSocketHandler.processProject(currentInstance.firmList, currentInstance.count) # update all the information
-                # send the information
-                # reset offer/currentBid
-                # send new project
+                for client in currentInstance.getAllClients():
+                    CommandManager.updateInformation(client, currentInstance.firmList, currentInstance.currentBid, currentInstance.currentProject, currentInstance.bondCapacity, currentInstance.count) # send the information
+                currentInstance.currentBid = [sys.maxint] * len(RealtimeSimulationSocketHandler.firmList) # reset offer/currentBid
+                for client in currentInstance.getAllClients():
+                    CommandManager.sendProject(client, RealtimeSimulationSocketHandler.createProject()) # send new project
 
 
     @staticmethod
-    def chooceAndProcessBidWinner(currentInstance, currentProject):
+    def chooceAndProcessBidWinner(currentInstance):
+        currentProject = currentInstance.currentProject
         offer = currentInstance.currentBid
         minIndex = offer.index(min(offer))
         currentProject["ownerID"] = minIndex
@@ -241,10 +245,10 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         # push to sum
         currentInstance.firmList[minIndex]["money"] += offer[minIndex];
         # update the bond capacity
-        currentInstance.bondCapacity[minIndex] -= RealtimeSimulationSocketHandler.getBondCost(firmList[minIndex], currentProject["estimateCost"], currentInstance.bondCapacity[minIndex]);
+        currentInstance.bondCapacity[minIndex] -= RealtimeSimulationSocketHandler.getBondCost(currentInstance.firmList[minIndex], currentProject["estimateCost"], currentInstance.bondCapacity[minIndex]);
         
         # cover some overhead
-        firmList[minIndex]["currentGA"] += currentInstance.currentGAList[minIndex];
+        currentInstance.firmList[minIndex]["currentGA"] += currentInstance.currentGAList[minIndex];
 
         currentInstance.count += 1
 
@@ -340,26 +344,26 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         # direct translation from javascript to python
         chooseFrom = ["owner", "project type", "project size"];
         eventType = random.choice(chooseFrom)
-        event = {};
+        event = {"additionalCost" : 0};
         addiitonalCost = 0;
         message = "";
         effectChance = 0;
     
         # firm events here
         if (eventType == chooseFrom[0]) : # owner impact
-            ownerChanceList = RealtimeSimulationSocketHandler.ownerList[project["owner"]["type"]];
+            ownerChanceList = RealtimeSimulationSocketHandler.ownerList[str(project["owner"]["type"])];
             effectChance = random.choice(ownerChanceList)
             
         else:
-            chanceList = firmChance[firmList[project["ownerIndex"]]["type"]]
-            targetChanceList = chanceList[project["type"]];
+            chanceList = RealtimeSimulationSocketHandler.firmChance[RealtimeSimulationSocketHandler.firmList[project["ownerIndex"]]["type"]]
+            targetChanceList = chanceList[str(project["type"])];
             effectChance = random.choice(targetChanceList)
         
         if (effectChance != 0):
             choice = "+" if (effectChance > 0) else "-"
             addiitonalCost = effectChance * project["quarterCost"];
-            eventListFromRandom = eventList[eventType];
-            if (eventListFromRandom == undefined):
+            eventListFromRandom = RealtimeSimulationSocketHandler.eventList[eventType];
+            if (eventListFromRandom == None):
                 print "error"
 
             event["message"] = random.choice(eventListFromRandom[choice])
@@ -378,14 +382,14 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
                     project["sizeImpact"] += addiitonalCost
 
             # clear event list
-            project.events = [copy.deepcopy(event)]
+            project["events"] = [copy.deepcopy(event)]
 
 
 
     @staticmethod
     def purageProjects(firmList):
         for i in range(len(firmList)):
-            if (firmList[i]["projects"].length > 0):
+            if (len(firmList[i]["projects"]) > 0):
                 for project in firmList[i]["projects"]:          
                     if (project["length"] > 0):
                         project["length"] -= 1;

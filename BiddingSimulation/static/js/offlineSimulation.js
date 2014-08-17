@@ -124,7 +124,7 @@ function randomEvent(firmIndex, project) {
 
     var chooseFrom = ["owner", "project type", "project size"];
     var eventType = chooseFrom[Math.floor(Math.random() * chooseFrom.length)];
-    var event = {};
+    var event = {"additionalCost" : 0};
     var addiitonalCost = 0;
     var message = "";
     var effectChance = 0;
@@ -363,23 +363,7 @@ $(function () {
     console.log($('.firms'));
     $('.cost').append(tableContentCost);
 
-    // start bid function
-    $('#check-income-statement').click(function () {
-        $.ajax({
-            type: "POST",
-            url: "income-statement",
-            async: false,
-            data: JSON.stringify({ "firm": firmList[userFirm], "count": count }),
-            success: function (data) {
-                var win = window.open();
-                win.URL = "You should not pass!"; // if you can see it, then great because you know you can bypass the off-line simulation. However, I will not let you cheat in the real-time simulation!
-                win.document.write(data);
-            },
-            error: function () {
-                alert("error");
-            }
-        })
-    })
+
 
     // start bid function
     $('#bid').click(function () {

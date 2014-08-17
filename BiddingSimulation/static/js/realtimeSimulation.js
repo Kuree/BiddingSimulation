@@ -82,6 +82,15 @@ function onMessageReceived(evt) {
                 bondCapacity = value["bondCapacity"]
                 console.log(bondCapacity);
                 break;
+            case "update_info":
+                firmList = value["firmList"]
+                offer = value["offer"]
+                bondCapacity = value["bondCapacity"]
+                currentProject = value["currentPorject"];
+                console.log(bondCapacity);
+                loading.hide();
+                getProgressReport();
+                break;
             default:
 
         }

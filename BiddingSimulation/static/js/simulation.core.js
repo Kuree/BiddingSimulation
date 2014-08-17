@@ -221,24 +221,63 @@ function showFirmInfo() {
     
 }
 
+
+function validateInput() {
+    var validation = true;
+    if (!parseFloat($('#inputGA').val())) {
+        $("#inputGA").css("border", "2px solid red");
+        validation = false;
+    } else {
+        $("#inputGA").css("border", "");
+    }
+    if (!parseFloat($('#inputProfit').val())) {
+        $("#inputProfit").css("border", "2px solid red");
+        validation = false;
+    } else {
+        $("#inputProfit").css("border", "");
+    }
+    $("#bid").prop("disabled", !validation);
+}
+
 $(function () {
 
     // hook up the bid total form
     $('#inputProfit').change(function () {
         updateTotalCost();
+        validateInput();
     });
 
     $('#inputProfit').keyup(function (e) {
         updateTotalCost();
+        validateInput();
     });
 
     $('#inputGA').change(function () {
         updateTotalCost();
+        validateInput();
     });
 
     $('#inputGA').keyup(function (e) {
         updateTotalCost();
+        validateInput();
     });
 
+    // start bid function
+    $('#check-income-statement').click(function () {
+        $.ajax({
+            type: "POST",
+            url: "income-statement",
+            async: false,
+            data: JSON.stringify({ "firm": firmList[userFirm], "count": count }),
+            success: function (data) {
+                var win = window.open();
+                win.URL = "You should not pass!"; // if you can see it, then great because you know you can bypass the off-line simulation. However, I will not let you cheat in the real-time simulation!
+                win.document.write(data);
+            },
+            error: function () {
+                alert("error");
+            }
+        })
+    })
     
 });
