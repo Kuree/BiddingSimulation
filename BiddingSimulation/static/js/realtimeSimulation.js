@@ -1,4 +1,19 @@
-﻿String.prototype.hashCode = function () {
+﻿connection = undefined
+var loading;
+loading = loading ||  (function () {
+    var pleaseWaitDiv = $('<div class="modal" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h1>Waiting For Other Users...</h1></div><div class="modal-body"><div class="progress progress-striped active"><div class="progress-bar" style="width: 100%;"></div></div></div></div></div></div>');
+    return {
+        show: function () {
+            pleaseWaitDiv.modal('show');
+        },
+        hide: function () {
+            pleaseWaitDiv.modal('hide');
+        },
+
+    };
+})();
+
+String.prototype.hashCode = function () {
     var hash = 0, i, chr, len;
     if (this.length == 0) return hash;
     for (i = 0, len = this.length; i < len; i++) {
@@ -10,19 +25,22 @@
 };
 
 $(function () {
+    loading.show()
     var id = $.cookie("userID");
     if (id == undefined) {
         id = ((Math.floor(Date.now())).toString() + (Math.floor(Math.random() * 2000000)).toString()).hashCode();
     }
-    var url = document.domain;
+    console.log(id)
 
+    var url = document.domain;
     connection = new WebSocket("ws://" + url + "/realtimeSocket?id=" + id);
     connection.onmessage = onMessageReceived;
 
 
-    $('#send').click(function () {
-        connection.send($('#inputText').val());
-    });
+    // start bid function
+    $('#bid').click(function () {
+        sendBid()
+    })
 });
 
 
@@ -42,20 +60,27 @@ function onMessageReceived(evt) {
                 console.log("remove cookie " + result);
                 break;
             case "debug":
-                console.log("this is debug");
+                console.log(value);
                 break;
             case "project":
                 currentProject = value;
                 setupUI()
+                showFirmInfo()
                 console.log("this is project");
                 break;
             case "connection_ready":
-                console.log("connect is ready");
+                if (!value) {
+                    loading.show();
+                } else {
+                    loading.hide();
+                }
+                console.log("game is ready " + value)
                 break;
             case "assign_firm":
                 firmList = value["firmList"]
                 userFirm = value["userFirm"]
-                console.log("assign firm list");
+                bondCapacity = value["bondCapacity"]
+                console.log(bondCapacity);
                 break;
             default:
 
@@ -115,3 +140,20 @@ function setupUI() {
     console.log($('.firms'));
     $('.cost').append(tableContentCost);
 }
+
+
+function sendBid() {
+    if (connection != undefined) {
+        var offer = parseFloat($('#totalCost').val());
+        var profit = parseFloat($('#totalCost').val());
+        var ga = parseFloat($('#totalCost').val());
+        connection.send(JSON.stringify({
+            "command": "send_offer",
+            "value": { "userFirm": userFirm, "offer": offer, "profit" : profit, "ga" : ga }
+        }))
+
+        loading.show();
+    }
+}
+
+

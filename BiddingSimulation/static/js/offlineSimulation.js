@@ -70,17 +70,11 @@ function startBid() {
     }
 
     var minIndex = offer.indexOf(Math.min.apply(Math, offer));
-    currentProject["ownerIndex"] = minIndex;
     currentProject["offer"] = offer[minIndex];
     currentProject["profit"] = profit * directCost;
     currentProject["gaOverhead"] = ga;
 
-    var message = "";
-    if (minIndex == userFirm) {
-        currentProject["isCurrentUserOwned"] = true;
-    } else {
-        currentProject["isCurrentUserOwned"] = false;
-    }
+    currentProject["ownerID"] = minIndex
 
    
 
@@ -100,7 +94,7 @@ function startBid() {
     bondCapacity[minIndex] -= getBondCost(firmList[minIndex], directCost, bondCapacity[minIndex]);
 
     // cover some overhead
-    var overhead = parseFloat(minIndex == userFirm ? $('#inputGA').val() : 25);
+    var overhead = parseFloat(minIndex == userFirm ? $('#inputGA').val() : 30);
     firmList[minIndex]["currentGA"] += overhead;
 
     
@@ -141,7 +135,7 @@ function randomEvent(firmIndex, project) {
         effectChance = ownerChanceList[Math.floor(Math.random() * ownerChanceList.length)];
             
     } else { // right now it's only for project type
-        var chanceList = firmChance[firmList[project["ownerIndex"]]["type"]]
+        var chanceList = firmChance[firmList[project["ownerID"]]["type"]]
         var targetChanceList = chanceList[project["type"]];
         effectChance = targetChanceList[Math.floor(Math.random() * targetChanceList.length)];
     }
@@ -180,10 +174,6 @@ function randomEvent(firmIndex, project) {
 }
 
 
-
-
-
-
 function processProjects() {
     $.each(firmList, function (i) {
         if (firmList[i]["projects"].length > 0) {
@@ -197,11 +187,13 @@ function processProjects() {
 
     purageProejcts();
 
-    getProgressReport();
-
     if (count != 1 && count % 4 == 1) {
         processGA();
     }
+
+    getProgressReport();
+
+
 
 }
 
@@ -226,8 +218,8 @@ function createProject() {
     var projectDescription = rawProject["Project Description"]; 
 
     var result = {
-        "quarterCost": cost / length, "length": length, "owner": owner, "number": count, "events": [], "isCurrentUserOwned": false,
-        "totalLength": length, "totalCost": cost, "ownerIndex": -1, "estimateCost": cost, "type": projectType, "size": projectSize, "description": projectDescription,
+        "quarterCost": cost / length, "length": length, "owner": owner, "number": count, "events": [], "ownerID": 0,
+        "totalLength": length, "totalCost": cost, "estimateCost": cost, "type": projectType, "size": projectSize, "description": projectDescription,
         "gaOverhead": 0, "isAlive": true, "offer": 0, "profit": 0, "sizeImpact": 0, "typeImpact": 0, "ownerImpact": 0
     };
     return result;
@@ -239,7 +231,7 @@ function purageProejcts() {
             $.each(firmList[i]["projects"], function (j, project) {                
                 if (project["length"] > 0) {
                     project["length"] -= 1;
-                    firmList[project["ownerIndex"]]["money"] -= project["quarterCost"]; // remove some part of money
+                    firmList[project["ownerID"]]["money"] -= project["quarterCost"]; // remove some part of money
                     project["quarterCost"] = project["estimateCost"] / project["totalLength"]; // reset the quarterCost
                 } 
             })

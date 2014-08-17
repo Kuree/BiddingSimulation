@@ -1,7 +1,6 @@
 ﻿// count
 count = 1;
-// should update the table
-shouldUpdate = true;
+
 // firm list
 firmList = [];
 
@@ -152,7 +151,7 @@ function getProgressReport() {
 
     message += "<h4>Bidding result Report</h4>";
 
-    if (currentProject["isCurrentUserOwned"]) {
+    if (currentProject["ownerID"] == userFirm) {
         message += "<p>You got the project</p>";
     } else {
         message += "<p>You didn't get the project</p>";
