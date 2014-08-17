@@ -212,7 +212,7 @@ function resetGAOverhead() {
 }
 
 function createOwner(ownerClass) {
-    return { "name": faker.Name.findName(), "email": faker.Internet.email(), "ui": faker.Image.avatar(), "type": ownerClass, "company": faker.Company.companyName() };
+    return { "name": faker.Name.findName(), "email": faker.Internet.email(), "ui": "http://lorempixel.com/200/200/business/", "type": ownerClass, "company": faker.Company.companyName() };
 }
 
 function createProject() {
