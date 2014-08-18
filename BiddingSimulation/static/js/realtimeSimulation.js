@@ -1,4 +1,9 @@
-﻿connection = undefined
+﻿var connection = undefined
+
+var timeRemaining = 5;
+var timerID = 0;
+var hasSubmit = false;
+
 var loading;
 loading = loading ||  (function () {
     var pleaseWaitDiv = $('<div class="modal" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h1>Waiting For Other Users...</h1></div><div class="modal-body"><div class="progress progress-striped active"><div class="progress-bar" style="width: 100%;"></div></div></div></div></div></div>');
@@ -48,25 +53,24 @@ function onMessageReceived(evt) {
     var data = JSON.parse(evt.data)
 
     if (data["command"] != undefined) {
-        console.log(data["value"])
         var value = data["value"]
         switch (data["command"]) {
             case "set_cookie":
-                console.log("set cookie");
-                $.cookie("userID", value)
+                $.cookie("userID", value);
                 break;
             case "remove_cookie":
                 var result = $.removeCookie('userID');
-                console.log("remove cookie " + result);
                 break;
             case "debug":
                 console.log(value);
                 break;
             case "project":
                 currentProject = value;
-                setupUI()
-                showFirmInfo()
-                console.log("this is project");
+                setupUI();
+                showFirmInfo();
+                timeRemaining = 5;
+                hasSubmit = false;
+                startTimer();
                 break;
             case "connection_ready":
                 if (!value) {
@@ -74,20 +78,20 @@ function onMessageReceived(evt) {
                 } else {
                     loading.hide();
                 }
-                console.log("game is ready " + value)
                 break;
             case "assign_firm":
-                firmList = value["firmList"]
-                userFirm = value["userFirm"]
-                bondCapacity = value["bondCapacity"]
-                console.log(bondCapacity);
+                firmList = value["firmList"];
+                userFirm = value["userFirm"];
+                bondCapacity = value["bondCapacity"];
+                setupTable();
                 break;
             case "update_info":
-                firmList = value["firmList"]
-                offer = value["offer"]
-                bondCapacity = value["bondCapacity"]
+                firmList = value["firmList"];
+                offer = value["offer"];
+                bondCapacity = value["bondCapacity"];
                 currentProject = value["currentPorject"];
-                console.log(bondCapacity);
+                count = value["count"];
+                updateUI();
                 loading.hide();
                 getProgressReport();
                 break;
@@ -96,6 +100,20 @@ function onMessageReceived(evt) {
         }
     }
 
+}
+
+function startTimer() {
+    timerID = setInterval(function () {
+        if (hasSubmit) { clearInterval(timerID);}
+        if (timeRemaining <= 1) {
+            if (!hasSubmit) {
+                sendBid();
+            }
+            clearInterval(timerID);
+        }
+        timeRemaining -= 1
+        $('#timer').text(timeRemaining + " seconds left");
+    }, 1000)
 }
 
 function setupUI() {
@@ -126,7 +144,9 @@ function setupUI() {
     // show the G&A
     $('#TotalGA').val(firmList[userFirm]["GA"]);
 
+}
 
+function setupTable() {
     // initialize the firm list in UI
     var tableContent = "<thead>\
                                 <tr>\
@@ -146,21 +166,20 @@ function setupUI() {
                             </thead>";
 
     $('.firms').append(tableContent);
-    console.log($('.firms'));
     $('.cost').append(tableContentCost);
 }
-
 
 function sendBid() {
     if (connection != undefined) {
         var offer = parseFloat($('#totalCost').val());
+        if (!offer) { offer = 0xfffffff;} // give a max number!
         var profit = parseFloat($('#totalCost').val());
         var ga = parseFloat($('#totalCost').val());
         connection.send(JSON.stringify({
             "command": "send_offer",
             "value": { "userFirm": userFirm, "offer": offer, "profit" : profit, "ga" : ga }
         }))
-
+        hasSubmit = true;
         loading.show();
     }
 }

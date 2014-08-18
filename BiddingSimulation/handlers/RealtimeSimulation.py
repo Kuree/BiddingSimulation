@@ -18,7 +18,8 @@ import sys
 
 
 #problems right now:
-#    1. after refresh, the connection won't be consistent
+#    1. after refresh, the connection won't be consistent.
+#    2. If the users modify the local userForm variable, the entire system will be screwed up.
 
 
 class CommandManager:
@@ -63,7 +64,7 @@ class CommandManager:
 
 class SimulationInstance:
 
-    MAX_CONNECTION = 2
+    MAX_CONNECTION = 1
     MAX_BID = 41
 
     def __init__(self, id):
@@ -225,8 +226,9 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
                 for client in currentInstance.getAllClients():
                     CommandManager.updateInformation(client, currentInstance.firmList, currentInstance.currentBid, currentInstance.currentProject, currentInstance.bondCapacity, currentInstance.count) # send the information
                 currentInstance.currentBid = [sys.maxint] * len(RealtimeSimulationSocketHandler.firmList) # reset offer/currentBid
+                currentInstance.currentProject = RealtimeSimulationSocketHandler.createProject()
                 for client in currentInstance.getAllClients():
-                    CommandManager.sendProject(client, RealtimeSimulationSocketHandler.createProject()) # send new project
+                    CommandManager.sendProject(client, currentInstance.currentProject) # send new project
 
 
     @staticmethod
@@ -335,7 +337,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         RealtimeSimulationSocketHandler.purageProjects(firmList)
 
         if count != 1 and count % 4 == 1:
-            RealtimeSimulationSocketHandler.processGA()
+            RealtimeSimulationSocketHandler.processGA(firmList)
         return
 
 
@@ -389,8 +391,8 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
     @staticmethod
     def purageProjects(firmList):
         for i in range(len(firmList)):
-            if (len(firmList[i]["projects"]) > 0):
-                for project in firmList[i]["projects"]:          
+            if len(firmList[i]["projects"]) > 0:
+                for project in firmList[i]["projects"]:
                     if (project["length"] > 0):
                         project["length"] -= 1;
                         firmList[project["ownerIndex"]]["money"] -= project["quarterCost"] # remove some part of money

@@ -33,6 +33,7 @@ firmChance = {};
 
 QUARTER_COUNT = 4;
 
+
 // function to update total cost
 function updateTotalCost() {
     var cost = parseFloat($('#directCost').val());
@@ -173,6 +174,7 @@ function getProgressReport() {
                                 </tr>\
                             </thead>\
                             <tbody>";
+        console.log(firmList[userFirm]["projects"]);
         $.each(firmList[userFirm]["projects"], function (i, project) {
             if (project["length"] > 0) {
                 message += "<tr><td>" + project["number"] + "</td>";
