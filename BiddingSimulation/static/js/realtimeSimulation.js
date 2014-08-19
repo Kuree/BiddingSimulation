@@ -1,10 +1,13 @@
 ﻿var connection = undefined
 
-var timeRemaining = 5;
+var timeRemaining = 20;
 var timerID = 0;
 var hasSubmit = false;
 
+
 var loading;
+var id = 0;
+
 loading = loading ||  (function () {
     var pleaseWaitDiv = $('<div class="modal" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h1>Waiting For Other Users...</h1></div><div class="modal-body"><div class="progress progress-striped active"><div class="progress-bar" style="width: 100%;"></div></div></div></div></div></div>');
     return {
@@ -31,7 +34,11 @@ String.prototype.hashCode = function () {
 
 $(function () {
     loading.show()
-    var id = $.cookie("userID");
+
+    cookieTimeRemaining = $.cookie("timeRemaining");
+    if (cookieTimeRemaining) { timeRemaining = cookieTimeRemaining;}
+
+    id = $.cookie("userID");
     if (id == undefined) {
         id = ((Math.floor(Date.now())).toString() + (Math.floor(Math.random() * 2000000)).toString()).hashCode();
     }
@@ -68,9 +75,10 @@ function onMessageReceived(evt) {
                 currentProject = value;
                 setupUI();
                 showFirmInfo();
-                timeRemaining = 5;
+                timeRemaining = 10;
                 hasSubmit = false;
                 startTimer();
+                loading.hide();
                 break;
             case "connection_ready":
                 if (!value) {
@@ -103,6 +111,8 @@ function onMessageReceived(evt) {
 }
 
 function startTimer() {
+    $.cookie("timeRemaining", timeRemaining);
+    if (timerID != 0) { clearInterval(timerID); }
     timerID = setInterval(function () {
         if (hasSubmit) { clearInterval(timerID);}
         if (timeRemaining <= 1) {
@@ -110,8 +120,10 @@ function startTimer() {
                 sendBid();
             }
             clearInterval(timerID);
+            timerID = 0;
         }
         timeRemaining -= 1
+        $.cookie("timeRemaining", timeRemaining);
         $('#timer').text(timeRemaining + " seconds left");
     }, 1000)
 }
@@ -177,7 +189,7 @@ function sendBid() {
         var ga = parseFloat($('#totalCost').val());
         connection.send(JSON.stringify({
             "command": "send_offer",
-            "value": { "userFirm": userFirm, "offer": offer, "profit" : profit, "ga" : ga }
+            "value": { "id": id, "offer": offer, "profit" : profit, "ga" : ga }
         }))
         hasSubmit = true;
         loading.show();

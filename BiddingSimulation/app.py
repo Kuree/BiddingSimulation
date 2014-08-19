@@ -5,7 +5,7 @@ import os
 
 
 if __name__ == "__main__":
-    settings = { "static_path" : os.path.join(os.path.dirname(__file__), "static")}
+    settings = { "static_path" : os.path.join(os.path.dirname(__file__), "static"), "login_url": "/admin-login"}
     application = tornado.web.Application([
         (r"/", MainHandler), 
         (r"/realtime-simulation", RealtimeSimulationHandler),
@@ -15,6 +15,7 @@ if __name__ == "__main__":
         (r"/contact", ContactHandler),
         (r'/(favicon.ico)', tornado.web.StaticFileHandler, {"path": "favicon.ico"}),
         (r"/data", DataHandler),
+        (r"/admin-login", AdminLoginHandler),
         (r"/admin", AdminHandler),
         (r"/income-statement", IncomeStatementHandler),
         (r"/details", DetailsHandler),
