@@ -15,7 +15,7 @@ class AdminHandler(tornado.web.RequestHandler):
 
     def initialize(self):
         self.TEMPLATE_FILE = "admin.html"
-        self.templateLoader = FileSystemLoader( searchpath="templates/" )
+        self.templateLoader = FileSystemLoader( searchpath="templates/")
         self.templateEnv = Environment( loader=self.templateLoader )
         self.template = self.templateEnv.get_template(self.TEMPLATE_FILE)
 

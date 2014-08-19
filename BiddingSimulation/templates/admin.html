@@ -1,28 +1,50 @@
 ﻿<!{% extends "base.html" %}
-<link href="../static/css/bootstrap.min.css" rel="stylesheet">
-<!--will be removed-->
+{% block javascript%}
+<script src="../static/js/bootbox.min.js"></script>
+<script src="../static/js/admin.js"></script>
+{% endblock%}
 {% block content %}
 <div class="container">
     <div class="row clearfix">
         <div class="col-md-12">
             <div class="btn-group">
-                <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-align-left"></em> Left</button> <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-align-center"></em> Center</button> <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-align-right"></em> Right</button> <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-align-justify"></em> Justify</button>
+                <button class="btn btn-default" type="button">Create An Instance</button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Choose Instance<span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                    </ul>
+                </div>
+                <button class="btn btn-danger" type="button">Delete Current Instance</button>
             </div>
         </div>
     </div>
+    <br />
     <div class="row clearfix">
         <div class="col-md-12">
             <table class="table table-hover">
                 <thead>
-                   
+                    <tr>
+                        <th>IP Address</th>
+                        <th>Firm ID</th>
+                        <th>Project #</th>
+                        <th>Profit %</th>
+                        <th>G&A %</th>
+                        <th>Offer</th>
+                    </tr>
                 </thead>
-                <tbody>
-                  
-                </tbody>
+                <tbody></tbody>
             </table>
+            <hr />
             <table class="table table-hover">
                 <thead>
-
+                    <tr>
+                        <th>IP Address</th>
+                        <th>Firm ID</th>
+                        <th>Active Projects</th>
+                        <th>Bond Capacity</th>
+                        <th>Current Money</th>
+                    </tr>
                 </thead>
                 <tbody></tbody>
             </table>

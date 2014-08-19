@@ -21,6 +21,7 @@ import sys
 #    1. after refresh, the connection won't be consistent. Almost fixed
 #       However, the time remaining will be messed up.
 #    2. If the users modify the local userForm variable, the entire system will be screwed up.
+#       Bug fixed
 
 
 class CommandManager:
@@ -69,6 +70,11 @@ class CommandManager:
     @staticmethod
     def sendProjectFromSocket(socket, project):
         socket.write_message(ujson.dumps({"command" : "project", "value" : project}))
+        return
+
+    @staticmethod
+    def sendAdminMessage(socket, command, message):
+        socket.write_message(ujson.dumps({"command" : command, "value" : message}))
         return
 
 class SimulationInstance:
@@ -172,7 +178,7 @@ class SimulationClient:
 
 class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):   
 
-    instance = [SimulationInstance(0)]
+    instanceList = [SimulationInstance(0)]
     firmChance = ujson.load(open("static/data/firmChance.json"))
     ownerList = ujson.load(open("static/data/owner.json"))
     eventList = ujson.load(open("static/data/events.json"))
@@ -191,7 +197,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         else:
             self.id = int(rawID)
         id = self.id
-        currentInstance = RealtimeSimulationSocketHandler.instance[-1]
+        currentInstance = RealtimeSimulationSocketHandler.instanceList[-1]
         if currentInstance.isConnectionReady(): # no more connection
             self.close()
             return
@@ -229,7 +235,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         data = ujson.loads(message)
         command = data["command"]
         value = data["value"]
-        currentInstance = RealtimeSimulationSocketHandler.instance[-1]
+        currentInstance = RealtimeSimulationSocketHandler.instanceList[-1]
         if command == "send_offer":
             userFirm = currentInstance.firmIdDictionary[int(value["id"])]
             offer = value["offer"]
@@ -251,7 +257,48 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
                 currentInstance.currentProject = RealtimeSimulationSocketHandler.createProject()
                 for client in currentInstance.getAllClients():
                     CommandManager.sendProjectFromClient(client, currentInstance.currentProject) # send new project
+        elif command == "get_instance_id_list":
+            if self.get_secure_cookie("admin") == None: # nope
+                return
+            result = []
+            for instance in RealtimeSimulationSocketHandler.instanceList:
+                result.append(instance.id)
+            CommandManager.sendAdminMessage(self, "instance_id_list", result)
+        elif command == "get_instance_info_by_id":
+            if self.get_secure_cookie("admin") == None: # nope
+                return
+            id = value["id"]
+            for instance in RealtimeSimulationSocketHandler.instanceList:
+                if instance.id == id:
+                     CommandManager.sendAdminMessage(self, "instance", {"firmList" : instance.firmList, "firmIdDictionary" :instance.firmIdDictionary, "bondCapacity" : instance.bondCapacity, "offer" : instance.currentBid})
 
+            CommandManager.sendAdminMessage(self, "instance", {}) # nothing found
+        elif command == "create_instance":
+            if self.get_secure_cookie("admin") == None: # nope
+                return
+            id = value["id"]
+
+            # check if the instance exits
+            if RealtimeSimulationSocketHandler.findInstanceById(id) != None:
+                CommandManager.sendAdminMessage(self, {"error": "Instance ID already exists"})
+                return
+
+            RealtimeSimulationSocketHandler.instanceList.append(SimulationInstance(id))
+
+        elif command == "delete_instance":
+            if self.get_secure_cookie("admin") == None: # nope
+                return
+            instance = findInstanceById(value["id"])
+
+            if instance != None:
+                RealtimeSimulationSocketHandler.instanceList.remove(instance)
+
+    @staticmethod
+    def findInstanceById(id):
+        for instance in RealtimeSimulationSocketHandler.instanceList:
+                if instance.id == id:
+                    return instance
+        return None
 
     @staticmethod
     def chooceAndProcessBidWinner(currentInstance):
@@ -287,13 +334,13 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         
 
     def on_close(self):
-        RealtimeSimulationSocketHandler.instance[-1].removeClient(self.id)
+        RealtimeSimulationSocketHandler.instanceList[-1].removeClient(self.id)
         pass
 
     def assignFirms(self):
         firmIDList = range(len(RealtimeSimulationSocketHandler.firmList)) # this is raw firm list
         random.shuffle(firmIDList)
-        currentInstance = RealtimeSimulationSocketHandler.instance[-1]
+        currentInstance = RealtimeSimulationSocketHandler.instanceList[-1]
         
         clientList = currentInstance.getNoneAdminClients()        
         currentInstance.prepareToBid(RealtimeSimulationSocketHandler.firmList)
@@ -304,24 +351,24 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         pass
 
     def sendProject(self):
-        clientList = RealtimeSimulationSocketHandler.instance[-1].getAllClients()
-        RealtimeSimulationSocketHandler.instance[-1].currentProject = RealtimeSimulationSocketHandler.createProject()
+        clientList = RealtimeSimulationSocketHandler.instanceList[-1].getAllClients()
+        RealtimeSimulationSocketHandler.instanceList[-1].currentProject = RealtimeSimulationSocketHandler.createProject()
         for client in clientList:
-            CommandManager.sendProjectFromClient(client, RealtimeSimulationSocketHandler.instance[-1].currentProject)
+            CommandManager.sendProjectFromClient(client, RealtimeSimulationSocketHandler.instanceList[-1].currentProject)
 
     def sendConnectionReady(self):
-        clientList = RealtimeSimulationSocketHandler.instance[-1].getAllClients()
+        clientList = RealtimeSimulationSocketHandler.instanceList[-1].getAllClients()
         for client in clientList:
             CommandManager.sendReady(client, True)
 
     def sendToWait(self):
-        clientList = RealtimeSimulationSocketHandler.instance[-1].getNoneAdminClients()
+        clientList = RealtimeSimulationSocketHandler.instanceList[-1].getNoneAdminClients()
         for client in clientList:
             CommandManager.sendReady(client, False)
 
     def sendConnectionNotReady(self):
         '''Need to pause the game because someone is offline'''
-        clientList = RealtimeSimulationSocketHandler.instance[-1].getAllClients()
+        clientList = RealtimeSimulationSocketHandler.instanceList[-1].getAllClients()
         for client in clientList:
             CommandManager.sendReady(client, False)
 
@@ -334,7 +381,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         owner = RealtimeSimulationSocketHandler.createOwner(rawProject["Owner Class"]);
         projectSize = rawProject["Project Size"];
         projectDescription = rawProject["Project Description"]; 
-        count = RealtimeSimulationSocketHandler.instance[-1].count        
+        count = RealtimeSimulationSocketHandler.instanceList[-1].count        
         
         result = {
         "quarterCost": cost / length, "length": length, "owner": owner, "number": count, "events": [], "ownerID": 0,
