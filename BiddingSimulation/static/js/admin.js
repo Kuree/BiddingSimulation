@@ -1,4 +1,7 @@
 ﻿var connection = undefined
+var count = 1
+var currentProject = {}
+var bondCapacity = []
 
 $(function () {
     var url = document.domain;
@@ -17,18 +20,14 @@ function onMessageReceived(evt) {
                 break;
             case "project":
                 currentProject = value;
-                setupUI();
-                showFirmInfo();
-                timeRemaining = 10;
-                hasSubmit = false;
-                startTimer();
-                loading.hide();
                 break;
             case "assign_firm":
                 firmList = value["firmList"];
-                userFirm = value["userFirm"];
                 bondCapacity = value["bondCapacity"];
-                setupTable();
+                break;
+            case "send_offer":
+                firmList = value["firmList"];
+                bondCapacity = value["bondCapacity"];
                 break;
             case "update_info":
                 firmList = value["firmList"];
@@ -36,12 +35,9 @@ function onMessageReceived(evt) {
                 bondCapacity = value["bondCapacity"];
                 currentProject = value["currentPorject"];
                 count = value["count"];
-                updateUI();
-                loading.hide();
-                getProgressReport();
                 break;
             default:
-
+                break;
         }
     }
 

@@ -3,7 +3,7 @@ from  jinja2 import Environment, FileSystemLoader
 
 class ContactHandler(tornado.web.RequestHandler):
     def get(self):
-        html_output = self.template.render(title="Contact", ContentName="'Ray Bucknell")
+        html_output = self.template.render(title="Contact Us", ContentName="Contact Us")
         self.write(html_output)
         return
 

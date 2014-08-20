@@ -20,6 +20,7 @@ import sys
 #problems right now:
 #    1. after refresh, the connection won't be consistent. Almost fixed
 #       However, the time remaining will be messed up.
+#       Need to store the time data on the server side and send data via socket
 #    2. If the users modify the local userForm variable, the entire system will be screwed up.
 #       Bug fixed
 
@@ -81,6 +82,7 @@ class SimulationInstance:
 
     MAX_CONNECTION = 4
     MAX_BID = 41
+
 
     def __init__(self, id):
         self.__clients = set()
@@ -164,6 +166,12 @@ class SimulationInstance:
     def clientLen(self):
         return len(self.__clients)
 
+    def getAdminSocket(self):
+        for client in self.__clients:
+            if client.id == "admin":
+                return client._socket
+        return None
+
 
 class SimulationClient:
     def __init__(self, socket, id):
@@ -189,6 +197,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         if len(RealtimeSimulationSocketHandler.instanceList) < 1:
             self.close()
             return
+
         rawID = self.get_argument("id")
         if not rawID.isdigit(): # might a admin connection
             admin = self.get_secure_cookie("admin")
@@ -250,6 +259,9 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
             currentInstance.currentGAList[userFirm] = ga
             currentInstance.currentProfitList[userFirm] = profit
 
+            adminSocket = currentInstance.getAdminSocket()
+            if adminSocket != None:
+                CommandManager.sendAdminMessage(CommandManager, "send_offer", {"userFirm" : userFirm, "offer" : offer, "ga" : ga, "profit": profit})
 
             if currentInstance.isBiddingReady():
                 RealtimeSimulationSocketHandler.chooceAndProcessBidWinner(currentInstance) # choose winner
@@ -260,6 +272,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
                 currentInstance.currentProject = RealtimeSimulationSocketHandler.createProject()
                 for client in currentInstance.getAllClients():
                     CommandManager.sendProjectFromClient(client, currentInstance.currentProject) # send new project
+
         elif command == "get_instance_id_list":
             if self.get_secure_cookie("admin") == None: # nope
                 return
