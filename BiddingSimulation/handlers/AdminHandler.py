@@ -21,6 +21,10 @@ class AdminHandler(tornado.web.RequestHandler):
 
 class AdminLoginHandler(tornado.web.RequestHandler):
     def get(self):
+        if self.get_secure_cookie("admin") != None:
+            print "not none"
+            self.redirect("/admin")
+            return
         html_output = self.template.render(title="Admin Login", ContentName="Please Login")
         self.write(html_output)
         return

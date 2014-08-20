@@ -79,7 +79,7 @@ class CommandManager:
 
 class SimulationInstance:
 
-    MAX_CONNECTION = 2
+    MAX_CONNECTION = 1
     MAX_BID = 41
 
     def __init__(self, id):
@@ -483,7 +483,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
 
 class RealtimeSimulationHandler(tornado.web.RequestHandler):
     def get(self):
-        html_output = self.template.render(title="Realtime Simulation", ContentName="This hasn't been implemented yet")
+        html_output = self.template.render(title="Realtime Simulation", ContentName="This hasn't been implemented yet", showTimer = True)
         self.write(html_output)
         return
 

@@ -174,7 +174,9 @@ function getProgressReport() {
                                 </tr>\
                             </thead>\
                             <tbody>";
-        console.log(firmList[userFirm]["projects"]);
+        if (firmList[userFirm]["projects"].length == 0) {
+            message += "<p>No project yet</p>"
+        }
         $.each(firmList[userFirm]["projects"], function (i, project) {
             if (project["length"] > 0) {
                 message += "<tr><td>" + project["number"] + "</td>";
@@ -202,7 +204,8 @@ function getProgressReport() {
         buttons: {
             main: {
                 label: "Okay",
-                className: "btn-default"
+                className: "btn-default",
+                callback: dialogFinished
             }
         }
     });
@@ -239,6 +242,10 @@ function validateInput() {
         $("#inputProfit").css("border", "");
     }
     $("#bid").prop("disabled", !validation);
+}
+
+function dialogFinished() {
+
 }
 
 $(function () {

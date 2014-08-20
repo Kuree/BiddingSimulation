@@ -1,6 +1,6 @@
 ﻿var connection = undefined
 
-var timeRemaining = 20;
+var timeRemaining = 180;
 var timerID = 0;
 var hasSubmit = false;
 
@@ -55,6 +55,10 @@ $(function () {
     })
 });
 
+var dialogFinished = (function(){
+    var original = dialogFinished;
+    startTimer();
+})
 
 function onMessageReceived(evt) {
     var data = JSON.parse(evt.data)
@@ -75,9 +79,7 @@ function onMessageReceived(evt) {
                 currentProject = value;
                 setupUI();
                 showFirmInfo();
-                timeRemaining = 10;
                 hasSubmit = false;
-                startTimer();
                 loading.hide();
                 break;
             case "connection_ready":
@@ -92,6 +94,7 @@ function onMessageReceived(evt) {
                 userFirm = value["userFirm"];
                 bondCapacity = value["bondCapacity"];
                 setupTable();
+                startTimer();
                 break;
             case "update_info":
                 firmList = value["firmList"];
@@ -111,7 +114,7 @@ function onMessageReceived(evt) {
 }
 
 function startTimer() {
-    $.cookie("timeRemaining", timeRemaining);
+    timeRemaining = 180;
     if (timerID != 0) { clearInterval(timerID); }
     timerID = setInterval(function () {
         if (hasSubmit) { clearInterval(timerID);}
@@ -124,7 +127,7 @@ function startTimer() {
         }
         timeRemaining -= 1
         $.cookie("timeRemaining", timeRemaining);
-        $('#timer').text(timeRemaining + " seconds left");
+        $('#timer').text(timeRemaining + " Seconds Left");
     }, 1000)
 }
 

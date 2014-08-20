@@ -256,7 +256,36 @@ function showrWinner() {
     }
 }
 
+function setUserFirm(i) {
+    console.log(i);
+    userFirm = i;
+    // show the G&A
+    $('#TotalGA').val(firmList[userFirm]["GA"]);
+}
 
+function addFirmProperties() {
+    var result = "";
+    $.each(firmList, function(i, firm){
+
+        result += "<tr><td>" + (i+1) + "</td>";
+        result += "<td>" + firm["bondCapacity"] + "</td>";
+        result += "<td>" + firm["GA"] + "</td>";
+        result += "<td>" + (firm["bondCapacity"] - firm["bondLower"]) + "</td>";
+        result += "<td>" + firm["bondCostRatioBelow"] + "</td>";
+        result += "<td>" + firm["bondCostRatioClose"] + "</td>";
+        result += "<td>" + firm["bondCostRatioAbove"] + "</td>";
+        result += "<td>" + firm["type"] + "</td>";
+        result += "</tr>"
+    })
+
+    return result;
+}
+
+function initialize() {
+    update();
+    showFirmInfo();
+    dialogFinished();
+}
 
 $(function () {
 
@@ -319,26 +348,53 @@ $(function () {
     });
 
 
+
+    var message = "<h4>Please choose a firm</h4>";
+    message += "<div class=\"btn-group\">";
+    for(var i = 0; i < firmList.length; i++){
+        message += "<button class=\"btn btn-default\" type=\"button\" onclick=\"setUserFirm(" + i + ")\">Firm " + (i+1).toString() + "</button>";
+    }
+    message += "</div>";
+
+    message += "<h4>Firm Characteristics</h4>\
+                        <table class='table'>\
+                            <thead>\
+                                <tr>\
+                                    <th>Firm #</th>\
+                                    <th>Bonding Capacity</th>\
+                                    <th>Annual G&A Overhead</th>\
+                                    <th>Lower Bond Limit</th>\
+                                    <th>Bond Rate for Below Bond Limit</th>\
+                                    <th>Bond Rate for Above Lower Bond Limit and Below Bond Capacity</th>\
+                                    <th>Bond Rate for Above Bond Capacity</th>\
+                                    <th>Company Specialty</th>\
+                                </tr>\
+                            </thead>\
+                            <tbody>";
+    
+
+
+    message += addFirmProperties();
+    message += "</tbody></table>";
+
+
     // randomly choose a firm
-    userFirm = Math.floor((Math.random() * firmList.length));
     bootbox.dialog({
-        message: "You are now firm " + (userFirm + 1).toString(),
-        title: "Hello",
+        message: message,
+        title: "Please Choose Your Firm",
         buttons: {
             main: {
                 label: "Okay",
-                className: "btn-default"
+                className: "btn-default",
+                callback: initialize
             }
         }
     });
 
-
-    // update the status
-    update();
+    console.log(userFirm)
 
 
-    // show the G&A
-    $('#TotalGA').val(firmList[userFirm]["GA"]);
+
 
 
     // initialize the firm list in UI
@@ -376,5 +432,4 @@ $(function () {
     })
 
 
-    showFirmInfo();
 })

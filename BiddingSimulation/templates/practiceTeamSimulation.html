@@ -1,0 +1,35 @@
+﻿<!{% extends "practice.html" %}
+
+{% block javascriptExtra%}
+<script src="../static/js/offlineSimulation.js"></script>
+<script>
+    var timeRemaining = 180;
+    var timerID = 0;
+
+    function startTimer() {
+        timeRemaining = 180;
+        if (timerID != 0) { clearInterval(timerID); }
+        timerID = setInterval(function () {
+            if (timeRemaining <= 1) {
+                if (!hasSubmit) {
+                    sendBid();
+                }
+                clearInterval(timerID);
+                timerID = 0;
+            }
+            timeRemaining -= 1
+            $('#timer').text(timeRemaining + " Seconds Left");
+        }, 1000)
+    }
+
+    var dialogFinished = (function () {
+        var original = dialogFinished;
+        startTimer();
+    })
+
+    var dialogFinished = (function () {
+        var original = dialogFinished;
+        startTimer();
+    })
+</script>
+{% endblock%}
