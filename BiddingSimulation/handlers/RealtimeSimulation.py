@@ -79,7 +79,7 @@ class CommandManager:
 
 class SimulationInstance:
 
-    MAX_CONNECTION = 1
+    MAX_CONNECTION = 4
     MAX_BID = 41
 
     def __init__(self, id):
@@ -185,7 +185,10 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
     projectList = ujson.load(open("static/data/projects.json"))
     firmList = ujson.load(open("static/data/firms.json"))
 
-    def open(self, *args):        
+    def open(self, *args): 
+        if len(RealtimeSimulationSocketHandler.instanceList) < 1:
+            self.close()
+            return
         rawID = self.get_argument("id")
         if not rawID.isdigit(): # might a admin connection
             admin = self.get_secure_cookie("admin")

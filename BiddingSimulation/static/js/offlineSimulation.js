@@ -259,6 +259,7 @@ function showrWinner() {
 function setUserFirm(i) {
     console.log(i);
     userFirm = i;
+    $('#firm-choose').text("You choose Firm " + (userFirm + 1));
     // show the G&A
     $('#TotalGA').val(firmList[userFirm]["GA"]);
 }
@@ -355,6 +356,8 @@ $(function () {
         message += "<button class=\"btn btn-default\" type=\"button\" onclick=\"setUserFirm(" + i + ")\">Firm " + (i+1).toString() + "</button>";
     }
     message += "</div>";
+
+    message += "<p id=\"firm-choose\">You choose Firm 1</p>";
 
     message += "<h4>Firm Characteristics</h4>\
                         <table class='table'>\
