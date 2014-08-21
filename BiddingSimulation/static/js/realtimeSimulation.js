@@ -188,8 +188,8 @@ function sendBid() {
     if (connection != undefined) {
         var offer = parseFloat($('#totalCost').val());
         if (!offer) { offer = 0xfffffff;} // give a max number!
-        var profit = parseFloat($('#totalCost').val());
-        var ga = parseFloat($('#totalCost').val());
+        var profit = parseFloat($('#inputProfit').val());
+        var ga = parseFloat($('#inputGA').val());
         connection.send(JSON.stringify({
             "command": "send_offer",
             "value": { "id": id, "offer": offer, "profit" : profit, "ga" : ga }

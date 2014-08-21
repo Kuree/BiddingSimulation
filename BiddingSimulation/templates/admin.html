@@ -8,45 +8,42 @@
     <div class="row clearfix">
         <div class="col-md-12">
             <div class="btn-group">
-                <button class="btn btn-default" type="button">Create An Instance</button>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Choose Instance<span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                    </ul>
-                </div>
-                <button class="btn btn-danger" type="button">Delete Current Instance</button>
+                <button class="btn btn-default" id="createInstance" type="button">Create Instance</button>
+                <button class="btn btn-danger" id="deleteInstance" type="button">Delete Current Instance</button>
             </div>
+            <span>Simulation Instance #: <span id="instance-id"></span>   </span>
+            <span>  Project #: <span id="project-number"></span></span>
         </div>
     </div>
     <br />
     <div class="row clearfix">
         <div class="col-md-12">
+            <h4>Student Submits</h4>
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>IP Address</th>
+                        <!--<th>IP Address</th>-->
                         <th>Firm ID</th>
-                        <th>Project #</th>
                         <th>Profit %</th>
                         <th>G&A %</th>
                         <th>Offer</th>
                     </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody id="table-current-info"></tbody>
             </table>
             <hr />
+            <h4>Student Overall Information</h4>
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>IP Address</th>
+                        <!--<th>IP Address</th>-->
                         <th>Firm ID</th>
                         <th>Active Projects</th>
                         <th>Bond Capacity</th>
                         <th>Current Money</th>
                     </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody id="table-overall-info"></tbody>
             </table>
         </div>
     </div>

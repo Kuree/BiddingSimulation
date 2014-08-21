@@ -1,17 +1,16 @@
 ﻿import tornado.web
+import tornado.gen
 from  jinja2 import Environment, FileSystemLoader
 
 class AdminHandler(tornado.web.RequestHandler):
-    @tornado.web.authenticated
     def get(self):
-        html_output = self.template.render(title="Admin", ContentName="Admin Panel")
-        self.write(html_output)
-        return
-
-    def post(self):
-        html_output = self.template.render(title="Admin", ContentName="Admin Panel")
-        self.write(html_output)
-        return
+        if self.get_secure_cookie("admin") == None:
+            self.redirect("admin-login")
+            return
+        else:
+            html_output = self.template.render(title="Admin", ContentName="Admin Panel")
+            self.write(html_output)
+            return
 
     def initialize(self):
         self.TEMPLATE_FILE = "admin.html"
@@ -22,24 +21,27 @@ class AdminHandler(tornado.web.RequestHandler):
 class AdminLoginHandler(tornado.web.RequestHandler):
     def get(self):
         if self.get_secure_cookie("admin") != None:
-            print "not none"
-            self.redirect("/admin")
-            return
-        html_output = self.template.render(title="Admin Login", ContentName="Please Login")
-        self.write(html_output)
-        return
-
+            self.redirect(self.get_argument("next", "admin"))
+        else:
+            html_output = self.template.render(title="Admin Login", ContentName="Please Login")
+            self.write(html_output)
     def post(self):
         id = self.get_argument("userName")
         password = self.get_argument("password")
-        if id == None or password == None:
-            return
+
         if id=="admin" and password == "123":
             self.set_secure_cookie("admin", "admin")
-            self.redirect(self.get_argument("next", "/"))
+            self.redirect("/admin")
+        else:
+            self.redirect("/admin-login")
+
 
     def initialize(self):
         self.TEMPLATE_FILE = "adminLogin.html"
         self.templateLoader = FileSystemLoader( searchpath="templates/" )
         self.templateEnv = Environment( loader=self.templateLoader )
         self.template = self.templateEnv.get_template(self.TEMPLATE_FILE)
+
+
+
+
