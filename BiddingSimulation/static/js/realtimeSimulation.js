@@ -8,6 +8,8 @@ var hasSubmit = false;
 var loading;
 var id = 0;
 
+var instanceID = 0;
+
 loading = loading ||  (function () {
     var pleaseWaitDiv = $('<div class="modal" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h1>Waiting For Other Users...</h1></div><div class="modal-body"><div class="progress progress-striped active"><div class="progress-bar" style="width: 100%;"></div></div></div></div></div></div>');
     return {
@@ -33,10 +35,30 @@ String.prototype.hashCode = function () {
 };
 
 $(function () {
+    instanceID = $.cookie("instanceID");
+    if (!instanceID) {
+        bootbox.prompt("Please enter pin code", function (result) {
+            if (result === null) {
+                return;
+            } else {
+                instanceID = parseInt(result);
+                load(); // break the async call in bootbox
+            }
+        });
+    }
+    else
+    {
+        load();
+    }
+
+    
+});
+
+function load() {
     loading.show()
 
     cookieTimeRemaining = $.cookie("timeRemaining");
-    if (cookieTimeRemaining) { timeRemaining = cookieTimeRemaining;}
+    if (cookieTimeRemaining) { timeRemaining = cookieTimeRemaining; }
 
     id = $.cookie("userID");
     if (id == undefined) {
@@ -45,7 +67,7 @@ $(function () {
     console.log(id)
 
     var url = document.domain;
-    connection = new WebSocket("ws://" + url + "/realtimeSocket?id=" + id);
+    connection = new WebSocket("ws://" + url + "/realtimeSocket?id=" + id + "&instanceid=" + instanceID);
     connection.onmessage = onMessageReceived;
 
 
@@ -53,7 +75,7 @@ $(function () {
     $('#bid').click(function () {
         sendBid()
     })
-});
+}
 
 var dialogFinished = (function(){
     var original = dialogFinished;
@@ -67,7 +89,8 @@ function onMessageReceived(evt) {
         var value = data["value"]
         switch (data["command"]) {
             case "set_cookie":
-                $.cookie("userID", value);
+                $.cookie("userID", value["cookieID"]);
+                $.cookie("instanceID", value["instanceID"]);
                 break;
             case "remove_cookie":
                 var result = $.removeCookie('userID');

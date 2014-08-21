@@ -28,8 +28,8 @@ import sys
 class CommandManager:
 
     @staticmethod
-    def setCookie(socket, id):
-        socket.write_message(ujson.dumps({"command" : "set_cookie", "value" : str(id)}))
+    def setCookie(socket, id, instanceID):
+        socket.write_message(ujson.dumps({"command" : "set_cookie", "value" : {"cookieID" : str(id), "instanceID" : instanceID}}))
         return
 
     @staticmethod
@@ -77,6 +77,7 @@ class CommandManager:
     def sendAdminMessage(socket, command, message):
         socket.write_message(ujson.dumps({"command" : command, "value" : message}))
         return
+
 
 class SimulationInstance:
 
@@ -167,7 +168,7 @@ class SimulationInstance:
 
     def prepareToBid(self, firmList):
         self.firmList = copy.deepcopy(firmList)
-        self.currentBid = [-1] * len(RealtimeSimulationSocketHandler.firmList)
+        self.currentBid = [sys.maxint] * len(RealtimeSimulationSocketHandler.firmList)
         self.currentGAList = [0] * len(RealtimeSimulationSocketHandler.firmList)
         self.currentProfitList = [0] * len(RealtimeSimulationSocketHandler.firmList)
         for i in range(len(self.firmList)):
@@ -200,7 +201,7 @@ class SimulationClient:
 
 class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):   
 
-    instanceList = [SimulationInstance(0)]
+    instanceList = []
     firmChance = ujson.load(open("static/data/firmChance.json"))
     ownerList = ujson.load(open("static/data/owner.json"))
     eventList = ujson.load(open("static/data/events.json"))
@@ -209,9 +210,6 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
 
     def open(self, *args): 
         
-        if len(RealtimeSimulationSocketHandler.instanceList) < 1:
-            self.close()
-            return
 
         rawID = self.get_argument("id")
         print rawID
@@ -230,43 +228,58 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         
         print id
         currentInstance = RealtimeSimulationSocketHandler.instanceList[-1] if len(RealtimeSimulationSocketHandler.instanceList) > 0 else None
-        if currentInstance == None:
-            return
+        if currentInstance != None:
+            print "here we go"
 
-        if currentInstance.isConnectionReady(): # no more connection
-            self.close()
-            return
-        print id
-        if id != None and id != "admin" : # make sure it is not a malicious connection
-            find = currentInstance.findClient(id)
-            if find == None: # might because the old simulation
-                currentInstance.addClient(SimulationClient(self, id))
-                CommandManager.deleteCookie(self, id) # PROBLEM HERE TO RECONNECT
-                CommandManager.setCookie(self, id)
+            if currentInstance.isConnectionReady(): # no more connection
+                print "wait , it's full"
+                self.close()
+                return
 
-            else:
-                CommandManager.sendReady(find, true)
-                CommandManager.sendDebugMessage(self, "client not none")
+            print id
+            if id != None and id != "admin" : # make sure it is not a malicious connection
 
-            # check the working progress right now 
-            # this is still problematic
-            if id in currentInstance.firmIdDictionary: # someone just made a stupid mistake
-                firmID = currentInstance.firmIdDictionary[id]
-                CommandManager.assignFirmFromSocket(self, currentInstance.firmList, firmID, currentInstance.bondCapacity)
-                if currentInstance.currentProject != None and currentInstance.currentBid[firmID] == sys.maxint:
-                    CommandManager.sendProjectFromSocket(self, currentInstance.currentProject)
-        elif id == "admin":
-             currentInstance.addClient(SimulationClient(self, id)) # add it to the list but do nothing
+                # get the instance id
+                # if the instance is wrong
+                # no candy
+
+                instanceID = int(self.get_argument("instanceid"))
+                if RealtimeSimulationSocketHandler.findInstanceById(instanceID) == None:
+                    # nope
+                    self.close()
+                    return
+
+                find = currentInstance.findClient(id)
+                if find == None: # might because the old simulation
+                    currentInstance.addClient(SimulationClient(self, id))
+                    CommandManager.deleteCookie(self, id) # PROBLEM HERE TO RECONNECT
+                    CommandManager.setCookie(self, id, currentInstance.id)
+
+                else:
+                    CommandManager.sendReady(find, true)
+                    CommandManager.sendDebugMessage(self, "client not none")
+
+                # check the working progress right now 
+                # this is still problematic
+                if id in currentInstance.firmIdDictionary: # someone just made a stupid mistake
+                    firmID = currentInstance.firmIdDictionary[id]
+                    CommandManager.assignFirmFromSocket(self, currentInstance.firmList, firmID, currentInstance.bondCapacity)
+                    if currentInstance.currentProject != None and currentInstance.currentBid[firmID] == sys.maxint:
+                        CommandManager.sendProjectFromSocket(self, currentInstance.currentProject)
+            elif id == "admin":
+                 currentInstance.addClient(SimulationClient(self, id)) # add it to the list but do nothing
        
-        print currentInstance.clientLen()
+            print currentInstance.clientLen()
         
-        if currentInstance.isConnectionReady() and currentInstance.currentProject == None: # let the party begin!
-            self.sendConnectionReady()
-            self.assignFirms()
-            self.sendProject()
-            return
+            if currentInstance.isConnectionReady() and currentInstance.currentProject == None: # let the party begin!
+                self.sendConnectionReady()
+                self.assignFirms()
+                self.sendProject()
+                return
 
-        CommandManager.sendDebugMessage(self, currentInstance.isConnectionReady())
+            CommandManager.sendDebugMessage(self, currentInstance.isConnectionReady())
+
+
 
 
     def on_message(self, message):      
@@ -303,6 +316,8 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
                     CommandManager.updateInformation(client, currentInstance.firmList, currentInstance.currentBid, currentInstance.currentProject, currentInstance.bondCapacity, currentInstance.count) # send the information
                 currentInstance.currentBid = [sys.maxint] * len(RealtimeSimulationSocketHandler.firmList) # reset offer/currentBid
                 currentInstance.currentProject = RealtimeSimulationSocketHandler.createProject()
+                currentInstance.currentGAList = [0] * 4
+
                 for client in currentInstance.getAllClients():
                     CommandManager.sendProjectFromClient(client, currentInstance.currentProject) # send new project
 
@@ -356,7 +371,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         currentProject = currentInstance.currentProject
         offer = currentInstance.currentBid
         minIndex = offer.index(min(offer))
-        currentProject["ownerID"] = minIndex
+        currentProject["ownerIndex"] = minIndex
 
         currentProject["offer"] = offer[minIndex];
         currentProject["profit"] = currentInstance.currentProfitList[minIndex] * currentProject["estimateCost"];
@@ -364,8 +379,8 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
 
         # push to project list
         currentInstance.firmList[minIndex]["projects"].append(copy.deepcopy(currentProject))
-        # push to sum
-        currentInstance.firmList[minIndex]["money"] += offer[minIndex];
+        ## push to sum
+        #currentInstance.firmList[minIndex]["money"] += offer[minIndex];
         # update the bond capacity
         currentInstance.bondCapacity[minIndex] -= RealtimeSimulationSocketHandler.getBondCost(currentInstance.firmList[minIndex], currentProject["estimateCost"], currentInstance.bondCapacity[minIndex]);
         
@@ -435,8 +450,8 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         count = RealtimeSimulationSocketHandler.instanceList[-1].count        
         
         result = {
-        "quarterCost": cost / length, "length": length, "owner": owner, "number": count, "events": [], "ownerID": 0,
-        "totalLength": length, "totalCost": cost, "ownerIndex": -1, "estimateCost": cost, "type": projectType, "size": projectSize, "description": projectDescription,
+        "quarterCost": cost / length, "length": length, "owner": owner, "number": count, "events": [],
+        "totalLength": length, "totalCost": cost, "ownerIndex": 4, "estimateCost": cost, "type": projectType, "size": projectSize, "description": projectDescription,
         "gaOverhead": 0, "isAlive": True, "offer": 0, "profit": 0, "sizeImpact": 0, "typeImpact": 0, "ownerImpact": 0 }
 
         return result;
@@ -515,8 +530,11 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
                 for project in firmList[i]["projects"]:
                     if (project["length"] > 0):
                         project["length"] -= 1;
+                        # give them some money
+                        firmList[project["ownerIndex"]]["money"] += project["offer"] / project["totalLength"]
                         firmList[project["ownerIndex"]]["money"] -= project["quarterCost"] # remove some part of money
                         project["quarterCost"] = project["estimateCost"] / float(project["totalLength"]) # reset the quarterCost
+                        print firmList[project["ownerIndex"]]["money"] 
 
 
     @staticmethod

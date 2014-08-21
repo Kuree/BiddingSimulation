@@ -105,7 +105,7 @@ function updateUI() {
 
     append = "<tr><td>" + "Total" + "</td>";
     $.each(firmList, function (i) {
-        append += "<td>" + firmList[i]["sum"].toFixed(0) + "</td>";
+        append += "<td>" + firmList[i]["money"].toFixed(0) + "</td>";
     });
     $('#project-sum-table-body').empty();
     $('#project-sum-table-body').append(append);
@@ -152,7 +152,7 @@ function getProgressReport() {
 
     message += "<h4>Bidding result Report</h4>";
 
-    if (currentProject["ownerID"] == userFirm) {
+    if (currentProject["ownerIndex"] == userFirm) {
         message += "<p>You got the project</p>";
     } else {
         message += "<p>You didn't get the project</p>";

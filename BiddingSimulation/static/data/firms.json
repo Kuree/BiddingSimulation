@@ -12,7 +12,6 @@
         "projects": [ ],
         "GA": 145000,
         "money": 0,
-        "sum": 0,
         "currentGA":  0
     },
     {
@@ -29,7 +28,6 @@
         "projects": [ ],
         "GA": 190000,
         "money": 0,
-        "sum": 0,
         "currentGA":  0
     },
     {
@@ -45,7 +43,6 @@
         "projects": [ ],
         "GA": 265000,
         "money": 0,
-        "sum": 0,
         "currentGA":  0
     },
     {
@@ -61,7 +58,6 @@
         "projects": [ ],
         "GA": 325000,
         "money": 0,
-        "sum": 0,
         "currentGA":  0
     }
 ]

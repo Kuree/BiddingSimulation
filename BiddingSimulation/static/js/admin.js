@@ -35,7 +35,7 @@ function onMessageReceived(evt) {
                 break;
             case "project":
                 currentProject = value;
-                $('#table-current-info').empty()
+                $('#table-current-info').empty();
                 break;
             case "assign_firm":
                 firmList = value["firmList"];
@@ -46,7 +46,7 @@ function onMessageReceived(evt) {
                 offer = value["offer"];
                 ga = value["ga"]
                 profit = value["profit"]
-                var content = "<tr><th>" + userFirm + "</th><th>" + profit + "</th><th>" + ga + "</th><th>" + offer + "</th></tr>";
+                var content = "<tr><th>" + (userFirm+1) + "</th><th>" + profit + "</th><th>" + ga + "</th><th>" + offer + "</th></tr>";
                 $('#table-current-info').append(content);
                 break;
             case "update_info":
@@ -58,7 +58,7 @@ function onMessageReceived(evt) {
                 $('#table-overall-info').empty()
                 var content = "";
                 $.each(firmList, function (i, firm) {
-                    content += "<tr><th>" + i + "</th><th>" + firm["projects"].length + "</th><th>" + bondCapacity[i] + "</th><th>" + firm["sum"] + "</th></tr>";
+                    content = "<tr><th>" + (i+1) + "</th><th>" + firm["projects"].length + "</th><th>" + bondCapacity[i] + "</th><th>" + firm["money"] + "</th></tr>";
                     $('#table-overall-info').append(content);
                 })
 
