@@ -78,11 +78,15 @@ class CommandManager:
         socket.write_message(ujson.dumps({"command" : command, "value" : message}))
         return
 
+    @staticmethod
+    def sendSimulationResult(client, cookieID):
+        client._socket.write_message(ujson.dumps({"command" : "simulation_result", "value" : int(cookieID)}))
+
 
 class SimulationInstance:
 
     MAX_CONNECTION = 1
-    MAX_BID = 41
+    MAX_BID = 2
 
 
     def __init__(self, id):
@@ -184,6 +188,8 @@ class SimulationInstance:
         return None
 
 
+
+
 class SimulationClient:
     def __init__(self, socket, id):
         self._socket = socket
@@ -209,11 +215,13 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
     firmList = ujson.load(open("static/data/firms.json"))
 
     def open(self, *args): 
-        
-
         rawID = self.get_argument("id")
         print rawID
-        if not rawID.isdigit(): # might a admin connection
+
+        try:
+            id = int(rawID)
+            self.id = id
+        except ValueError:
             admin = self.get_secure_cookie("admin")
             if admin == None or rawID != "admin":
                 print "empty"
@@ -221,12 +229,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
                 return
             else:
                 self.id = rawID # i.e. admin
-        else:
-            self.id = int(rawID)
 
-        id = self.id
-        
-        print id
         currentInstance = RealtimeSimulationSocketHandler.instanceList[-1] if len(RealtimeSimulationSocketHandler.instanceList) > 0 else None
         if currentInstance != None:
             print "here we go"
@@ -320,6 +323,15 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
 
                 for client in currentInstance.getAllClients():
                     CommandManager.sendProjectFromClient(client, currentInstance.currentProject) # send new project
+
+                if currentInstance.count >= SimulationInstance.MAX_BID: # need to show winner
+                    minIndex = RealtimeSimulationSocketHandler.processSimulationWinner(currentInstance.firmList)
+                    winnerID = 0
+                    for key in currentInstance.firmIdDictionary:
+                        if currentInstance.firmIdDictionary[key] == minIndex:
+                            winnerID = key
+                    for client in currentInstance.getNoneAdminClients():
+                        CommandManager.sendSimulationResult(client, winnerID)
 
         elif command == "get_instance":
             if self.get_secure_cookie("admin") == None: # nope
@@ -475,6 +487,13 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
             RealtimeSimulationSocketHandler.processGA(firmList)
         return
 
+    @staticmethod
+    def processSimulationWinner(firmList):
+        maxIndex = 0
+        for i in range(len(firmList)):
+            if firmList[i]["money"] > firmList[maxIndex]["money"]:
+                maxIndex = i
+        return maxIndex
 
     @staticmethod
     def randomEvent(firm, project):

@@ -58,25 +58,25 @@ function updateUI() {
         }
     });
     bidTable.append(string + "</tr>");
-    // update bond table
-    var append = "";
-    $('#bond-table-body').empty();
-    append = "<tr><td>" + count + "</td>";
-    $.each(firmList, function (i) {
-        append += "<td>" + bondCapacity[i].toFixed(0) + "</td>";
-    });
-    append += "</tr>";
+    //// update bond table
+    //var append = "";
+    //$('#bond-table-body').empty();
+    //append = "<tr><td>" + count + "</td>";
+    //$.each(firmList, function (i) {
+    //    append += "<td>" + bondCapacity[i].toFixed(0) + "</td>";
+    //});
+    //append += "</tr>";
 
-    $('#bond-table-body').append(append);
+    //$('#bond-table-body').append(append);
 
-    // update active projects
-    $('#money-table-body').empty();
-    append = "<tr><td>" + count + "</td>";
-    $.each(firmList, function (i) {
-        append += "<td>" + firmList[i]["money"].toFixed(0) + "</td>";
-    });
-    append += "</tr>";
-    $('#money-table-body').append(append);
+    //// update active projects
+    //$('#money-table-body').empty();
+    //append = "<tr><td>" + count + "</td>";
+    //$.each(firmList, function (i) {
+    //    append += "<td>" + firmList[i]["money"].toFixed(0) + "</td>";
+    //});
+    //append += "</tr>";
+    //$('#money-table-body').append(append);
 
     $('#current-project-table-body').empty();
     append = "<tr><td>" + "now" + "</td>";

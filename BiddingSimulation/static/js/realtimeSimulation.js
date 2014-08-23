@@ -129,6 +129,14 @@ function onMessageReceived(evt) {
                 loading.hide();
                 getProgressReport();
                 break;
+            case "simulation_result":
+                var userID = parseInt($.cookie("userID"));
+                if (userID == value) {
+                    bootbox.alert("You just won the game!");
+                } else {
+                    bootbox.alert("You just lost the game!");
+                }
+                break;
             default:
 
         }

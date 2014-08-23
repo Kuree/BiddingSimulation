@@ -109,7 +109,7 @@
                             <tbody id="current-project-table-body"></tbody>
                         </table>
                         <hr />
-                        <h4>Bond Status (will be removed. debug only)</h4>
+                        <!--<h4>Bond Status (will be removed. debug only)</h4>
                         <table class="table firms">
                             <tbody id="bond-table-body"></tbody>
                         </table>
@@ -117,7 +117,7 @@
                         <h4>Money Status (will be removed. debug only)</h4>
                         <table class="table firms">
                             <tbody id="money-table-body"></tbody>
-                        </table>
+                        </table>-->
                         <h4>Project Statistics</h4>
                         <table class="table firms">
                             <tbody id="project-stats-table-body"></tbody>
@@ -155,16 +155,15 @@
             </div>
             <hr />
             <div class="form-group">
-                <label for="inputProfit" class="col-sm-2 control-label">Profit (%): </label>
+                <label for="TotalGA" class="col-sm-2 control-label">G&A (1 year): </label>
                 <div class="col-sm-8">
-                    <input type="number" class="form-control" id="inputProfit" value="10" required="">
+                    <input type="number" class="form-control" id="TotalGA" placeholder="Waiting..." disabled>
                 </div>
-
             </div>
             <div class="form-group">
-                <label for="TotalGA" class="col-sm-2 control-label">G&A (1 year): </label>
+                <label for="inputProfit" class="col-sm-2 control-label">Profit (%): </label>
                 <div class="col-sm-3">
-                    <input type="number" class="form-control" id="TotalGA" placeholder="Waiting..." disabled>
+                    <input type="number" class="form-control" id="inputProfit" value="10" required="">
                 </div>
                 <label for="inputGA" class="col-sm-2 control-label">G&A Overhead (%): </label>
                 <div class="col-sm-3">

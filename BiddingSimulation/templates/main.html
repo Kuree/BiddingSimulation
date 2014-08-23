@@ -1,13 +1,46 @@
 ﻿<!{% extends "base.html" %}
 {% block content %}
 <div class="col-md-10 col-md-offset-1" style="font-size:large;">
-    <p>Welcome to the Bucknell Bidding Simulation (BBS).  This program is designed to give undergraduate students going into design or construction a hands-on exposure to the dynamic, multi-faceted process of bidding on a construction project.  Student teams will compete against peer teams in a lab session to maximize their team’s net income over a five year period.  To get themselves ready for the team simulation, individual students will be required to first compete against virtual teams using the Practice Simulation.  After each member of the team has done this several times on their own, team members are expected to get together and use the Practice Simulation to compete against virtual competitors as a team. </p>
-    <p>
-        But before you can use the simulation at all, you need to do some reading. In fact, you need to do a lot of reading because the simulation tutorial serves as the assigned reading for several key concepts underlying the course. The “Tutorial” summarizes key concepts underlying the simulation, how they are relevant to real world project bidding and how they are simplified in the simulation.  If you do not fully understand direct costs, overhead costs, net income, bonding and bonding capacity, you will not understand how to use the simulation.  So read and understand first, then use the simulation!
-    </p>
-    <p>Several other links appear on this page that do not direct users to phases of the simulation.  The first of these, titled “Results”, will take the user to a screen where they can view the full results past class’ real-time simulation labs.  Another link, entitled “Feedback”, takes the user to a public bulletin board where they can post any compliments, comments, concerns, or complaints about their experience using the BBS.  Any and all comments posted will only help us improve this simulation for future users and will be greatly appreciated.  The final link, “Contact Us”, allows you to do just that.  Any questions about the simulation should be directed here.  </p>
-    <p>
-        We hope you enjoy using and learning from the Bucknell Bidding Simulation!
-    </p>
+    <div class="col-md-6 col-md-offset-2">
+        <div id="carousel-img-generic" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li data-target="#carousel-img-generic" data-slide-to="0" class="active"></li>
+                <li data-target="#carousel-img-generic" data-slide-to="1"></li>
+                <li data-target="#carousel-img-generic" data-slide-to="2"></li>
+            </ol>
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner">
+                <div class="item active">
+                    <img src="../static/img/img1.jpeg" alt="...">
+                </div>
+                <div class="item">
+                    <img src="../static/img/img2.jpeg" alt="...">
+                </div>
+                <div class="item">
+                    <img src="../static/img/img3.jpeg" alt="...">
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <a class="left carousel-control" href="#carousel-img-generic" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+            </a>
+            <a class="right carousel-control" href="#carousel-img-generic" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </a>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <p>Welcome to the Bucknell Bidding Simulation (BBS).  This program is designed to give undergraduate students going into design or construction a hands-on exposure to the dynamic, multi-faceted process of bidding on a construction project.  Student teams will compete against peer teams in a lab session to maximize their team’s net income over a five year period.  To get themselves ready for the team simulation, individual students will be required to first compete against virtual teams using the Practice Simulation.  After each member of the team has done this several times on their own, team members are expected to get together and use the Practice Simulation to compete against virtual competitors as a team. </p>
+        <p>
+            But before you can use the simulation at all, you need to do some reading. In fact, you need to do a lot of reading because the simulation tutorial serves as the assigned reading for several key concepts underlying the course. The “Tutorial” summarizes key concepts underlying the simulation, how they are relevant to real world project bidding and how they are simplified in the simulation.  If you do not fully understand direct costs, overhead costs, net income, bonding and bonding capacity, you will not understand how to use the simulation.  So read and understand first, then use the simulation!
+        </p>
+        <p>Several other links appear on this page that do not direct users to phases of the simulation.  The first of these, titled “Results”, will take the user to a screen where they can view the full results past class’ real-time simulation labs.  Another link, entitled “Feedback”, takes the user to a public bulletin board where they can post any compliments, comments, concerns, or complaints about their experience using the BBS.  Any and all comments posted will only help us improve this simulation for future users and will be greatly appreciated.  The final link, “Contact Us”, allows you to do just that.  Any questions about the simulation should be directed here.  </p>
+        <p>
+            We hope you enjoy using and learning from the Bucknell Bidding Simulation!
+        </p>
+    </div>
 </div>
 {% endblock %}
