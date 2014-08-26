@@ -27,7 +27,13 @@
             "bad estimate due to no historical data."
         ],
         "-": [
-            "None"
+            "Labor productivity was higher than expected because the crews benefit from the learning curve more than usual.",
+            "Material costs were lower than estimated because you received better unit prices than expected.",
+            "Equipment costs were lower than expected because you received better monthly rental fees due to the long project duration.",
+            "Labor hours were lower than expected because the estimator was too worried about under-estimating labor productivity.",
+            "Material costs were lower than estimated because several new vendors gave aggressive pricing to get their foot in the door.",
+            "Equipment costs were lower than expected because your firm decided to buy a specific piece that the estimator had planned to rent."
+
         ]
     },
     "project size": {
