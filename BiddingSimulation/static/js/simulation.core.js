@@ -152,7 +152,7 @@ function getProgressReport() {
 
     message += "<h4>Bidding result Report</h4>";
 
-    if (currentProject["ownerIndex"] == userFirm) {
+    if (currentProject["ownerID"] == userFirm) {
         message += "<p>You got the project</p>";
     } else {
         message += "<p>You didn't get the project</p>";
