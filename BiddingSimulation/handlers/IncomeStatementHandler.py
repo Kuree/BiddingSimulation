@@ -10,10 +10,11 @@ class IncomeStatementHandler(tornado.web.RequestHandler):
         projects = []
         count = data["count"]
         year = self.getYear(count)
+        quarter = self.getQuarter(count)
         for project in firm["projects"]:
             if self.getYear(project["length"]) > 0:
                 projects.append(project)
-        html_output = self.template.render(projects = projects, firm = firm, year = year)
+        html_output = self.template.render(projects = projects, firm = firm, year = year, quarter = quarter)
         self.write(html_output)
 
     def set_default_headers(self):
@@ -33,3 +34,6 @@ class IncomeStatementHandler(tornado.web.RequestHandler):
 
     def getYear(self, count):
         return (count / 4  + 1) if count % 4 != 0 else count / 4
+
+    def getQuarter(self, count):
+        return count % 4
