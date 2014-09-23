@@ -45,7 +45,7 @@ function startBid() {
         if (i == userFirm) {
             var currentBondCost = parseFloat($('#bondCost').val());
             //if (currentBondCost > bondCapacity[userFirm]) { offer[userFirm] = parseFloat($('#totalCost').val()) * 1.15; }
-            offer[userFirm] = parseFloat($('#totalCost').val()); 
+            offer[userFirm] = parseFloat($('#totalCost').val().replace(/,/g, ''));
             console.log($('#inputProfit').val()/ 100);
             profit = $('#inputProfit').val() / 100;
             ga = parseFloat($('#inputGA').val());

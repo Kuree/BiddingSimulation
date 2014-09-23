@@ -217,7 +217,7 @@ function setupTable() {
 
 function sendBid() {
     if (connection != undefined) {
-        var offer = parseFloat($('#totalCost').val());
+        var offer = parseFloat($('#totalCost').val().replace(/,/g, ''));
         if (!offer) { offer = 0xfffffff;} // give a max number!
         var profit = parseFloat($('#inputProfit').val());
         var ga = parseFloat($('#inputGA').val());
