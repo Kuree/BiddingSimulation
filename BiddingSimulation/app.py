@@ -16,7 +16,7 @@ if __name__ == "__main__":
         (r"/practice-simulation-individual", PracticeSimulationHandler),
         (r"/practice-simulation-team", PracticeTeamSimulationHandler),
         (r"/feedback", FeedbackHandler),
-        (r"/contact", ContactHandler),
+        (r"/history", HistoryHandler),
         (r'/(favicon.ico)', tornado.web.StaticFileHandler, {"path": "favicon.ico"}),
         (r"/data", DataHandler),
         (r"/admin-login", AdminLoginHandler),

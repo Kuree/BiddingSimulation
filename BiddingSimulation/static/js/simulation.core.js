@@ -36,16 +36,24 @@ QUARTER_COUNT = 4;
 
 // function to update total cost
 function updateTotalCost() {
-    var cost = parseFloat($('#directCost').val());
+    var cost = parseFloat(convertToInt($('#directCost').val()));
     var firm = firmList[userFirm];
-    var bondCost = parseFloat($('#bondCost').val());
+    var bondCost = parseFloat(convertToInt($('#bondCost').val()));   // You need fix here about the bond cost
     var ohCost = (firm["OHRatio"] * cost).toFixed(0);
     var ga = parseFloat($('#inputGA').val()) * firm["GA"] / 100;
     var value = parseInt((parseFloat(cost) + parseFloat(bondCost) + parseFloat(ohCost) + parseFloat($('#inputProfit').val()) * cost / 100 + ga));
     if (value) {
-        var str = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        var str = convertToComma(value);
         $('#totalCost').val(str);
     }
+};
+
+function convertToComma(value) {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+function convertToInt(value) {
+    return value.replace(/,/g, '');
 }
 
 function updateUI() {
@@ -53,12 +61,12 @@ function updateUI() {
     // get the main for offer
     var minIndex = offer.indexOf(Math.min.apply(Math, offer));
     var string = "<tr>\
-                          <td>" + (count - 1) + "</td>" + "<td>" + currentProject["totalCost"] + "</td>";
+                          <td>" + (count - 1) + "</td>" + "<td>" + convertToComma(currentProject["totalCost"]) + "</td>";
     $.each(offer, function (i) {
         if (i === minIndex) {
-            string += "<td><b>" + offer[i].toFixed(0) + "</b></td>";
+            string += "<td><b>" + convertToComma(offer[i].toFixed(0)) + "</b></td>";
         } else {
-            string += "<td>" + offer[i].toFixed(0) + "</td>";
+            string += "<td>" + convertToComma(offer[i].toFixed(0)) + "</td>";
         }
     });
     bidTable.append(string + "</tr>");
@@ -99,7 +107,7 @@ function updateUI() {
     append = "<tr><td>" + (count - 1) + "</td>";
     $.each(firmList, function (i) {
         if (i === minIndex) {
-            append += "<td>" + offer[i].toFixed(0) + "</td>";
+            append += "<td>" + convertToComma(offer[i].toFixed(0)) + "</td>";
         } else {
             append += "<td></td>";
         }
@@ -107,10 +115,10 @@ function updateUI() {
     append += "</tr>";
     $('#project-stats-table-body').append(append);
 
-    append = "<tr><td>" + "Total" + "</td>";
-    $.each(firmList, function (i) {
-        append += "<td>" + firmList[i]["money"].toFixed(0) + "</td>";
-    });
+    //append = "<tr><td>" + "Total" + "</td>";
+    //$.each(firmList, function (i) {
+    //    append += "<td>" + firmList[i]["money"].toFixed(0) + "</td>";
+    //});
     $('#project-sum-table-body').empty();
     $('#project-sum-table-body').append(append);
 
@@ -149,7 +157,7 @@ function getProgressReport() {
                             </thead>\
                             <tbody><tr>";
     $.each(offer, function (i) {
-        message += "<td>" + offer[i].toFixed(0) + "</td>";
+        message += "<td>" + convertToComma(offer[i].toFixed(0)) + "</td>";
     });
 
     message += "</td></tr></tbody></table><hr>";
@@ -185,9 +193,9 @@ function getProgressReport() {
             if (project["length"] > 0) {
                 message += "<tr><td>" + project["number"] + "</td>";
                 message += "<td>" + (project["estimateCost"] / project["totalLength"]).toFixed(0) + "</td>";
-                message += "<td>" + project["quarterCost"].toFixed(0) + "</td>";
-                message += "<td>" + project["estimateCost"] + "</td>";
-                message += "<td>" + project["totalCost"].toFixed(0) + "</td><td>";
+                message += "<td>" + convertToComma(project["quarterCost"].toFixed(0)) + "</td>";
+                message += "<td>" + convertToComma(project["estimateCost"]) + "</td>";
+                message += "<td>" + convertToComma(project["totalCost"].toFixed(0)) + "</td><td>";
 
                 if (project["events"].length > 0) {
                     $.each(project["events"], function (j, event) {
@@ -220,12 +228,12 @@ function showFirmInfo() {
     $('#firm-name').text("Firm Name: " + firm["name"]);
     $('#firm-type').text("Firm Type: " + firm["type"]);
     $('#firm-size').text("Firm Size: " + firm["size"]);
-    $('#firm-bond-capacity').text("Firm Bond Capacity: " + firm["bondCapacity"]);
-    $('#firm-bond-low').text("Lower Bond Limit: " + (firm["bondCapacity"] - firm["bondLower"]));
-    $('#firm-bond-ratio-below').text("Bond Rate for Below Bond Limit" + firm["bondCostRatioBelow"]);
-    $('#firm-bond-ratio-close').text("Bond Rate for Above Lower Bond Limit and Below Bond Capacity: " + firm["bondCostRatioClose"]);
-    $('#firm-bond-ratio-above').text("Bond Rate for Above Bond Capacity: " + firm["bondCostRatioAbove"]);
-    $('#firm-bond-ratio-above').text("Annual G&A Overhead: " + firm["GA"]);
+    $('#firm-bond-capacity').text("Firm Bond Capacity: " + convertToComma(firm["bondCapacity"]));
+    $('#firm-bond-low').text("Lower Bond Limit: " + convertToComma((firm["bondCapacity"] - firm["bondLower"])));
+    $('#firm-bond-ratio-below').text("Bond Rate for Below Bond Limit" + convertToComma(firm["bondCostRatioBelow"]));
+    $('#firm-bond-ratio-close').text("Bond Rate for Above Lower Bond Limit and Below Bond Capacity: " + convertToComma(firm["bondCostRatioClose"]));
+    $('#firm-bond-ratio-above').text("Bond Rate for Above Bond Capacity: " + convertToComma(firm["bondCostRatioAbove"]));
+    $('#firm-bond-ratio-above').text("Annual G&A Overhead: " + convertToComma(firm["GA"]));
     //$('#firm-current-GA').text(firm["currentGA"]);
     
 }

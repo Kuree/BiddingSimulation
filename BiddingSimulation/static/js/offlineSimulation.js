@@ -13,9 +13,9 @@ function update() {
         var ohCost = (firm["OHRatio"] * cost).toFixed(0);
 
         $('#invitation').val(count);
-        $('#directCost').val(cost);
-        $('#bondCost').val(bondCost);
-        $('#ohCost').val(ohCost);
+        $('#directCost').val(convertToComma(cost));
+        $('#bondCost').val(convertToComma(bondCost));
+        $('#ohCost').val(convertToComma(ohCost));
         updateTotalCost();
 
         // update contact info
@@ -38,15 +38,14 @@ function update() {
 function startBid() {
 
     offer = [0, 0, 0, 0];
-    var directCost = parseFloat($('#directCost').val());
+    var directCost = parseFloat(convertToInt($('#directCost').val()));
     var profit = 0;
     var ga = 0;
     for (var i = 0; i < firmList.length; i++) {
         if (i == userFirm) {
-            var currentBondCost = parseFloat($('#bondCost').val());
+            var currentBondCost = parseFloat(convertToInt($('#bondCost').val()));
             //if (currentBondCost > bondCapacity[userFirm]) { offer[userFirm] = parseFloat($('#totalCost').val()) * 1.15; }
-            offer[userFirm] = parseFloat($('#totalCost').val().replace(/,/g, ''));
-            console.log($('#inputProfit').val()/ 100);
+            offer[userFirm] = parseFloat(convertToInt($('#totalCost').val()));
             profit = $('#inputProfit').val() / 100;
             ga = parseFloat($('#inputGA').val());
         } else {
@@ -259,7 +258,7 @@ function showrWinner() {
 function setUserFirm(i) {
     console.log(i);
     userFirm = i;
-    $('#firm-choose').text("You choose Firm " + (userFirm + 1));
+    $('#firm-choose').text("You chose Firm " + (userFirm + 1));
     // show the G&A
     $('#TotalGA').val(firmList[userFirm]["GA"]);
 }
@@ -269,12 +268,12 @@ function addFirmProperties() {
     $.each(firmList, function(i, firm){
 
         result += "<tr><td>" + (i+1) + "</td>";
-        result += "<td>" + firm["bondCapacity"] + "</td>";
-        result += "<td>" + firm["GA"] + "</td>";
-        result += "<td>" + (firm["bondCapacity"] - firm["bondLower"]) + "</td>";
-        result += "<td>" + firm["bondCostRatioBelow"] + "</td>";
-        result += "<td>" + firm["bondCostRatioClose"] + "</td>";
-        result += "<td>" + firm["bondCostRatioAbove"] + "</td>";
+        result += "<td>" + convertToComma(firm["bondCapacity"]) + "</td>";
+        result += "<td>" + convertToComma(firm["GA"]) + "</td>";
+        result += "<td>" + convertToComma((firm["bondCapacity"] - firm["bondLower"])) + "</td>";
+        result += "<td>" + (firm["bondCostRatioBelow"] * 100).toFixed(2) + "%</td>";
+        result += "<td>" + (firm["bondCostRatioClose"] * 100).toFixed(2) + "%</td>";
+        result += "<td>" + (firm["bondCostRatioAbove"] * 100).toFixed(2) + "%</td>";
         result += "<td>" + firm["type"] + "</td>";
         result += "</tr>"
     })
@@ -357,7 +356,7 @@ $(function () {
     }
     message += "</div>";
 
-    message += "<p id=\"firm-choose\">You choose Firm 1</p>";
+    message += "<p id=\"firm-choose\">You chose Firm 1</p>";
 
     message += "<h4>Firm Characteristics</h4>\
                         <table class='table'>\
@@ -381,7 +380,6 @@ $(function () {
     message += "</tbody></table>";
 
 
-    // randomly choose a firm
     bootbox.dialog({
         message: message,
         title: "Please Choose Your Firm",
