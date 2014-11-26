@@ -85,7 +85,7 @@ class CommandManager:
 
 class SimulationInstance:
 
-    MAX_CONNECTION = 4
+    MAX_CONNECTION = 1
     MAX_BID = 2
 
 

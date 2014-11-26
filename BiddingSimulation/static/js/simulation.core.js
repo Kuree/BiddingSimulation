@@ -128,9 +128,45 @@ function updateUI() {
     $('#progressbar-span').text(value.toFixed(0) + "% Complete");
 
     // quarter indicator
-    var indicator = "Year " + ((count % QUARTER_COUNT) !== 0 ? (~~(count / QUARTER_COUNT) + 1) : (~~(count / QUARTER_COUNT))) + " Quarter: " + ((count % QUARTER_COUNT) != 0 ? (count % QUARTER_COUNT) : QUARTER_COUNT);
+    var quarter = ((count % QUARTER_COUNT) != 0 ? (count % QUARTER_COUNT) : QUARTER_COUNT)
+    var indicator = "Year " + ((count % QUARTER_COUNT) !== 0 ? (~~(count / QUARTER_COUNT) + 1) : (~~(count / QUARTER_COUNT))) + " Quarter: " + quarter;
     $('#quarter-indicator').text(indicator);
+    if (quarter <= 1) {
+        bootbox.dialog({
+            message: "Please Check Your Income Statement",
+            title: "Attention",
+            buttons: {
+                main: {
+                    label: "Okay",
+                    className: "btn-default",
+                    callback: function () {
+                        $.ajax({
+                            type: "POST",
+                            url: "income-statement",
+                            async: false,
+                            data: JSON.stringify({ "firm": firmList[userFirm], "count": count }),
+                            success: function (data) {
+                                var win = window.open();
+                                win.URL = "You should not pass!"; // if you can see it, then great because you know you can bypass the off-line simulation. However, I will not let you cheat in the real-time simulation!
+                                win.document.write(data);
+                            },
+                            error: function () {
+                                alert("error");
+                            }
+                        })
+                    }
+                }
+            }
+        });
+    }
 
+
+    // clear out the input
+    $('#inputProfit').val('');
+    $('#inputProfit').keyup();
+    $('#inputGA').val('');
+    $('#inputGA').keyup();
+    console.log($('#inputGA'));
 }
 
 
@@ -287,7 +323,7 @@ $(function () {
     validateInput();
 
     // start bid function
-    $('#check-income-statement').click(function () {
+    $('#check-income-statement').click(function (e) {
         $.ajax({
             type: "POST",
             url: "income-statement",
@@ -303,5 +339,32 @@ $(function () {
             }
         })
     })
+
+    // set up stop timer
+    shouldStop = false;
+
+    var vis = (function () {
+        var stateKey, eventKey, keys = {
+            hidden: "visibilitychange",
+            webkitHidden: "webkitvisibilitychange",
+            mozHidden: "mozvisibilitychange",
+            msHidden: "msvisibilitychange"
+        };
+        for (stateKey in keys) {
+            if (stateKey in document) {
+                eventKey = keys[stateKey];
+                break;
+            }
+        }
+        return function (c) {
+            if (c) document.addEventListener(eventKey, c);
+            return !document[stateKey];
+        }
+    })();
+
+    vis(function () {
+        shouldStop = vis() ? false : true;
+        console.log(shouldStop);
+    });
     
 });

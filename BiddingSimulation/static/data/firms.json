@@ -1,8 +1,9 @@
 [
     {
-        "name": "Firm 1",
+        "name": "The Sojka Corporation",
+        "textName": "The Sojka Corporation",
         "bondCapacity": 1700000,
-        "bondLower" :  500000,
+        "bondLower": 500000,
         "OHRatio": 0.1,
         "bondCostRatioBelow": 0.018,
         "bondCostRatioClose": 0.022,
@@ -12,10 +13,11 @@
         "projects": [ ],
         "GA": 145000,
         "money": 0,
-        "currentGA":  0
+        "currentGA": 0
     },
     {
-        "name": "Firm 2",
+        "name": "O&rsquo;Brien Building Group",
+        "textName": "O'Brien Building Group",
         "bondCapacity": 2100000,
         "bondLower" :  700000,
         "OHRatio": 0.1,
@@ -31,7 +33,8 @@
         "currentGA":  0
     },
     {
-        "name": "Firm 3",
+        "name": "Watts Contracting Company",
+        "textName": "Watts Contracting Company",
         "bondCapacity": 2800000,
         "bondLower" :  1200000,
         "OHRatio": 0.1,
@@ -46,7 +49,8 @@
         "currentGA":  0
     },
     {
-        "name": "Firm 4",
+        "name": "Zeller Construction",
+        "textName": "Zeller Construction",
         "bondCapacity": 3400000,
         "bondLower" :  1000000,
         "OHRatio": 0.1,

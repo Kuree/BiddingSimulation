@@ -28,6 +28,9 @@ function update() {
         $('#info-project-type').text("Project Type: " + currentProject["type"]);
         $('#info-project-size').text("Project Size: " + currentProject["size"]);
         $('#info-project-description').text("Project Description: " + currentProject["description"]);
+
+
+        hasSubmit = false;
     }
 
 }
@@ -102,10 +105,86 @@ function startBid() {
 
     processProjects(); // need to update the UI after the changes money
 
+    hasSubmit = true;
     updateUI();
     update();
 }
 
+
+function sendDefaultBid() {
+    offer = [0, 0, 0, 0];
+    var directCost = parseFloat(convertToInt($('#directCost').val()));
+    var profit = 0;
+    var ga = 0;
+    for (var i = 0; i < firmList.length; i++) {
+        if (i == userFirm) {
+            var currentBondCost = parseFloat(convertToInt($('#bondCost').val()));
+            //if (currentBondCost > bondCapacity[userFirm]) { offer[userFirm] = parseFloat($('#totalCost').val()) * 1.15; }
+            $('#inputProfit').val(100);
+            $('#inputProfit').change();
+            $('#inputGA').val(100)
+            $('#inputGA').change();
+            offer[userFirm] = parseFloat(convertToInt($('#totalCost').val()));
+            profit = $('#inputProfit').val() / 100;
+            ga = parseFloat($('#inputGA').val());
+        } else {
+            var currentBondCost = directCost * firmList[i]["bondCostRatioBelow"];
+            profit = Math.random() * 0.5;
+            var profitRatio = (firmList[i]["OHRatio"] + firmList[i]["bondCostRatioBelow"]) * (bondCapacity[i]) / firmList[i]["bondCapacity"] + profit;
+            ga = 30;
+            if (profitRatio < 0) {
+                // reach the bond capacity
+                profitRatio = -profitRatio;
+                profitRatio *= 1.15
+            }
+            offer[i] = directCost * (1 + profitRatio) + ga * firmList[i]["GA"] / 100;
+            if (currentBondCost > bondCapacity[i]) { offer[i] += getBondCost(firmList[i], directCost, bondCapacity[i]); }
+        }
+    }
+
+    currentBid = [];
+    for (var i = 0; i < firmList.length; i++) {
+        currentBid.push({ "firm id": i, "offer": offer[i] });
+    }
+
+    var minIndex = offer.indexOf(Math.min.apply(Math, offer));
+    currentProject["offer"] = offer[minIndex];
+    currentProject["profit"] = profit * directCost;
+    currentProject["gaOverhead"] = ga;
+
+    currentProject["ownerID"] = minIndex
+
+
+
+    // push to firm project list
+    firmList[minIndex]["projects"].push($.extend({}, currentProject));
+
+    // push to sum
+    firmList[minIndex]["sum"] += offer[minIndex];
+
+
+    //result[count] = resultList;
+
+    // give them money
+    firmList[minIndex]["money"] += offer[minIndex];
+
+    // update the bond capacity
+    bondCapacity[minIndex] -= getBondCost(firmList[minIndex], directCost, bondCapacity[minIndex]);
+
+    // cover some overhead
+    var overhead = parseFloat(minIndex == userFirm ? $('#inputGA').val() : 30);
+    firmList[minIndex]["currentGA"] += overhead;
+
+
+    // update the count
+    count++;
+
+    processProjects(); // need to update the UI after the changes money
+
+    hasSubmit = true;
+    updateUI();
+    update();
+}
 
 function processGA()
 {
@@ -258,7 +337,7 @@ function showrWinner() {
 function setUserFirm(i) {
     console.log(i);
     userFirm = i;
-    $('#firm-choose').text("You chose Firm " + (userFirm + 1));
+    $('#firm-choose').text("You chose " + firmList[i]["textName"]);
     // show the G&A
     $('#TotalGA').val(firmList[userFirm]["GA"]);
 }
@@ -352,11 +431,12 @@ $(function () {
     var message = "<h4>Please choose a firm</h4>";
     message += "<div class=\"btn-group\">";
     for(var i = 0; i < firmList.length; i++){
-        message += "<button class=\"btn btn-default\" type=\"button\" onclick=\"setUserFirm(" + i + ")\">Firm " + (i+1).toString() + "</button>";
+        message += "<button class=\"btn btn-default\" type=\"button\" onclick=\"setUserFirm(" + i + ")\">" + firmList[i]["name"] + "</button>";
     }
     message += "</div>";
 
-    message += "<p id=\"firm-choose\">You chose Firm 1</p>";
+    message += "<p id=\"firm-choose\">You chose Firm " + firmList[0]["name"] + "</p>";
+    $('#TotalGA').val(firmList[0]["GA"]);
 
     message += "<h4>Firm Characteristics</h4>\
                         <table class='table'>\
@@ -432,5 +512,8 @@ $(function () {
         }
     })
 
+
+    hasSubmit = false;
+    shouldStop = false;
 
 })

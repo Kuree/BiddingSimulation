@@ -11,13 +11,16 @@
         if (timerID != 0) { clearInterval(timerID); }
         timerID = setInterval(function () {
             if (timeRemaining <= 1) {
+                console.log(hasSubmit);
                 if (!hasSubmit) {
-                    sendBid();
+                    sendDefaultBid();
                 }
                 clearInterval(timerID);
                 timerID = 0;
             }
-            timeRemaining -= 1
+            if (!shouldStop) {
+                timeRemaining -= 1;
+            }
             $('#timer').text(timeRemaining + " Seconds Left");
         }, 1000)
     }
