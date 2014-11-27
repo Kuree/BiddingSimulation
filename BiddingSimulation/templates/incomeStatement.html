@@ -7,56 +7,87 @@
 </head>
 <body>
     <h1 style="text-align: center;">Income Statement for Year {{year}} Quarter {{quarter}}</h1>
-        <table class="table" style="margin-left:auto; margin-right:auto">
-            <thead>
-                <tr>
-                    <th colspan="7" style="text-align: center;"><b>Direct Cost Information</b></th>
-                    <th colspan="4" style="text-align: center;"><b>Overhead Information</b></th>
-                </tr>
-                <tr>
-                    <th>Active Project IFB #</th>
-                    <th>Estimated Direct Cost</th>
-                    <th>Owner Class Impact</th>
-                    <th>Project Type Impact</th>
-                    <th>Project Size Impact</th>
-                    <th>Actual Direct Cost</th>
-                    <th>Direct Cost Difference</th>
-                    <th>Bid contribution to Annual OH</th>
-                    <th>Estimated Profit in Bid</th>
-                    <th>Actual Profit for Project</th>
-                    <th>Accumulated Quarter Profit to Date</th>
-                </tr>
-            </thead>
-            <tbody>
+    <table class="table" style="margin-left:auto; margin-right:auto">
+        <thead>
+            <!--<tr>
+                <th colspan="7" style="text-align: center;"><b>Direct Cost Information</b></th>
+                <th colspan="4" style="text-align: center;"><b>Overhead Information</b></th>
+            </tr>-->
+            <tr>
+                <td>Active Project IFB #</td>
                 {% for project in projects%}
-                    <tr>
-                        <td>{{ project["number"]}}</td>
-                        <td>{{ project["estimateCost"]}}</td>
-                        <td>{{ int(round(project["ownerImpact"]))}}</td>
-                        <td>{{ int(round(project["typeImpact"]))}}</td>
-                        <td>{{ int(round(project["sizeImpact"]))}}</td>
-                        <td>{{ int(round(project["totalCost"]))}}</td>
-                        <td>{{ int(round(project["totalCost"] - project["estimateCost"]))}}</td>
-                        <td>{{ int(round(project["gaOverhead"] * firm["GA"] / 100))}}</td>
-                        <td>{{ int(round(project["profit"]))}}</td>
-                        <td>{{ int(round(project["profit"] - project["ownerImpact"] - project["typeImpact"] - project["sizeImpact"]))}}</td>                        
-                    </tr>
+                <td>#{{ project["number"]}}</td>
                 {% endfor %}
-                <tr>
-                    <td>Total</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>{{int(round(firm["money"]))}}</td>
-                </tr>
+            </tr>
+            <tr>
 
-            </tbody>
-        </table>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Estimated Direct Cost</td>
+                {% for project in projects%}
+                <td>{{ project["estimateCost"]}}</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <td>Owner Class Impact</td>
+                {% for project in projects%}
+                <td>{{ int(round(project["ownerImpact"]))}}</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <td>Project Type Impact</td>
+                {% for project in projects%}
+                <td>{{ int(round(project["typeImpact"]))}}</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <td>Project Size Impact</td>
+                {% for project in projects%}
+                <td>{{ int(round(project["sizeImpact"]))}}</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <td>Actual Direct Cost</td>
+                {% for project in projects%}
+                <td>{{ int(round(project["totalCost"]))}}</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <td>Direct Cost Difference</td>
+                {% for project in projects%}
+                <td>{{ int(round(project["totalCost"] - project["estimateCost"]))}}</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <td>Bid contribution to Annual OH</td>
+                {% for project in projects%}
+                <td>{{ int(round(project["gaOverhead"] * firm["GA"] / 100))}}</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <td>Actual Profit for Project</td>
+                {% for project in projects%}
+                <td>{{ int(round(project["profit"]))}}</td>
+                {% endfor %}
+                
+            </tr>
+            <tr>
+                <td>Accumulated Quarter Profit to Date</td>
+                {% for project in projects%}
+                <td>{{ int(round(project["profit"] - project["ownerImpact"] - project["typeImpact"] - project["sizeImpact"]))}}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Total</td>
+                {% for project in projects%}
+                <td></td>
+                {% endfor %}
+                <td>{{int(round(firm["money"]))}}</td>
+            </tr>
+
+        </tbody>
+    </table>
 </body>
 </html>
