@@ -23,6 +23,7 @@ if __name__ == "__main__":
         (r"/admin", AdminHandler),
         (r"/income-statement", IncomeStatementHandler),
         (r"/tutorial", DetailsHandler),
+        (r"/resources", ResourcesHandler),
         ], debug = True, **settings)
     application.listen(80)
     tornado.ioloop.IOLoop.instance().start()

@@ -2,7 +2,11 @@
 {% block content %}
 <div>
     <div>
-        
+        <ul>
+            {% for file in files%}
+            <li><a href="static/resources/{{file}}" target="_blank">{{file}}</a></li>
+            {% endfor %}
+        </ul>
     </div>
        
 </div>
