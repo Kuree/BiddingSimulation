@@ -85,8 +85,8 @@ class CommandManager:
 
 class SimulationInstance:
 
-    MAX_CONNECTION = 1
-    MAX_BID = 2
+    MAX_CONNECTION = 4
+    MAX_BID = 20
 
 
     def __init__(self, id):
@@ -217,7 +217,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
     def open(self, *args): 
         rawID = self.get_argument("id")
         print rawID
-
+        id = None
         try:
             id = int(rawID)
             self.id = id
@@ -239,7 +239,6 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
                 self.close()
                 return
 
-            print id
             if id != None and id != "admin" : # make sure it is not a malicious connection
 
                 # get the instance id
@@ -384,6 +383,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         offer = currentInstance.currentBid
         minIndex = offer.index(min(offer))
         currentProject["ownerIndex"] = minIndex
+        currentProject["ownerID"] = minIndex # dirty fix for showing round winner
 
         currentProject["offer"] = offer[minIndex];
         currentProject["profit"] = currentInstance.currentProfitList[minIndex] * currentProject["estimateCost"];
