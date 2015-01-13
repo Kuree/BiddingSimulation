@@ -119,8 +119,8 @@ function updateUI() {
     //$.each(firmList, function (i) {
     //    append += "<td>" + firmList[i]["money"].toFixed(0) + "</td>";
     //});
-    $('#project-sum-table-body').empty();
-    $('#project-sum-table-body').append(append);
+    //$('#project-sum-table-body').empty();
+    //$('#project-sum-table-body').append(append);
 
     // progress bar
     var value = (count + 1) / maxBid * 100;
