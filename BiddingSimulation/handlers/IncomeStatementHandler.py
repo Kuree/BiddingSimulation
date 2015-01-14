@@ -12,7 +12,8 @@ class IncomeStatementHandler(tornado.web.RequestHandler):
         year = self.getYear(count)
         quarter = self.getQuarter(count)
         for project in firm["projects"]:
-            if self.getYear(project["length"]) > 0:
+            #if self.getYear(project["length"]) > 0:
+            if project["length"] > 0:
                 projects.append(project)
         html_output = self.template.render(projects = projects, firm = firm, year = year, quarter = quarter)
         self.write(html_output)

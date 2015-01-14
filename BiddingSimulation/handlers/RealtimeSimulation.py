@@ -8,6 +8,7 @@ import urllib
 import requests
 import copy
 import sys
+import Settings
 
 #Format of message to be send to the clients
 #{
@@ -85,9 +86,6 @@ class CommandManager:
 
 class SimulationInstance:
 
-    MAX_CONNECTION = 4
-    MAX_BID = 20
-
 
     def __init__(self, id):
         self.__clients = set()
@@ -100,6 +98,8 @@ class SimulationInstance:
         self.currentProfitList = []
         self.currentGAList = []
         self.firmIdDictionary = {};
+        self.MAX_BID = Settings.SettingHelper.getMaxBid()
+        self.MAX_CONNECTION =Settings.SettingHelper.getMaxConnection()
         
     def serialize(self):
         result = {}
@@ -147,7 +147,7 @@ class SimulationInstance:
         for client in self.__clients:
             if client.id != "admin": # admin is not included
                 count += 1
-        return count >= SimulationInstance.MAX_CONNECTION
+        return count >= self.MAX_CONNECTION
 
     def isBiddingReady(self):
         #for offer in self.currentBid:
@@ -158,7 +158,7 @@ class SimulationInstance:
         for offer in self.currentBid:
             if offer != sys.maxint:
                 count += 1
-        return count == SimulationInstance.MAX_CONNECTION
+        return count == self.MAX_CONNECTION
 
     def getNoneAdminClients(self):
         result = []
@@ -323,7 +323,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
                 for client in currentInstance.getAllClients():
                     CommandManager.sendProjectFromClient(client, currentInstance.currentProject) # send new project
 
-                if currentInstance.count >= SimulationInstance.MAX_BID: # need to show winner
+                if currentInstance.count >= currentInstance.MAX_BID: # need to show winner
                     minIndex = RealtimeSimulationSocketHandler.processSimulationWinner(currentInstance.firmList)
                     winnerID = 0
                     for key in currentInstance.firmIdDictionary:
