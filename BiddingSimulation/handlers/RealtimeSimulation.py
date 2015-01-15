@@ -571,7 +571,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
 
 class RealtimeSimulationHandler(tornado.web.RequestHandler):
     def get(self):
-        html_output = self.template.render(title="Realtime Simulation", ContentName="This hasn't been implemented yet", showTimer = True)
+        html_output = self.template.render(title="Realtime Simulation", ContentName="Realtime Simulation", showTimer = True)
         self.write(html_output)
         return
 

@@ -31,7 +31,7 @@ class SettingHelper:
                 settingFile = ujson.loads(f.read())
                 return settingFile["maxConnection"]
         except:
-            return 20
+            return 4
 
     @staticmethod
     def setMaxConnection(connection):
