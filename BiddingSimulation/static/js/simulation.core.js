@@ -176,7 +176,7 @@ function getBondCost(firm, directCost, bondCapacity) {
     } else if (bondCapacity < firm["bondLower"]) {
         return firm["bondCostRatioClose"] * directCost;
     } else {
-        return firm["bondCostRatioAbove"] * directCost;
+        return firm["bondCostRatioBelow"] * directCost;
     }
 }
 

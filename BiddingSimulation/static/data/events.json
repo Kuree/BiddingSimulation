@@ -19,12 +19,12 @@
     },
     "project type": {
         "+": [
-            "bad estimate due to no historical data.",
-            "stringent owner's rep.",
-            "different trade contractors involved.",
-            "materials had to be purchased from unfamiliar vendors.",
-            "owner's rep stringently enforced tech specs.",
-            "bad estimate due to no historical data."
+            "Bad estimate due to no historical data.",
+            "Stringent owner's rep.",
+            "Different trade contractors involved.",
+            "Materials had to be purchased from unfamiliar vendors.",
+            "Owner's rep stringently enforced tech specs.",
+            "Bad estimate due to no historical data."
         ],
         "-": [
             "Labor productivity was higher than expected because the crews benefit from the learning curve more than usual.",
@@ -38,18 +38,18 @@
     },
     "project size": {
         "+": [
-            "less room for crews to grow in productivity over time.",
-            "unable to get lower unit costs associated with buying in bulk.",
-            "mobilization costs cannot be spread over large number of work ",
-            "project complexity induces poor crew scheduling.",
-            "project complexity induces poor site layout decisions.",
-            "wage rates escalate over life of project.",
-            "unit costs escalated over duration of project.",
-            "rental costs escalated over duration of project."
+            "Less room for crews to grow in productivity over time.",
+            "Unable to get lower unit costs associated with buying in bulk.",
+            "Mobilization costs cannot be spread over large number of work.",
+            "Project complexity induces poor crew scheduling.",
+            "Project complexity induces poor site layout decisions.",
+            "Wage rates escalate over life of project.",
+            "Unit costs escalated over duration of project.",
+            "Rental costs escalated over duration of project."
         ],
         "-": [
-            "crews better benefit from the learning curve.",
-            "better unit prices than expected."
+            "Crews better benefit from the learning curve.",
+            "Better unit prices than expected."
         ]
     }
 }

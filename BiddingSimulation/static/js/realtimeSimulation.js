@@ -1,6 +1,6 @@
 ﻿var connection = undefined
 
-var timeRemaining = 180;
+var timeRemaining = 300;
 var timerID = 0;
 var hasSubmit = false;
 
@@ -73,7 +73,7 @@ function load() {
 
     // start bid function
     $('#bid').click(function () {
-        sendBid()
+        sendBid(true);
     })
 }
 
@@ -95,8 +95,18 @@ function onMessageReceived(evt) {
             case "remove_cookie":
                 var result = $.removeCookie('userID');
                 break;
+            case "remove_instance":
+                var result = $.removeCookie('instanceID');
+                break;
+            case "refresh":
+                location.reload();
+                break;
             case "debug":
                 console.log(value);
+                break;
+            case "set_counter":
+                count = parseInt(value);
+                $('#invitation').val(count);
                 break;
             case "project":
                 currentProject = value;
@@ -145,13 +155,13 @@ function onMessageReceived(evt) {
 }
 
 function startTimer() {
-    timeRemaining = 180;
+    timeRemaining = 300;
     if (timerID != 0) { clearInterval(timerID); }
     timerID = setInterval(function () {
         if (hasSubmit) { clearInterval(timerID);}
         if (timeRemaining <= 1) {
             if (!hasSubmit) {
-                sendBid();
+                sendBid(false);
             }
             clearInterval(timerID);
             timerID = 0;
@@ -188,7 +198,7 @@ function setupUI() {
 
 
     // show the G&A
-    $('#TotalGA').val(firmList[userFirm]["GA"]);
+    $('#TotalGA').val(convertToComma(firmList[userFirm]["GA"]));
 
 }
 
@@ -215,12 +225,14 @@ function setupTable() {
     $('.cost').append(tableContentCost);
 }
 
-function sendBid() {
+function sendBid(isClicked) {
     if (connection != undefined) {
         var offer = parseFloat(convertToInt($('#totalCost').val()));
-        if (!offer) { offer = 0xfffffff;} // give a max number!
+        if ($('#totalCost').val() == "" || !offer || !isClicked) { offer = 0xfffffff;} // give a max number!
         var profit = parseFloat($('#inputProfit').val());
+        if (!profit || !isClicked) { profit = 0xffffffff; }
         var ga = parseFloat($('#inputGA').val());
+        if ($('#inputGA').val() == "" || !ga || !isClicked) { ga = 0xffffffff;}
         connection.send(JSON.stringify({
             "command": "send_offer",
             "value": { "id": id, "offer": offer, "profit" : profit, "ga" : ga }

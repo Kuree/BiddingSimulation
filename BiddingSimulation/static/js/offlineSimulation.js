@@ -339,7 +339,8 @@ function setUserFirm(i) {
     userFirm = i;
     $('#firm-choose').text("You chose " + firmList[i]["textName"]);
     // show the G&A
-    $('#TotalGA').val(firmList[userFirm]["GA"]);
+    var gaValue = parseInt(firmList[userFirm]["GA"]);
+    $('#TotalGA').val(gaValue);
 }
 
 function addFirmProperties() {

@@ -34,8 +34,23 @@ class CommandManager:
         return
 
     @staticmethod
-    def deleteCookie(socket, id):
+    def deleteIDCookie(socket, id):
         socket.write_message(ujson.dumps({"command" : "remove_cookie", "value" : str(id)}))
+        return
+
+    @staticmethod
+    def deleteInstanceCookie(socket):
+        socket.write_message(ujson.dumps({"command" : "remove_instance", "value" : ""}))
+        return
+
+    @staticmethod
+    def refreshPage(socket):
+        socket.write_message(ujson.dumps({"command" : "refresh", "value" : ""}))
+        return
+
+    @staticmethod
+    def sendCounter(socket, count):
+        socket.write_message(ujson.dumps({"command" : "set_counter", "value" : str(count)}))
         return
 
     @staticmethod
@@ -232,10 +247,10 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
 
         currentInstance = RealtimeSimulationSocketHandler.instanceList[-1] if len(RealtimeSimulationSocketHandler.instanceList) > 0 else None
         if currentInstance != None:
-            print "here we go"
+            print "Connection established"
 
             if currentInstance.isConnectionReady(): # no more connection
-                print "wait , it's full"
+                print "Connection maximum reached. Could not establish new connection."
                 self.close()
                 return
 
@@ -248,13 +263,17 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
                 instanceID = int(self.get_argument("instanceid"))
                 if RealtimeSimulationSocketHandler.findInstanceById(instanceID) == None:
                     # nope
+                    print "Old instance number used. Need to clear the old session"
+                    CommandManager.deleteIDCookie(self, id)
+                    CommandManager.deleteInstanceCookie(self)
+                    CommandManager.refreshPage(self);
                     self.close()
                     return
 
                 find = currentInstance.findClient(id)
                 if find == None: # might because the old simulation
                     currentInstance.addClient(SimulationClient(self, id))
-                    CommandManager.deleteCookie(self, id) # PROBLEM HERE TO RECONNECT
+                    CommandManager.deleteIDCookie(self, id) # PROBLEM HERE TO RECONNECT
                     CommandManager.setCookie(self, id, currentInstance.id)
 
                 else:
@@ -268,6 +287,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
                     CommandManager.assignFirmFromSocket(self, currentInstance.firmList, firmID, currentInstance.bondCapacity)
                     if currentInstance.currentProject != None and currentInstance.currentBid[firmID] == sys.maxint:
                         CommandManager.sendProjectFromSocket(self, currentInstance.currentProject)
+                        CommandManager.sendCounter(self, currentInstance.count)
             elif id == "admin":
                  currentInstance.addClient(SimulationClient(self, id)) # add it to the list but do nothing
        
