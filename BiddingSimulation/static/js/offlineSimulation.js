@@ -50,7 +50,7 @@ function startBid() {
             //if (currentBondCost > bondCapacity[userFirm]) { offer[userFirm] = parseFloat($('#totalCost').val()) * 1.15; }
             offer[userFirm] = parseFloat(convertToInt($('#totalCost').val()));
             profit = $('#inputProfit').val() / 100;
-            ga = parseFloat($('#inputGA').val());
+            //ga = parseFloat($('#inputGA').val());
         } else {
             var currentBondCost = directCost * firmList[i]["bondCostRatioBelow"];
             profit = Math.random() * 0.5;
@@ -74,7 +74,7 @@ function startBid() {
     var minIndex = offer.indexOf(Math.min.apply(Math, offer));
     currentProject["offer"] = offer[minIndex];
     currentProject["profit"] = profit * directCost;
-    currentProject["gaOverhead"] = ga;
+    currentProject["gaOverhead"] = minIndex == userFirm ? parseFloat($('#inputGA').val()) : ga;
 
     currentProject["ownerID"] = minIndex
 
