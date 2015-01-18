@@ -228,14 +228,14 @@ function setupTable() {
 function sendBid(isClicked) {
     if (connection != undefined) {
         var offer = parseFloat(convertToInt($('#totalCost').val()));
-        if ($('#totalCost').val() == "" || !offer || !isClicked) { offer = 0xfffffff;} // give a max number!
+        if ($('#totalCost').val() == "" || !offer) { offer = 0xfffffff;} // give a max number!
         var profit = parseFloat($('#inputProfit').val());
         if (!profit || !isClicked) { profit = 0xffffffff; }
         var ga = parseFloat($('#inputGA').val());
         if ($('#inputGA').val() == "" || !ga || !isClicked) { ga = 0xffffffff;}
         connection.send(JSON.stringify({
             "command": "send_offer",
-            "value": { "id": id, "offer": offer, "profit" : profit, "ga" : ga }
+            "value": { "id": id, "offer": isClicked ? offer : "Not submitted", "profit": profit, "ga": ga }
         }))
         hasSubmit = true;
         loading.show();

@@ -401,7 +401,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
     def chooceAndProcessBidWinner(currentInstance):
         currentProject = currentInstance.currentProject
         offer = currentInstance.currentBid
-        minIndex = offer.index(min(offer))
+        minIndex = RealtimeSimulationSocketHandler.findMin(offer)
         currentProject["ownerIndex"] = minIndex
         currentProject["ownerID"] = minIndex # dirty fix for showing round winner
 
@@ -420,6 +420,14 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         currentInstance.firmList[minIndex]["currentGA"] += currentInstance.currentGAList[minIndex];
 
         currentInstance.count += 1
+
+    @staticmethod
+    def findMin(lst):
+        minIndex = 0
+        for i in range(1, len(lst)):
+            if isinstance(lst[i], (int, long)) and lst[i] < lst[minIndex]:
+                minIndex = i
+        return minIndex
 
     @staticmethod
     def getBondCost(firm, directCost, bondCapacity):

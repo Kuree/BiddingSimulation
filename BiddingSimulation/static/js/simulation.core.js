@@ -55,17 +55,28 @@ function convertToInt(value) {
     return value.replace(/,/g, '');
 }
 
+function findMin(lst) {
+    var minIndex = 0;
+    for (var i = 1; i < lst.length; i++) {
+        if (typeof lst[i] != "string" && lst[i] < lst[minIndex]) {
+            minIndex = i;
+        }
+    }
+    return minIndex;
+}
+
 function updateUI() {
     var bidTable = $('#bid-table-body');
     // get the main for offer
-    var minIndex = offer.indexOf(Math.min.apply(Math, offer));
+    var minIndex = findMin(offer);
     var string = "<tr>\
                           <td>" + (count - 1) + "</td>" + "<td>" + convertToComma(currentProject["totalCost"]) + "</td>";
     $.each(offer, function (i) {
+        var o = (typeof offer[i] == "number") ? convertToComma(offer[i].toFixed(0)) : offer[i];
         if (i === minIndex) {
-            string += "<td><b>" + convertToComma(offer[i].toFixed(0)) + "</b></td>";
+            string += "<td><b>" + o + "</b></td>";
         } else {
-            string += "<td>" + convertToComma(offer[i].toFixed(0)) + "</td>";
+            string += "<td>" + o + "</td>";
         }
     });
     bidTable.append(string + "</tr>");
@@ -106,7 +117,8 @@ function updateUI() {
     append = "<tr><td>" + (count - 1) + "</td>";
     $.each(firmList, function (i) {
         if (i === minIndex) {
-            append += "<td>" + convertToComma(offer[i].toFixed(0)) + "</td>";
+            var o = (typeof offer[i] == "number") ? convertToComma(offer[i].toFixed(0)) : offer[i];
+            append += "<td>" + o + "</td>";
         } else {
             append += "<td></td>";
         }
@@ -194,7 +206,8 @@ function getProgressReport() {
                             </thead>\
                             <tbody><tr>";
     $.each(offer, function (i) {
-        message += "<td>" + convertToComma(offer[i].toFixed(0)) + "</td>";
+        var o = (typeof offer[i] == "number") ? convertToComma(offer[i].toFixed(0)) : offer[i];
+        message += "<td>" + o + "</td>";
     });
 
     message += "</td></tr></tbody></table><hr>";
