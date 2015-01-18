@@ -33,7 +33,6 @@ firmChance = {};
 
 QUARTER_COUNT = 4;
 
-
 // function to update total cost
 function updateTotalCost() {
     var cost = parseFloat(convertToInt($('#directCost').val()));
@@ -181,14 +180,16 @@ function getBondCost(firm, directCost, bondCapacity) {
 }
 
 function getProgressReport() {
+    // This is hard code firms number
+    // If we need more firms, this part should be a loop
     var message = "<h4>Bidding Offering</h4>\
                         <table class='table'>\
                             <thead>\
                                 <tr>\
-                                    <th>Firm 1</th>\
-                                    <th>Firm 2</th>\
-                                    <th>Firm 3</th>\
-                                    <th>Firm 4</th>\
+                                    <th>" + firmList[0]["name"] + "</th>\
+                                    <th>" + firmList[1]["name"] + "</th>\
+                                    <th>" + firmList[2]["name"] + "</th>\
+                                    <th>" + firmList[3]["name"] + "</th>\
                                 </tr>\
                             </thead>\
                             <tbody><tr>";
