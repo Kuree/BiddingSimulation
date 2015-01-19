@@ -6,6 +6,7 @@ var url = document.domain;
 connection = new WebSocket("ws://" + url + "/realtimeSocket?id=admin");
 connection.onmessage = onMessageReceived;
 connection.onopen = getInstanceList;
+var firmList = [];
 
 $(function () {
 
@@ -20,6 +21,15 @@ $(function () {
         var id = parseInt($('#instance-id').text());
         connection.send(JSON.stringify({ "command": "delete_instance", "value": id }));
         getInstanceList();
+    });
+
+    $.ajax({
+        url: "/data?arg=firms",
+        dataType: 'json',
+        success: function (data) {
+            firmList = data;
+        },
+        async: false
     });
 });
 
@@ -46,7 +56,7 @@ function onMessageReceived(evt) {
                 offer = value["offer"];
                 ga = value["ga"]
                 profit = value["profit"]
-                var content = "<tr><th>" + (userFirm+1) + "</th><th>" + profit.toFixed(0) + "</th><th>" + ga.toFixed(0) + "</th><th>" + offer.toFixed(0) + "</th></tr>";
+                var content = "<tr><th>" + firmList[userFirm]["name"] + "</th><th>" + profit.toFixed(0) + "</th><th>" + ga.toFixed(0) + "</th><th>" + offer.toFixed(0) + "</th></tr>";
                 $('#table-current-info').append(content);
                 break;
             case "update_info":
