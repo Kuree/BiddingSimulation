@@ -414,7 +414,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         ## push to sum
         #currentInstance.firmList[minIndex]["money"] += offer[minIndex];
         # update the bond capacity
-        currentInstance.bondCapacity[minIndex] -= RealtimeSimulationSocketHandler.getBondCost(currentInstance.firmList[minIndex], currentProject["estimateCost"], currentInstance.bondCapacity[minIndex]);
+        #currentInstance.bondCapacity[minIndex] -= RealtimeSimulationSocketHandler.getBondCost(currentInstance.firmList[minIndex], currentProject["estimateCost"], currentInstance.bondCapacity[minIndex]);
         
         # cover some overhead
         currentInstance.firmList[minIndex]["currentGA"] += currentInstance.currentGAList[minIndex];
@@ -431,9 +431,13 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
 
     @staticmethod
     def getBondCost(firm, directCost, bondCapacity):
-        if (bondCapacity < 0) :
+        bond = bondCapacity
+        for project in firm["projects"]:
+            if project["length"] > 0:
+                bond -= project["totalCost"]
+        if (bond < 0) :
             return firm["bondCostRatioAbove"] * directCost;
-        elif (bondCapacity < firm["bondLower"]) :
+        elif (bond < firm["bondLower"]) :
             return firm["bondCostRatioClose"] * directCost;
         else:
             return firm["bondCostRatioAbove"] * directCost;
@@ -578,7 +582,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
                     if (project["length"] > 0):
                         project["length"] -= 1;
                         # give them some money
-                        firmList[project["ownerIndex"]]["money"] += project["offer"] / project["totalLength"]
+                        firmList[project["ownerIndex"]]["money"] += (project["profit"] + project["gaOverhead"] * project["estimateCost"]) / project["totalLength"]
                         firmList[project["ownerIndex"]]["money"] -= project["quarterCost"] # remove some part of money
                         project["quarterCost"] = project["estimateCost"] / float(project["totalLength"]) # reset the quarterCost
                         print firmList[project["ownerIndex"]]["money"] 

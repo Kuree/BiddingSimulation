@@ -182,9 +182,17 @@ function updateUI() {
 
 
 function getBondCost(firm, directCost, bondCapacity) {
-    if (bondCapacity < 0) {
+    var bond = bondCapacity;
+    $.each(firm["projects"], function (i) {
+        var project = firm["projects"][i];
+        if (project["length"] > 0)
+        {
+            bond -= project["totalCost"];
+        }
+    });
+    if (bond < 0) {
         return firm["bondCostRatioAbove"] * directCost;
-    } else if (bondCapacity < firm["bondLower"]) {
+    } else if (bond < firm["bondLower"]) {
         return firm["bondCostRatioClose"] * directCost;
     } else {
         return firm["bondCostRatioBelow"] * directCost;
