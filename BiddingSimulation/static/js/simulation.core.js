@@ -122,7 +122,7 @@ function updateUI() {
         } else {
             append += "<td></td>";
         }
-    })
+    });
     append += "</tr>";
     $('#project-stats-table-body').append(append);
 
@@ -139,7 +139,7 @@ function updateUI() {
     $('#progressbar-span').text(value.toFixed(0) + "% Complete");
 
     // quarter indicator
-    var quarter = ((count % QUARTER_COUNT) != 0 ? (count % QUARTER_COUNT) : QUARTER_COUNT)
+    var quarter = ((count % QUARTER_COUNT) != 0 ? (count % QUARTER_COUNT) : QUARTER_COUNT);
     var indicator = "Year " + ((count % QUARTER_COUNT) !== 0 ? (~~(count / QUARTER_COUNT) + 1) : (~~(count / QUARTER_COUNT))) + " Quarter: " + quarter;
     $('#quarter-indicator').text(indicator);
     if (quarter <= 1) {
@@ -164,7 +164,7 @@ function updateUI() {
                             error: function () {
                                 alert("error");
                             }
-                        })
+                        });
                     }
                 }
             }
@@ -245,7 +245,7 @@ function getProgressReport() {
                             </thead>\
                             <tbody>";
         if (firmList[userFirm]["projects"].length == 0) {
-            message += "<p>No project yet</p>"
+            message += "<p>No project yet</p>";
         }
         $.each(firmList[userFirm]["projects"], function (i, project) {
             if (project["length"] > 0) {
@@ -258,14 +258,14 @@ function getProgressReport() {
                 if (project["events"].length > 0) {
                     $.each(project["events"], function (j, event) {
                         message += "<p>" + event["message"] + "</p>";
-                    })
+                    });
                 }
                 else {
                     message += "<p>Good</p>";
                 }
             }
 
-        })
+        });
         message += "</td></tr></tbody></table>";
     }
     bootbox.dialog({
@@ -359,10 +359,8 @@ $(function () {
             error: function () {
                 alert("error");
             }
-        })
-    })
-
-    // set up stop timer
+        });
+    }); // set up stop timer
     shouldStop = false;
 
     var vis = (function () {
@@ -381,7 +379,7 @@ $(function () {
         return function (c) {
             if (c) document.addEventListener(eventKey, c);
             return !document[stateKey];
-        }
+        };
     })();
 
     vis(function () {

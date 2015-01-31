@@ -59,7 +59,7 @@ function startBid() {
             if (profitRatio < 0) {
                 // reach the bond capacity
                 profitRatio = -profitRatio;
-                profitRatio *= 1.15
+                profitRatio *= 1.15;
             }
             offer[i] = directCost * (1 + profitRatio) + ga * firmList[i]["GA"] / 100;
             if (currentBondCost > bondCapacity[i]) { offer[i] += getBondCost(firmList[i], directCost, bondCapacity[i]); }
@@ -76,11 +76,7 @@ function startBid() {
     currentProject["profit"] = profit * directCost;
     currentProject["gaOverhead"] = minIndex == userFirm ? parseFloat($('#inputGA').val()) : ga;
 
-    currentProject["ownerID"] = minIndex
-
-   
-
-    // push to firm project list
+    currentProject["ownerID"] = minIndex; // push to firm project list
     firmList[minIndex]["projects"].push($.extend({}, currentProject));
 
     // push to sum
@@ -122,7 +118,7 @@ function sendDefaultBid() {
             //if (currentBondCost > bondCapacity[userFirm]) { offer[userFirm] = parseFloat($('#totalCost').val()) * 1.15; }
             $('#inputProfit').val(100);
             $('#inputProfit').change();
-            $('#inputGA').val(100)
+            $('#inputGA').val(100);
             $('#inputGA').change();
             offer[userFirm] = parseFloat(convertToInt($('#totalCost').val()));
             profit = $('#inputProfit').val() / 100;
@@ -135,7 +131,7 @@ function sendDefaultBid() {
             if (profitRatio < 0) {
                 // reach the bond capacity
                 profitRatio = -profitRatio;
-                profitRatio *= 1.15
+                profitRatio *= 1.15;
             }
             offer[i] = directCost * (1 + profitRatio) + ga * firmList[i]["GA"] / 100;
             if (currentBondCost > bondCapacity[i]) { offer[i] += getBondCost(firmList[i], directCost, bondCapacity[i]); }
@@ -152,11 +148,7 @@ function sendDefaultBid() {
     currentProject["profit"] = profit * directCost;
     currentProject["gaOverhead"] = ga;
 
-    currentProject["ownerID"] = minIndex
-
-
-
-    // push to firm project list
+    currentProject["ownerID"] = minIndex; // push to firm project list
     firmList[minIndex]["projects"].push($.extend({}, currentProject));
 
     // push to sum
@@ -213,7 +205,7 @@ function randomEvent(firmIndex, project) {
         effectChance = ownerChanceList[Math.floor(Math.random() * ownerChanceList.length)];
             
     } else { // right now it's only for project type
-        var chanceList = firmChance[firmList[project["ownerID"]]["type"]]
+        var chanceList = firmChance[firmList[project["ownerID"]]["type"]];
         var targetChanceList = chanceList[project["type"]];
         effectChance = targetChanceList[Math.floor(Math.random() * targetChanceList.length)];
     }
@@ -225,11 +217,9 @@ function randomEvent(firmIndex, project) {
             console.log("error");
         }
         event["message"] = eventListFromRandom[choice][Math.floor(eventListFromRandom[choice].length * Math.random())];
-        event["additionalCost"] += addiitonalCost
-        project["quarterCost"] += addiitonalCost
-        project["totalCost"] += addiitonalCost
-
-        // add impact to project's impact list
+        event["additionalCost"] += addiitonalCost;
+        project["quarterCost"] += addiitonalCost;
+        project["totalCost"] += addiitonalCost; // add impact to project's impact list
         switch (eventType) {
             case chooseFrom[0]:
                 project["ownerImpact"] += addiitonalCost;
@@ -259,10 +249,9 @@ function processProjects() {
                 if (project["length"] > 0) {
                     randomEvent(i, project);
                 }
-            })
+            });
         }
-    })
-
+    });
     purageProejcts();
 
     if (count != 1 && count % 4 == 1) {
@@ -278,7 +267,7 @@ function processProjects() {
 function resetGAOverhead() {
     $.each(firmList, function (i, firm) {
         firm["currentGA"] = 0;
-    })
+    });
 }
 
 function createOwner(ownerClass) {
@@ -312,11 +301,9 @@ function purageProejcts() {
                     firmList[project["ownerID"]]["money"] -= project["quarterCost"]; // remove some part of money
                     project["quarterCost"] = project["estimateCost"] / project["totalLength"]; // reset the quarterCost
                 } 
-            })
-
-            
+            });
         }
-    })
+    });
 }
 
 function showrWinner() {
@@ -355,9 +342,8 @@ function addFirmProperties() {
         result += "<td>" + (firm["bondCostRatioClose"] * 100).toFixed(2) + "%</td>";
         result += "<td>" + (firm["bondCostRatioAbove"] * 100).toFixed(2) + "%</td>";
         result += "<td>" + firm["type"] + "</td>";
-        result += "</tr>"
-    })
-
+        result += "</tr>";
+    });
     return result;
 }
 
@@ -473,13 +459,7 @@ $(function () {
         }
     });
 
-    console.log(userFirm)
-
-
-
-
-
-    // initialize the firm list in UI
+    console.log(userFirm); // initialize the firm list in UI
     var tableContent = "<thead>\
                                 <tr>\
                                     <th>#</th>";
@@ -489,8 +469,8 @@ $(function () {
                                     <th>Total Cost</th>";
 
     $.each(firmList, function (i, firm) {
-        tableContent += "<th>" + firm["name"] + "</th>"
-        tableContentCost += "<th>" + firm["name"] + "</th>"
+        tableContent += "<th>" + firm["name"] + "</th>";
+        tableContentCost += "<th>" + firm["name"] + "</th>";
     });
     tableContent += "</tr>\
                             </thead>";
@@ -511,10 +491,8 @@ $(function () {
         else {
             showrWinner();
         }
-    })
-
-
+    });
     hasSubmit = false;
     shouldStop = false;
 
-})
+});

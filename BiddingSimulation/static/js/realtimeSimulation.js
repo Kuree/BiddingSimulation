@@ -1,5 +1,4 @@
-﻿var connection = undefined
-
+﻿var connection = undefined;
 var timeRemaining = 300;
 var timerID = 0;
 var hasSubmit = false;
@@ -55,8 +54,7 @@ $(function () {
 });
 
 function load() {
-    loading.show()
-
+    loading.show();
     cookieTimeRemaining = $.cookie("timeRemaining");
     if (cookieTimeRemaining) { timeRemaining = cookieTimeRemaining; }
 
@@ -64,8 +62,7 @@ function load() {
     if (id == undefined) {
         id = ((Math.floor(Date.now())).toString() + (Math.floor(Math.random() * 2000000)).toString()).hashCode();
     }
-    console.log(id)
-
+    console.log(id);
     var url = document.domain;
     connection = new WebSocket("ws://" + url + "/realtimeSocket?id=" + id + "&instanceid=" + instanceID);
     connection.onmessage = onMessageReceived;
@@ -74,19 +71,18 @@ function load() {
     // start bid function
     $('#bid').click(function () {
         sendBid(true);
-    })
+    });
 }
 
 var dialogFinished = (function(){
     var original = dialogFinished;
     startTimer();
-})
+});
 
 function onMessageReceived(evt) {
-    var data = JSON.parse(evt.data)
-
+    var data = JSON.parse(evt.data);
     if (data["command"] != undefined) {
-        var value = data["value"]
+        var value = data["value"];
         switch (data["command"]) {
             case "set_cookie":
                 $.cookie("userID", value["cookieID"]);
@@ -166,10 +162,10 @@ function startTimer() {
             clearInterval(timerID);
             timerID = 0;
         }
-        timeRemaining -= 1
+        timeRemaining -= 1;
         $.cookie("timeRemaining", timeRemaining);
         $('#timer').text(timeRemaining + " Seconds Left");
-    }, 1000)
+    }, 1000);
 }
 
 function setupUI() {
@@ -213,8 +209,8 @@ function setupTable() {
                                     <th>Total Cost</th>";
 
     $.each(firmList, function (i, firm) {
-        tableContent += "<th>" + firm["name"] + "</th>"
-        tableContentCost += "<th>" + firm["name"] + "</th>"
+        tableContent += "<th>" + firm["name"] + "</th>";
+        tableContentCost += "<th>" + firm["name"] + "</th>";
     });
     tableContent += "</tr>\
                             </thead>";
@@ -236,7 +232,7 @@ function sendBid(isClicked) {
         connection.send(JSON.stringify({
             "command": "send_offer",
             "value": { "id": id, "offer": isClicked ? offer : "Not submitted", "profit": profit, "ga": ga }
-        }))
+        }));
         hasSubmit = true;
         loading.show();
     }

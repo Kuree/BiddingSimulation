@@ -249,7 +249,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         if currentInstance != None:
             print "Connection established"
 
-            if currentInstance.isConnectionReady(): # no more connection
+            if currentInstance.isConnectionReady() and id != "admin": # no more connection
                 print "Connection maximum reached. Could not establish new connection."
                 self.close()
                 return
@@ -289,7 +289,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
                         CommandManager.sendProjectFromSocket(self, currentInstance.currentProject)
                         CommandManager.sendCounter(self, currentInstance.count)
             elif id == "admin":
-                 currentInstance.addClient(SimulationClient(self, id)) # add it to the list but do nothing
+                currentInstance.addClient(SimulationClient(self, id)) # add it to the list but do nothing
        
             print currentInstance.clientLen()
         
@@ -389,6 +389,12 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
 
             if instance != None:
                 RealtimeSimulationSocketHandler.instanceList.remove(instance)
+
+        elif command == "removeAdmin":
+            if self.get_secure_cookie("admin") == None: # nope
+                return
+            id = self.get_secure_cookie("adminID")
+            # this part needs to be rewritten. A better implementation is needed.
 
     @staticmethod
     def findInstanceById(id):
