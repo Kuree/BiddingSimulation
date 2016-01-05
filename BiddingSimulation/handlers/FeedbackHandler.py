@@ -1,10 +1,22 @@
 ﻿import tornado.web
 from  jinja2 import Environment, FileSystemLoader
+import json
+import subprocess
+
 
 class FeedbackHandler(tornado.web.RequestHandler):
     def get(self):
         html_output = self.template.render(title="Feedback", ContentName="Feedback")
         self.write(html_output)
+        return
+     
+    def post(self):
+        # this is for the bot
+        email = "kz005"
+        email += "@"
+        email += "bucknell.edu"
+        subprocess.call("mail -s \"" + self.request.body + "\" " + email, shell=True)
+        self.write("ok")
         return
 
     def initialize(self):

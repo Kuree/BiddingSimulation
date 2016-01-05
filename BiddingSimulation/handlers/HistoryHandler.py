@@ -3,7 +3,7 @@ from  jinja2 import Environment, FileSystemLoader
 
 class HistoryHandler(tornado.web.RequestHandler):
     def get(self):
-        html_output = self.template.render(title="Send Your Feedback to BBS", ContentName="Send Feedback")
+        html_output = self.template.render(title="BBS History", ContentName="Development history")
         self.write(html_output)
         return
 
