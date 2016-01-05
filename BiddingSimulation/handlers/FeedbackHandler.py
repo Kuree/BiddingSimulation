@@ -1,8 +1,7 @@
 ﻿import tornado.web
 from  jinja2 import Environment, FileSystemLoader
 import json
-import subprocess
-
+import smtplib
 
 class FeedbackHandler(tornado.web.RequestHandler):
     def get(self):
@@ -15,7 +14,10 @@ class FeedbackHandler(tornado.web.RequestHandler):
         email = "kz005"
         email += "@"
         email += "bucknell.edu"
-        subprocess.call("mail -s \"" + self.request.body + "\" " + email, shell=True)
+        sender = 'feedback@bucknell-bbs.com'
+        smtpObj = smtplib.SMTP('localhost')
+        smtpObj.sendmail(sender, [email], self.request.body) 
+        print "mail sent"
         self.write("ok")
         return
 
