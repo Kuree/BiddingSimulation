@@ -371,7 +371,14 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         elif command == "create_instance":
             if self.get_secure_cookie("admin") == None: # nope
                 return
-            id = value
+            id = value["id"]
+            print "Game started", id
+            max_bid = value["max"]
+            player_count = value["count"]
+            Settings.SettingHelper.setMaxBid(max_bid)
+            Settings.SettingHelper.setMaxConnection(player_count)
+            
+            # set the max bid etc
 
             # check if the instance exits
             if RealtimeSimulationSocketHandler.findInstanceById(id) != None:
@@ -420,7 +427,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         ## push to sum
         #currentInstance.firmList[minIndex]["money"] += offer[minIndex];
         # update the bond capacity
-        #currentInstance.bondCapacity[minIndex] -= RealtimeSimulationSocketHandler.getBondCost(currentInstance.firmList[minIndex], currentProject["estimateCost"], currentInstance.bondCapacity[minIndex]);
+        # currentInstance.bondCapacity[minIndex] -= RealtimeSimulationSocketHandler.getBondCost(currentInstance.firmList[minIndex], currentProject["estimateCost"], currentInstance.bondCapacity[minIndex]);
         
         # cover some overhead
         currentInstance.firmList[minIndex]["currentGA"] += currentInstance.currentGAList[minIndex];

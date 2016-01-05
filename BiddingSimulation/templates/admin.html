@@ -7,10 +7,18 @@
 <div class="container">
     <div class="row clearfix">
         <div class="col-md-12">
+            <form class="form-inline">
+            <div class="form-group">
+            <label>Bid rounds: </label>
+            <input type="number" style="width:60px"class="form-control" id="max-bid" placeholder="Max bid" value="20">
+            <label>Player count:</label>
+            <input type="number"style="width:60px" class="form-control" id="player-count" placeholder="Players" value="4">
             <div class="btn-group">
                 <button class="btn btn-default" id="createInstance" type="button">Create Instance</button>
                 <button class="btn btn-danger" id="deleteInstance" type="button">Delete Current Instance</button>
             </div>
+            </div>
+            </form>
             <span>Simulation Instance #: <span id="instance-id"></span>   </span>
             <span>  Project #: <span id="project-number"></span></span>
         </div>

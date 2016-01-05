@@ -16,6 +16,11 @@
         width: 120%;
         margin-left: -10%;
     }
+    
+    .dialog-box{
+        margin-left: 5%;
+        margin-right:5px;
+    }
 </style>
 {% endblock%}
 
@@ -55,6 +60,7 @@
             <div class="modal fade bs-firm-info-lg" tabindex="-1" role="dialog">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
+                        <div class="dialog-box">
                         <h4>Firm Information</h4>
                         <p id="firm-name"></p>
                         <p id="firm-type"></p>
@@ -67,12 +73,14 @@
                         <p id="firm-bond-ratio-above"></p>
                         <p id="firm-GA"></p>
                         <p id="firm-current-GA"></p>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="modal fade bs-current-bid-lg" tabindex="-1" role="dialog">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
+                        <div class="dialog-box">
                         <h4>Bidding Owner Information</h4>
                         <div class="media block-update-card">
                             <a class="pull-left" href="#">
@@ -93,15 +101,18 @@
                         <p id="info-project-size"></p>
                         <p id="info-project-description"></p>
                     </div>
+                    </div>
                 </div>
             </div>
             <div class="modal fade bs-historical-bid-lg" tabindex="-1" role="dialog">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
+                        <div class="dialog-box">
                         <h4>Bidding Results</h4>
                         <table class="table cost">
                             <tbody id="bid-table-body"></tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -113,11 +124,13 @@
                             <tbody id="current-project-table-body"></tbody>
                         </table>
                         <hr />-->
+                        <div class="dialog-box">
                         <h4>Project Statistics</h4>
                         <table class="table firms">
                             <tbody id="project-stats-table-body"></tbody>
                             <!--<tbody id="project-sum-table-body"></tbody>-->
                         </table>
+                        </div>
                     </div>
                 </div>
             </div>

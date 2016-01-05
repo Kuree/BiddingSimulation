@@ -1,6 +1,7 @@
 ﻿import tornado.web
 import tornado.gen
 from  jinja2 import Environment, FileSystemLoader
+import Settings
 
 class AdminHandler(tornado.web.RequestHandler):
     def get(self):

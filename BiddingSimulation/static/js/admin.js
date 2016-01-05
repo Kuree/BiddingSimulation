@@ -12,7 +12,9 @@ $(function () {
 
     $("#createInstance").click(function () {
         var id = Math.floor(Math.random() * 10000000);
-        connection.send(JSON.stringify({ "command": "create_instance", "value": id }));
+        var maxbid = parseInt($("#max-bid").val());
+        var player_count = parseInt($("#player-count").val());
+        connection.send(JSON.stringify({ "command": "create_instance", "value": {"id": id, "max":maxbid, "count" : player_count}}));
         bootbox.alert("The new instance's ID is " + id + "</br>Please give it to students as pin number");
         getInstanceList();
     });

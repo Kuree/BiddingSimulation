@@ -182,7 +182,7 @@ function updateUI() {
 
 
 function getBondCost(firm, directCost, bondCapacity) {
-    var bond = bondCapacity;
+    var bond = firm["bondCapacity"];
     $.each(firm["projects"], function (i) {
         var project = firm["projects"][i];
         if (project["length"] > 0)
@@ -288,7 +288,7 @@ function showFirmInfo() {
     $('#firm-size').text("Firm Size: " + firm["size"]);
     $('#firm-bond-capacity').text("Firm Bond Capacity: " + convertToComma(firm["bondCapacity"]));
     $('#firm-bond-low').text("Lower Bond Limit: " + convertToComma((firm["bondCapacity"] - firm["bondLower"])));
-    $('#firm-bond-ratio-below').text("Bond Rate for Below Bond Limit" + convertToComma(firm["bondCostRatioBelow"]));
+    $('#firm-bond-ratio-below').text("Bond Rate for Below Bond Limit: " + convertToComma(firm["bondCostRatioBelow"]));
     $('#firm-bond-ratio-close').text("Bond Rate for Above Lower Bond Limit and Below Bond Capacity: " + convertToComma(firm["bondCostRatioClose"]));
     $('#firm-bond-ratio-above').text("Bond Rate for Above Bond Capacity: " + convertToComma(firm["bondCostRatioAbove"]));
     $('#firm-bond-ratio-above').text("Annual G&A Overhead: " + convertToComma(firm["GA"]));

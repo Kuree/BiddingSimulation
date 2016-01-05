@@ -54,15 +54,11 @@ function startBid() {
         } else {
             var currentBondCost = directCost * firmList[i]["bondCostRatioBelow"];
             profit = Math.random() * 0.5;
-            var profitRatio = (firmList[i]["OHRatio"] + firmList[i]["bondCostRatioBelow"]) * (bondCapacity[i]) / firmList[i]["bondCapacity"] + profit;
+            var profitRatio = profit;
             ga = 30;
-            if (profitRatio < 0) {
-                // reach the bond capacity
-                profitRatio = -profitRatio;
-                profitRatio *= 1.15;
-            }
             offer[i] = directCost * (1 + profitRatio) + ga * firmList[i]["GA"] / 100;
-            if (currentBondCost > bondCapacity[i]) { offer[i] += getBondCost(firmList[i], directCost, bondCapacity[i]); }
+            // add the bond cost
+            offer[i] += getBondCost(firmList[i], directCost, bondCapacity[i]);
         }
     }
 
@@ -89,7 +85,7 @@ function startBid() {
     firmList[minIndex]["money"] += offer[minIndex];
 
     // update the bond capacity
-    bondCapacity[minIndex] -= getBondCost(firmList[minIndex], directCost, bondCapacity[minIndex]);
+    // bondCapacity[minIndex] -= getBondCost(firmList[minIndex], directCost, bondCapacity[minIndex]);
 
     // cover some overhead
     var overhead = parseFloat(minIndex == userFirm ? $('#inputGA').val() : 30);
@@ -114,27 +110,22 @@ function sendDefaultBid() {
     var ga = 0;
     for (var i = 0; i < firmList.length; i++) {
         if (i == userFirm) {
-            var currentBondCost = parseFloat(convertToInt($('#bondCost').val()));
+            // var currentBondCost = parseFloat(convertToInt($('#bondCost').val()));
             //if (currentBondCost > bondCapacity[userFirm]) { offer[userFirm] = parseFloat($('#totalCost').val()) * 1.15; }
             $('#inputProfit').val(100);
             $('#inputProfit').change();
             $('#inputGA').val(100);
             $('#inputGA').change();
             offer[userFirm] = parseFloat(convertToInt($('#totalCost').val()));
-            profit = $('#inputProfit').val() / 100;
-            ga = parseFloat($('#inputGA').val());
+            // profit = $('#inputProfit').val() / 100;
+            // ga = parseFloat($('#inputGA').val());
         } else {
             var currentBondCost = directCost * firmList[i]["bondCostRatioBelow"];
             profit = Math.random() * 0.5;
-            var profitRatio = (firmList[i]["OHRatio"] + firmList[i]["bondCostRatioBelow"]) * (bondCapacity[i]) / firmList[i]["bondCapacity"] + profit;
+            var profitRatio = profit;
             ga = 30;
-            if (profitRatio < 0) {
-                // reach the bond capacity
-                profitRatio = -profitRatio;
-                profitRatio *= 1.15;
-            }
             offer[i] = directCost * (1 + profitRatio) + ga * firmList[i]["GA"] / 100;
-            if (currentBondCost > bondCapacity[i]) { offer[i] += getBondCost(firmList[i], directCost, bondCapacity[i]); }
+            // if (currentBondCost > bondCapacity[i]) { offer[i] += getBondCost(firmList[i], directCost, bondCapacity[i]); }
         }
     }
 
@@ -161,7 +152,7 @@ function sendDefaultBid() {
     firmList[minIndex]["money"] += offer[minIndex];
 
     // update the bond capacity
-    bondCapacity[minIndex] -= getBondCost(firmList[minIndex], directCost, bondCapacity[minIndex]);
+    // bondCapacity[minIndex] -= getBondCost(firmList[minIndex], directCost, bondCapacity[minIndex]);
 
     // cover some overhead
     var overhead = parseFloat(minIndex == userFirm ? $('#inputGA').val() : 30);
@@ -361,127 +352,123 @@ $(function () {
         dataType: 'json',
         success: function (data) {
             firmChance = data;
-        },
-        async: false
-    });
 
-    // get owner list
-    $.ajax({
-        url: "/data?arg=owner",
-        dataType: 'json',
-        success: function (data) {
-            ownerList = data;
-        },
-        async: false
-    });
+            // get owner list
+            $.ajax({
+                url: "/data?arg=owner",
+                dataType: 'json',
+                success: function (data) {
+                    ownerList = data;
 
-    // get project list
-    $.ajax({
-        url: "/data?arg=projects",
-        dataType: 'json',
-        success: function (data) {
-            projectList = data;
-        },
-        async: false
-    });
+                    // get project list
+                    $.ajax({
+                        url: "/data?arg=projects",
+                        dataType: 'json',
+                        success: function (data) {
+                            projectList = data;
 
-    // get events list
-    $.ajax({
-        url: "/data?arg=events",
-        dataType: 'json',
-        success: function (data) {
-            eventList = data;
-        },
-        async: false
-    });
+                            // get events list
+                            $.ajax({
+                                url: "/data?arg=events",
+                                dataType: 'json',
+                                success: function (data) {
+                                    // make it async because it will be used later
+                                    eventList = data;
+                                }
+                            });
 
-    // get firm list
-    $.ajax({
-        url: "/data?arg=firms",
-        dataType: 'json',
-        success: function (data) {
-            firmList = data;
-        },
-        async: false
-    });
+                            // get firm list
+                            $.ajax({
+                                url: "/data?arg=firms",
+                                dataType: 'json',
+                                success: function (data) {
+                                    firmList = data;
 
-    // reset the G&A overhead for each company.
-    resetGAOverhead();
+                                // reset the G&A overhead for each company.
+                                resetGAOverhead();
 
-    $.each(firmList, function (i, firm) {
-        bondCapacity.push(firm.bondCapacity);
-        //money.push(0);
-    });
+                                $.each(firmList, function (i, firm) {
+                                    bondCapacity.push(firm.bondCapacity);
+                                    //money.push(0);
+                                });
 
 
 
-    var message = "<h4>Please choose a firm</h4>";
-    message += "<div class=\"btn-group\">";
-    for(var i = 0; i < firmList.length; i++){
-        message += "<button class=\"btn btn-default\" type=\"button\" onclick=\"setUserFirm(" + i + ")\">" + firmList[i]["name"] + "</button>";
-    }
-    message += "</div>";
+                                var message = "<h4>Please choose a firm</h4>";
+                                message += "<div class=\"btn-group\">";
+                                for(var i = 0; i < firmList.length; i++){
+                                    message += "<button class=\"btn btn-default\" type=\"button\" onclick=\"setUserFirm(" + i + ")\">" + firmList[i]["name"] + "</button>";
+                                }
+                                message += "</div>";
 
-    message += "<p id=\"firm-choose\">You chose Firm " + firmList[0]["name"] + "</p>";
-    $('#TotalGA').val(firmList[0]["GA"]);
+                                message += "<p id=\"firm-choose\">You chose Firm " + firmList[0]["name"] + "</p>";
+                                $('#TotalGA').val(firmList[0]["GA"]);
 
-    message += "<h4>Firm Characteristics</h4>\
-                        <table class='table'>\
-                            <thead>\
-                                <tr>\
-                                    <th>Firm #</th>\
-                                    <th>Bonding Capacity</th>\
-                                    <th>Annual G&A Overhead</th>\
-                                    <th>Lower Bond Limit</th>\
-                                    <th>Bond Rate for Below Bond Limit</th>\
-                                    <th>Bond Rate for Above Lower Bond Limit and Below Bond Capacity</th>\
-                                    <th>Bond Rate for Above Bond Capacity</th>\
-                                    <th>Company Specialty</th>\
-                                </tr>\
-                            </thead>\
-                            <tbody>";
-    
-
-
-    message += addFirmProperties();
-    message += "</tbody></table>";
+                                message += "<h4>Firm Characteristics</h4>\
+                                                    <table class='table'>\
+                                                        <thead>\
+                                                            <tr>\
+                                                                <th>Firm #</th>\
+                                                                <th>Bonding Capacity</th>\
+                                                                <th>Annual G&A Overhead</th>\
+                                                                <th>Lower Bond Limit</th>\
+                                                                <th>Bond Rate for Below Bond Limit</th>\
+                                                                <th>Bond Rate for Above Lower Bond Limit and Below Bond Capacity</th>\
+                                                                <th>Bond Rate for Above Bond Capacity</th>\
+                                                                <th>Company Specialty</th>\
+                                                            </tr>\
+                                                        </thead>\
+                                                        <tbody>";
+                                
 
 
-    bootbox.dialog({
-        message: message,
-        title: "Please Choose Your Firm",
-        buttons: {
-            main: {
-                label: "Okay",
-                className: "btn-default",
-                callback: initialize
-            }
+                                message += addFirmProperties();
+                                message += "</tbody></table>";
+
+
+                                bootbox.dialog({
+                                    message: message,
+                                    title: "Please Choose Your Firm",
+                                    buttons: {
+                                        main: {
+                                            label: "Okay",
+                                            className: "btn-default",
+                                            callback: initialize
+                                        }
+                                    }
+                                });
+
+                                // console.log(userFirm); // initialize the firm list in UI
+                                var tableContent = "<thead>\
+                                                            <tr>\
+                                                                <th>#</th>";
+                                var tableContentCost = "<thead>\
+                                                            <tr>\
+                                                                <th>#</th>\
+                                                                <th>Total Cost</th>";
+
+                                $.each(firmList, function (i, firm) {
+                                    tableContent += "<th>" + firm["name"] + "</th>";
+                                    tableContentCost += "<th>" + firm["name"] + "</th>";
+                                });
+                                tableContent += "</tr>\
+                                                        </thead>";
+                                tableContentCost += "</tr>\
+                                                        </thead>";
+
+                                $('.firms').append(tableContent);
+                                //console.log($('.firms'));
+                                $('.cost').append(tableContentCost);
+                                
+                                }
+                            });
+                            
+                        }
+                    });
+                }
+            });
         }
     });
-
-    console.log(userFirm); // initialize the firm list in UI
-    var tableContent = "<thead>\
-                                <tr>\
-                                    <th>#</th>";
-    var tableContentCost = "<thead>\
-                                <tr>\
-                                    <th>#</th>\
-                                    <th>Total Cost</th>";
-
-    $.each(firmList, function (i, firm) {
-        tableContent += "<th>" + firm["name"] + "</th>";
-        tableContentCost += "<th>" + firm["name"] + "</th>";
-    });
-    tableContent += "</tr>\
-                            </thead>";
-    tableContentCost += "</tr>\
-                            </thead>";
-
-    $('.firms').append(tableContent);
-    console.log($('.firms'));
-    $('.cost').append(tableContentCost);
-
-
 
     // start bid function
     $('#bid').click(function () {

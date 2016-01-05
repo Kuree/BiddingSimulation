@@ -1,4 +1,4 @@
-﻿import ujson
+﻿import json
 
 class SettingHelper:
     @staticmethod
@@ -6,20 +6,21 @@ class SettingHelper:
         try:
             with open("static/setting/realtime.json", "r") as f:
                 #print f.read()
-                settingFile = ujson.loads(f.read())
+                settingFile = json.load(f)
                 return settingFile["maxBid"]
         except:
+            print "error getting setting"
             return 20
 
     @staticmethod
     def setMaxBid(round):
         try:
             with open("static/setting/realtime.json", "r") as f:
-                settingFile = ujson.loads(f.read())
+                settingFile = json.load(f)
                 settingFile["maxBid"] = round
-                result = ujson.dumps(settingFile)
             with open("static/setting/realtime.json", "w") as f:
-                f.write(result)
+                json.dump(settingFile, f)
+                print "max bid setting changed"
         except:
             return
 
@@ -28,7 +29,7 @@ class SettingHelper:
         try:
             with open("static/setting/realtime.json", "r") as f:
                 #print f.read()
-                settingFile = ujson.loads(f.read())
+                settingFile = json.load(f)
                 return settingFile["maxConnection"]
         except:
             return 4
@@ -36,13 +37,14 @@ class SettingHelper:
     @staticmethod
     def setMaxConnection(connection):
         try:
-            with open("static/setting/realtime.json", "r") as f:
-                settingFile = ujson.loads(f.read())
+            with open("static/setting/realtime.json", "r+") as f:
+                settingFile = json.load(f)
                 settingFile["maxConnection"] = connection
-                result = ujson.dumps(settingFile)
             with open("static/setting/realtime.json", "w") as f:
-                f.write(result)
-        except:
+                json.dump(settingFile, f)
+                print "max connection setting changed"
+        except Exception as ex:
+            print ex
             return
 
 

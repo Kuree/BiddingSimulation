@@ -1,4 +1,1 @@
-{
-    "maxBid": 20,
-    "maxConnection": 4
-}
+{"maxConnection": 1, "maxBid": 20}
