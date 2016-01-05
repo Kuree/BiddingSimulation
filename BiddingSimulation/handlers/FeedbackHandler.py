@@ -8,7 +8,7 @@ class FeedbackHandler(tornado.web.RequestHandler):
         html_output = self.template.render(title="Feedback", ContentName="Feedback")
         self.write(html_output)
         return
-     
+    
     def post(self):
         # this is for the bot
         email = "kz005"
@@ -16,7 +16,10 @@ class FeedbackHandler(tornado.web.RequestHandler):
         email += "bucknell.edu"
         sender = 'feedback@bucknell-bbs.com'
         smtpObj = smtplib.SMTP('localhost')
-        smtpObj.sendmail(sender, [email], self.request.body) 
+        content = json.loads(self.request.body)
+        message_body = str.format("Name: {0}\nEmail:{1}\nFeedback:{2}", content["name"], content["email"], content["text"])
+        message = str.format("From: Admin <{0}>\r\nTo: Keyi <{1}>\r\nSubject: Feedback\r\n\r\n{2}", sender, email, message_body)
+        smtpObj.sendmail(sender, [email], message)
         print "mail sent"
         self.write("ok")
         return

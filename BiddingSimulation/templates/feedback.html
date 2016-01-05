@@ -11,7 +11,7 @@ $(function(){
             if($("#text").val().trim() === ""){
                 bootbox.alert("Feedback cannot be empty.");
             } else{
-                var post_data = {"name": $("#name").text(), "email" : $("#email").text(), "text": $("#text").text()}
+                var post_data = {"name": $("#name").val(), "email" : $("#email").val(), "text": $("#text").val()}
                 $.ajax
                     ({
                         type: "POST",
