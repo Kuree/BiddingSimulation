@@ -37,4 +37,4 @@ class IncomeStatementHandler(tornado.web.RequestHandler):
         return (count / 4  + 1) if count % 4 != 0 else count / 4
 
     def getQuarter(self, count):
-        return count % 4
+        return count % 4 if (count % 4 != 0) else 4

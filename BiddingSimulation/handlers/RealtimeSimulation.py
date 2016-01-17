@@ -338,12 +338,17 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
                     CommandManager.updateInformation(client, currentInstance.firmList, currentInstance.currentBid, currentInstance.currentProject, currentInstance.bondCapacity, currentInstance.count) # send the information
                 currentInstance.currentBid = [sys.maxint] * len(RealtimeSimulationSocketHandler.firmList) # reset offer/currentBid
                 currentInstance.currentProject = RealtimeSimulationSocketHandler.createProject()
-                currentInstance.currentGAList = [0] * 4
+                currentInstance.currentGAList = [0, 0, 0, 0]
 
                 for client in currentInstance.getAllClients():
                     CommandManager.sendProjectFromClient(client, currentInstance.currentProject) # send new project
 
                 if currentInstance.count >= currentInstance.MAX_BID: # need to show winner
+                    # need to process all the results
+                    for i in range(10):
+                        # loop 10 times to make sure all the projects are terminated
+                        RealtimeSimulationSocketHandler.processProject(currentInstance.firmList, 0)
+
                     minIndex = RealtimeSimulationSocketHandler.processSimulationWinner(currentInstance.firmList)
                     winnerID = 0
                     for key in currentInstance.firmIdDictionary:
@@ -419,18 +424,18 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         currentProject["ownerID"] = minIndex # dirty fix for showing round winner
 
         currentProject["offer"] = offer[minIndex];
-        currentProject["profit"] = currentInstance.currentProfitList[minIndex] * currentProject["estimateCost"];
+        currentProject["profit"] = currentInstance.currentProfitList[minIndex] * currentProject["estimateCost"] / 100;
         currentProject["gaOverhead"] = currentInstance.currentGAList[minIndex];
 
         # push to project list
         currentInstance.firmList[minIndex]["projects"].append(copy.deepcopy(currentProject))
-        ## push to sum
-        #currentInstance.firmList[minIndex]["money"] += offer[minIndex];
-        # update the bond capacity
-        # currentInstance.bondCapacity[minIndex] -= RealtimeSimulationSocketHandler.getBondCost(currentInstance.firmList[minIndex], currentProject["estimateCost"], currentInstance.bondCapacity[minIndex]);
-        
+        # push to sum
+        currentInstance.firmList[minIndex]["money"] += currentProject["profit"];
+
         # cover some overhead
         currentInstance.firmList[minIndex]["currentGA"] += currentInstance.currentGAList[minIndex];
+        if currentInstance.firmList[minIndex]["currentGA"] > 100:
+            currentInstance.firmList[minIndex]["currentGA"] =  100
 
         currentInstance.count += 1
 
@@ -500,7 +505,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         rawProject = random.choice(RealtimeSimulationSocketHandler.projectList)
         cost = rawProject["Direct Cost"];
         projectType = rawProject["Project Type"];
-        length = random.randint(3, 5);
+        length = random.randint(5, 7);
         owner = RealtimeSimulationSocketHandler.createOwner(rawProject["Owner Class"]);
         projectSize = rawProject["Project Size"];
         projectDescription = rawProject["Project Description"]; 
@@ -571,6 +576,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
             event["additionalCost"] += addiitonalCost
             project["quarterCost"] += addiitonalCost
             project["totalCost"] += addiitonalCost
+            project["additionalCost"] = event["additionalCost"]
 
             # add impact to project's impact list
             if eventType == chooseFrom[0]:
@@ -594,17 +600,15 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
                 for project in firmList[i]["projects"]:
                     if (project["length"] > 0):
                         project["length"] -= 1;
-                        # give them some money
-                        firmList[project["ownerIndex"]]["money"] += (project["profit"] + project["gaOverhead"] * project["estimateCost"]) / project["totalLength"]
-                        firmList[project["ownerIndex"]]["money"] -= project["quarterCost"] # remove some part of money
-                        project["quarterCost"] = project["estimateCost"] / float(project["totalLength"]) # reset the quarterCost
-                        print firmList[project["ownerIndex"]]["money"] 
+                        # deduct some money
+                        firmList[project["ownerIndex"]]["money"] -= project["additionalCost"] # remove some part of money
+                        project["additionalCost"] = 0
 
 
     @staticmethod
     def processGA(firmList):
         for firm in firmList:
-            firm["money"] -= (100 - firm["currentGA"]) * firm["GA"] / 100;
+            firm["money"] -= firm["GA"]
         RealtimeSimulationSocketHandler.resetGAOverhead(firmList);
 
     @staticmethod

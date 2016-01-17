@@ -173,7 +173,7 @@ function processGA()
 {
     $.each(firmList, function (i, firm) {
         firm["money"] -= (100 - firm["currentGA"]) * firm["GA"] / 100;
-    });
+    }); 
 
     resetGAOverhead();
 }
