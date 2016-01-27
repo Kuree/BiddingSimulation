@@ -300,13 +300,13 @@ function showFirmInfo() {
 
 function validateInput() {
     var validation = true;
-    if (!parseFloat($('#inputGA').val())) {
+    if (isNaN(parseFloat($('#inputGA').val()))) {
         $("#inputGA").css("border", "2px solid red");
         validation = false;
     } else {
         $("#inputGA").css("border", "");
     }
-    if (!parseFloat($('#inputProfit').val())) {
+    if (isNaN(parseFloat($('#inputProfit').val()))) {
         $("#inputProfit").css("border", "2px solid red");
         validation = false;
     } else {
