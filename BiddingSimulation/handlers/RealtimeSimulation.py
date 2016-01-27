@@ -512,7 +512,7 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         count = RealtimeSimulationSocketHandler.instanceList[-1].count        
         
         result = {
-        "quarterCost": cost / length, "length": length, "owner": owner, "number": count, "events": [],
+        "additionalCost": 0, "quarterCost": cost / length, "length": length, "owner": owner, "number": count, "events": [],
         "totalLength": length, "totalCost": cost, "ownerIndex": 4, "estimateCost": cost, "type": projectType, "size": projectSize, "description": projectDescription,
         "gaOverhead": 0, "isAlive": True, "offer": 0, "profit": 0, "sizeImpact": 0, "typeImpact": 0, "ownerImpact": 0 }
 
@@ -601,8 +601,9 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
                     if (project["length"] > 0):
                         project["length"] -= 1;
                         # deduct some money
-                        firmList[project["ownerIndex"]]["money"] -= project["additionalCost"] # remove some part of money
-                        project["additionalCost"] = 0
+                        if project["additionalCost"]:
+                                firmList[project["ownerIndex"]]["money"] -= project["additionalCost"] # remove some part of money
+                                project["additionalCost"] = 0
 
 
     @staticmethod

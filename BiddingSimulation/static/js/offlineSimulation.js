@@ -24,7 +24,7 @@ function update() {
         $('#owner-email').text("Email: " + currentProject["owner"]["email"]);
         $('#owner-company').text("Company Name: " + currentProject["owner"]["company"]);
         $('#owner-Type').text("Owner Type: " + currentProject["owner"]["type"]);
-        $('#info-cost').text("Bid direct cost: " + currentProject["quarterCost"].toFixed(0));
+        $('#info-cost').text("Bid direct cost: " + convertToComma(currentProject["totalCost"]));
         $('#info-project-type').text("Project Type: " + currentProject["type"]);
         $('#info-project-size').text("Project Size: " + currentProject["size"]);
         $('#info-project-description').text("Project Description: " + currentProject["description"]);

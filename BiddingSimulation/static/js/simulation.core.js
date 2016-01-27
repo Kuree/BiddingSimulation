@@ -288,10 +288,10 @@ function showFirmInfo() {
     $('#firm-size').text("Firm Size: " + firm["size"]);
     $('#firm-bond-capacity').text("Firm Bond Capacity: " + convertToComma(firm["bondCapacity"]));
     $('#firm-bond-low').text("Lower Bond Limit: " + convertToComma((firm["bondCapacity"] - firm["bondLower"])));
-    $('#firm-bond-ratio-below').text("Bond Rate for Below Bond Limit: " + convertToComma(firm["bondCostRatioBelow"]));
-    $('#firm-bond-ratio-close').text("Bond Rate for Above Lower Bond Limit and Below Bond Capacity: " + convertToComma(firm["bondCostRatioClose"]));
-    $('#firm-bond-ratio-above').text("Bond Rate for Above Bond Capacity: " + convertToComma(firm["bondCostRatioAbove"]));
-    $('#firm-bond-ratio-above').text("Annual G&A Overhead: " + convertToComma(firm["GA"]));
+    $('#firm-bond-ratio-below').text("Bond Rate for Below Bond Limit: " + (firm["bondCostRatioBelow"] * 100).toFixed(2) + " %");
+    $('#firm-bond-ratio-close').text("Bond Rate for Above Lower Bond Limit and Below Bond Capacity: " + (firm["bondCostRatioClose"]).toFixed(2) * 100 + " %");
+    $('#firm-bond-ratio-above').text("Bond Rate for Above Bond Capacity: " + (firm["bondCostRatioAbove"] * 100).toFixed(2) + " %");
+    $('#firm-GA').text("Annual G&A Overhead: " + convertToComma(firm["GA"]));
     //$('#firm-current-GA').text(firm["currentGA"]);
     
 }

@@ -28,6 +28,7 @@ class IncomeStatementHandler(tornado.web.RequestHandler):
         self.template = self.templateEnv.get_template(self.TEMPLATE_FILE)
         self.templateEnv.globals["round"] = round
         self.templateEnv.globals["int"] = int
+        self.templateEnv.globals["intWithCommas"] = IncomeStatementHandler.intWithCommas
 
     def prepare(self):
         self.json_args = self.request.body
@@ -38,3 +39,14 @@ class IncomeStatementHandler(tornado.web.RequestHandler):
 
     def getQuarter(self, count):
         return count % 4 if (count % 4 != 0) else 4
+    
+    @staticmethod
+    def intWithCommas(x):
+        x = int(x)
+        if x < 0:
+            return '-' + IncomeStatementHandler.intWithCommas(-x)
+        result = ''
+        while x >= 1000:
+            x, r = divmod(x, 1000)
+            result = ",%03d%s" % (r, result)
+        return "%d%s" % (x, result)

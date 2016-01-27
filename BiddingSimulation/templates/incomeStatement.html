@@ -26,65 +26,65 @@
             <tr>
                 <td>Estimated Direct Cost</td>
                 {% for project in projects%}
-                <td>{{ project["estimateCost"]}}</td>
+                <td>{{ intWithCommas(project["estimateCost"])}}</td>
                 {% endfor %}
             </tr>
             <tr>
                 <td>Owner Class Impact</td>
                 {% for project in projects%}
-                <td>{{ int(round(project["ownerImpact"]))}}</td>
+                <td>{{ intWithCommas(int(round(project["ownerImpact"])))}}</td>
                 {% endfor %}
             </tr>
             <tr>
                 <td>Project Type Impact</td>
                 {% for project in projects%}
-                <td>{{ int(round(project["typeImpact"]))}}</td>
+                <td>{{ intWithCommas(int(round(project["typeImpact"])))}}</td>
                 {% endfor %}
             </tr>
             <tr>
                 <td>Project Size Impact</td>
                 {% for project in projects%}
-                <td>{{ int(round(project["sizeImpact"]))}}</td>
+                <td>{{ intWithCommas(intWithCommas(int(round(project["sizeImpact"]))))}}</td>
                 {% endfor %}
             </tr>
             <tr>
                 <td>Actual Direct Cost</td>
                 {% for project in projects%}
-                <td>{{ int(round(project["totalCost"]))}}</td>
+                <td>{{ intWithCommas(int(round(project["totalCost"])))}}</td>
                 {% endfor %}
             </tr>
             <tr>
                 <td>Direct Cost Difference</td>
                 {% for project in projects%}
-                <td>{{ int(round(project["totalCost"] - project["estimateCost"]))}}</td>
+                <td>{{ intWithCommas(int(round(project["totalCost"] - project["estimateCost"])))}}</td>
                 {% endfor %}
             </tr>
             <tr>
                 <td>Bid contribution to Annual OH</td>
                 {% for project in projects%}
-                <td>{{ int(round(project["gaOverhead"] * firm["GA"] / 100))}}</td>
+                <td>{{ intWithCommas(int(round(project["gaOverhead"] * firm["GA"] / 100)))}}</td>
                 {% endfor %}
             </tr>
             <tr>
                 <td>Actual Profit for Project</td>
                 {% for project in projects%}
-                <td>{{ int(round(project["profit"]))}}</td>
+                <td>{{ intWithCommas(int(round(project["profit"])))}}</td>
                 {% endfor %}
                 
             </tr>
             <tr>
                 <td>Accumulated Quarter Profit to Date</td>
                 {% for project in projects%}
-                <td>{{ int(round(project["profit"] - project["ownerImpact"] - project["typeImpact"] - project["sizeImpact"]))}}</td>
+                <td>{{ intWithCommas(int(round(project["profit"] - project["ownerImpact"] - project["typeImpact"] - project["sizeImpact"])))}}</td>
                 {% endfor %}
             </tr>
 
             <tr>
-                <td>Total</td>
+                <td>Total Profit</td>
                 {% for project in projects%}
                 <td></td>
                 {% endfor %}
-                <td>{{int(round(firm["money"]))}}</td>
+                <td>{{intWithCommas(int(round(firm["money"])))}}</td>
             </tr>
 
         </tbody>
