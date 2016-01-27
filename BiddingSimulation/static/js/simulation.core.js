@@ -7,7 +7,7 @@ firmList = [];
 // current bond capacity for each firm
 bondCapacity = [];
 // max bid
-maxBid = 41;
+maxBid = 20;
 
 // the firm that user plays, index from 0;
 userFirm = 0;
@@ -187,7 +187,7 @@ function getBondCost(firm, directCost, bondCapacity) {
         var project = firm["projects"][i];
         if (project["length"] > 0)
         {
-            bond -= project["totalCost"];
+            bond -= project["offer"];
         }
     });
     if (bond < 0) {
