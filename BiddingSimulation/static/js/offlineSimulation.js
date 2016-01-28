@@ -195,9 +195,13 @@ function randomEvent(firmIndex, project) {
         var ownerChanceList = ownerList[project["owner"]["type"]];
         effectChance = ownerChanceList[Math.floor(Math.random() * ownerChanceList.length)];
             
-    } else { // right now it's only for project type
+    } else if (eventType == chooseFrom[1]) { // project type
         var chanceList = firmChance[firmList[project["ownerID"]]["type"]];
         var targetChanceList = chanceList[project["type"]];
+        effectChance = targetChanceList[Math.floor(Math.random() * targetChanceList.length)];
+    } else { // project size
+        var chanceList = firmChance[firmList[project["ownerID"]]["size"]];
+        var targetChanceList = chanceList[project["size"]];
         effectChance = targetChanceList[Math.floor(Math.random() * targetChanceList.length)];
     }
     if (effectChance != 0) {

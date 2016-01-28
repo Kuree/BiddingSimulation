@@ -44,7 +44,7 @@
             <tr>
                 <td>Project Size Impact</td>
                 {% for project in projects%}
-                <td>{{ intWithCommas(intWithCommas(int(round(project["sizeImpact"]))))}}</td>
+                <td>{{ intWithCommas(int(round(project["sizeImpact"])))}}</td>
                 {% endfor %}
             </tr>
             <tr>

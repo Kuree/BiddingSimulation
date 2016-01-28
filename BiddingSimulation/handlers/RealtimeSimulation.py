@@ -548,21 +548,25 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
     @staticmethod
     def randomEvent(firm, project):
         # direct translation from javascript to python
-        chooseFrom = ["owner", "project type", "project size"];
+        chooseFrom = ["owner", "project type", "project size"]
         eventType = random.choice(chooseFrom)
-        event = {"additionalCost" : 0};
-        addiitonalCost = 0;
-        message = "";
-        effectChance = 0;
+        event = {"additionalCost" : 0}
+        addiitonalCost = 0
+        message = ""
+        effectChance = 0
     
         # firm events here
         if (eventType == chooseFrom[0]) : # owner impact
             ownerChanceList = RealtimeSimulationSocketHandler.ownerList[str(project["owner"]["type"])];
             effectChance = random.choice(ownerChanceList)
             
-        else:
+        elif eventType == chooseFrom[1]:
             chanceList = RealtimeSimulationSocketHandler.firmChance[RealtimeSimulationSocketHandler.firmList[project["ownerIndex"]]["type"]]
             targetChanceList = chanceList[str(project["type"])];
+            effectChance = random.choice(targetChanceList)
+        else:
+            chanceList = RealtimeSimulationSocketHandler.firmChance[RealtimeSimulationSocketHandler.firmList[project["ownerIndex"]]["size"]]
+            targetChanceList = chanceList[str(project["size"])];
             effectChance = random.choice(targetChanceList)
         
         if (effectChance != 0):
