@@ -23,10 +23,10 @@ function update() {
         $('#owner-name').text("Name: " + currentProject["owner"]["name"]);
         $('#owner-email').text("Email: " + currentProject["owner"]["email"]);
         $('#owner-company').text("Company Name: " + currentProject["owner"]["company"]);
-        $('#owner-Type').text("Owner Type: " + currentProject["owner"]["type"]);
+        $('#owner-Type').text("Owner Type: " + OWNER_NAME[currentProject["owner"]["type"]]);
         $('#info-cost').text("Bid direct cost: " + convertToComma(currentProject["totalCost"]));
-        $('#info-project-type').text("Project Type: " + currentProject["type"]);
-        $('#info-project-size').text("Project Size: " + currentProject["size"]);
+        $('#info-project-type').text("Project Type: " + TYPE_NAME[currentProject["type"]]);
+        $('#info-project-size').text("Project Size: " + SIZE_NAME[currentProject["size"]]);
         $('#info-project-description').text("Project Description: " + currentProject["description"]);
 
 
@@ -332,7 +332,7 @@ function addFirmProperties() {
         result += "<td>" + (firm["bondCostRatioBelow"] * 100).toFixed(2) + "%</td>";
         result += "<td>" + (firm["bondCostRatioClose"] * 100).toFixed(2) + "%</td>";
         result += "<td>" + (firm["bondCostRatioAbove"] * 100).toFixed(2) + "%</td>";
-        result += "<td>" + firm["type"] + "</td>";
+        result += "<td>" + TYPE_NAME[firm["type"]] + "</td>";
         result += "</tr>";
     });
     return result;

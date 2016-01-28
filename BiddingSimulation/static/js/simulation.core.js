@@ -33,6 +33,14 @@ firmChance = {};
 
 QUARTER_COUNT = 4;
 
+
+// THIS IS A QUICK AND DIRTY FIX!
+// TODO: Fix this in the future
+OWNER_NAME = {"A" : "Good", "B": "OK", "C": "Bad" };
+SIZE_NAME = {1 : "Small", 2 : "Mid", 3: "Big" };
+TYPE_NAME = {1: "Luxury Condo", 2: "New Commercial", 3: "Rehab Commercial"};
+
+
 // function to update total cost
 function updateTotalCost() {
     var cost = parseFloat(convertToInt($('#directCost').val()));
@@ -284,8 +292,8 @@ function getProgressReport() {
 function showFirmInfo() {
     var firm = firmList[userFirm];
     $('#firm-name').text("Firm Name: " + firm["name"]);
-    $('#firm-type').text("Firm Type: " + firm["type"]);
-    $('#firm-size').text("Firm Size: " + firm["size"]);
+    $('#firm-type').text("Firm Type: " + TYPE_NAME[firm["type"]]);
+    $('#firm-size').text("Firm Size: " + SIZE_NAME[firm["size"]]);
     $('#firm-bond-capacity').text("Firm Bond Capacity: " + convertToComma(firm["bondCapacity"]));
     $('#firm-bond-low').text("Lower Bond Limit: " + convertToComma((firm["bondCapacity"] - firm["bondLower"])));
     $('#firm-bond-ratio-below').text("Bond Rate for Below Bond Limit: " + (firm["bondCostRatioBelow"] * 100).toFixed(2) + " %");

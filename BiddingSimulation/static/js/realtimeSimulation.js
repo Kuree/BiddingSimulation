@@ -186,10 +186,10 @@ function setupUI() {
     $('#owner-name').text("Name: " + currentProject["owner"]["name"]);
     $('#owner-email').text("Email: " + currentProject["owner"]["email"]);
     $('#owner-company').text("Company Name: " + currentProject["owner"]["company"]);
-    $('#owner-Type').text("Owner Type: " + currentProject["owner"]["type"]);
-    $('#info-cost').text("Bid direct cost: " + convertToComma(currentProject["quarterCost"].toFixed(0)));
-    $('#info-project-type').text("Project Type: " + currentProject["type"]);
-    $('#info-project-size').text("Project Size: " + currentProject["size"]);
+    $('#owner-Type').text("Owner Type: " + OWNER_NAME[currentProject["owner"]["type"]]);
+    $('#info-cost').text("Bid direct cost: " + convertToComma(currentProject["totalCost"]));
+    $('#info-project-type').text("Project Type: " + TYPE_NAME[currentProject["type"]]);
+    $('#info-project-size').text("Project Size: " + SIZE_NAME[currentProject["size"]]);
     $('#info-project-description').text("Project Description: " + currentProject["description"]);
 
 
