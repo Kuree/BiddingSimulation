@@ -27,7 +27,7 @@ function update() {
         $('#info-cost').text("Bid direct cost: " + convertToComma(currentProject["totalCost"]));
         $('#info-project-type').text("Project Type: " + TYPE_NAME[currentProject["type"]]);
         $('#info-project-size').text("Project Size: " + SIZE_NAME[currentProject["size"]]);
-        $('#info-project-description').text("Project Description: " + currentProject["description"]);
+        // $('#info-project-description').text("Project Description: " + currentProject["description"]);
 
 
         hasSubmit = false;
