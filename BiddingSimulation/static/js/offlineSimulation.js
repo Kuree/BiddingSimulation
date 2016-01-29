@@ -255,8 +255,6 @@ function processProjects() {
 
     getProgressReport();
 
-
-
 }
 
 function resetGAOverhead() {
@@ -274,16 +272,17 @@ function createProject() {
     var rawProject = projectList[Math.floor(Math.random() * projectList.length)];
     var cost = rawProject["Direct Cost"];
     var projectType = rawProject["Project Type"];
-    var length = Math.floor(2 + Math.random() * 3);
+    var length = Math.floor(5 + Math.random() * 3);
     var owner = createOwner(rawProject["Owner Class"]);
     var projectSize = rawProject["Project Size"];
     var projectDescription = rawProject["Project Description"]; 
 
     var result = {
-        "quarterCost": cost / length, "length": length, "owner": owner, "number": count, "events": [], "ownerID": 0,
+        "id": project_id, "quarterCost": cost / length, "length": length, "owner": owner, "number": count, "events": [], "ownerID": 0,
         "totalLength": length, "totalCost": cost, "estimateCost": cost, "type": projectType, "size": projectSize, "description": projectDescription,
         "gaOverhead": 0, "isAlive": true, "offer": 0, "profit": 0, "sizeImpact": 0, "typeImpact": 0, "ownerImpact": 0
     };
+    project_id++;
     return result;
 }
 
@@ -302,13 +301,13 @@ function purageProejcts() {
 }
 
 function showrWinner() {
-    var minIndex = 0;
+    var maxIndex = 0;
     for (var i = 0; i < firmList.length; i++) {
-        if (firmList[i]["money"] < firmList[minIndex]) {
-            minIndex = i;
+        if (firmList[i]["money"] > firmList[maxIndex]) {
+            maxIndex = i;
         }
     }
-    if (minIndex == userFirm) {
+    if (maxIndex == userFirm) {
         alert("You won the game, but it's only a simulation with dumb computers. Try the real time simulation with people the next time");
     }
     else {

@@ -228,6 +228,8 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
     eventList = ujson.load(open("static/data/events.json"))
     projectList = ujson.load(open("static/data/projects.json"))
     firmList = ujson.load(open("static/data/firms.json"))
+    
+    project_id = 0
 
     def open(self, *args): 
         rawID = self.get_argument("id")
@@ -510,6 +512,9 @@ class RealtimeSimulationSocketHandler(tornado.websocket.WebSocketHandler):
         projectSize = rawProject["Project Size"];
         projectDescription = rawProject["Project Description"]; 
         count = RealtimeSimulationSocketHandler.instanceList[-1].count        
+        
+        id = RealtimeSimulationSocketHandler.project_id;
+        RealtimeSimulationSocketHandler.project_id += 1
         
         result = {
         "additionalCost": 0, "quarterCost": cost / length, "length": length, "owner": owner, "number": count, "events": [],

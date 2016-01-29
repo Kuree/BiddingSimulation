@@ -106,6 +106,7 @@ function onMessageReceived(evt) {
                 break;
             case "project":
                 currentProject = value;
+                project_id = value["id"];
                 setupUI();
                 showFirmInfo();
                 hasSubmit = false;

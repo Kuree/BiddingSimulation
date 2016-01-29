@@ -33,6 +33,10 @@ firmChance = {};
 
 QUARTER_COUNT = 4;
 
+// used to identify project
+project_id = 0;
+project_list = []; // this is just a dirty way to check active or not
+
 
 // THIS IS A QUICK AND DIRTY FIX!
 // TODO: Fix this in the future
@@ -71,6 +75,18 @@ function findMin(lst) {
         }
     }
     return minIndex;
+}
+
+function checkProjects(){
+    for(var i = 0; i < firmList.length; i++){
+        var firm = firmList[i];
+        for(var j = 0; j < firm.projects.length; j++){
+            var project = firm.projects[j];
+            if(project.length <= 0){
+                $('#project-' + project.id.toString()).css("font-weight","normal");
+            }
+        }
+    }
 }
 
 function updateUI() {
@@ -122,17 +138,21 @@ function updateUI() {
     //append += "</tr>";
     //$('#current-project-table-body').append(append);
 
-    append = "<tr><td>" + (count - 1) + "</td>";
+    var append = "<tr><td>" + (count - 1) + "</td>";
     $.each(firmList, function (i) {
+        var firm = firmList[i];
         if (i === minIndex) {
             var o = (typeof offer[i] == "number") ? convertToComma(offer[i].toFixed(0)) : offer[i];
-            append += "<td>" + o + "</td>";
+            append += '<td><div id="project-' + (project_id-1).toString() + '">' + o + "</div></td>";
         } else {
             append += "<td></td>";
         }
     });
     append += "</tr>";
+    // add to the project list
+    project_list.push(currentProject);
     $('#project-stats-table-body').append(append);
+    $('#project-' + (project_id-1).toString()).css("font-weight","Bold");
 
     //append = "<tr><td>" + "Total" + "</td>";
     //$.each(firmList, function (i) {
@@ -351,7 +371,11 @@ $(function () {
     });
 
     validateInput();
-
+    
+    
+    $('#check').click(function(){
+        checkProjects();
+    });
     // start bid function
     $('#check-income-statement').click(function (e) {
         $.ajax({
