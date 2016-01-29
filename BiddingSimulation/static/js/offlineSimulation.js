@@ -44,6 +44,7 @@ function startBid() {
     var directCost = parseFloat(convertToInt($('#directCost').val()));
     var profit = 0;
     var ga = 0;
+    var profit_list = [0, 0, 0, 0];
     for (var i = 0; i < firmList.length; i++) {
         if (i == userFirm) {
             var currentBondCost = parseFloat(convertToInt($('#bondCost').val()));
@@ -60,6 +61,7 @@ function startBid() {
             // add the bond cost
             offer[i] += getBondCost(firmList[i], directCost, bondCapacity[i]);
         }
+        profit_list[i] = profit;
     }
 
     currentBid = [];
@@ -69,7 +71,7 @@ function startBid() {
 
     var minIndex = offer.indexOf(Math.min.apply(Math, offer));
     currentProject["offer"] = offer[minIndex];
-    currentProject["profit"] = profit * directCost;
+    currentProject["profit"] = profit_list[minIndex] * directCost;
     currentProject["gaOverhead"] = minIndex == userFirm ? parseFloat($('#inputGA').val()) : ga;
 
     currentProject["ownerID"] = minIndex; // push to firm project list
@@ -82,7 +84,7 @@ function startBid() {
     //result[count] = resultList;
 
     // give them money
-    firmList[minIndex]["money"] += offer[minIndex];
+    firmList[minIndex]["money"] += currentProject.profit;
 
     // update the bond capacity
     // bondCapacity[minIndex] -= getBondCost(firmList[minIndex], directCost, bondCapacity[minIndex]);
@@ -226,7 +228,8 @@ function randomEvent(firmIndex, project) {
                 project["sizeImpact"] += addiitonalCost;
                 break;
         }
-
+        project["additionalCost"] = event["additionalCost"]
+        
         // clear event list
         while (project.events.length > 0) {
             project.events.pop();
@@ -278,7 +281,7 @@ function createProject() {
     var projectDescription = rawProject["Project Description"]; 
 
     var result = {
-        "id": project_id, "quarterCost": cost / length, "length": length, "owner": owner, "number": count, "events": [], "ownerID": 0,
+        "id": project_id, "additionalCost": 0, "quarterCost": cost / length, "length": length, "owner": owner, "number": count, "events": [], "ownerID": 0,
         "totalLength": length, "totalCost": cost, "estimateCost": cost, "type": projectType, "size": projectSize, "description": projectDescription,
         "gaOverhead": 0, "isAlive": true, "offer": 0, "profit": 0, "sizeImpact": 0, "typeImpact": 0, "ownerImpact": 0
     };
@@ -292,8 +295,10 @@ function purageProejcts() {
             $.each(firmList[i]["projects"], function (j, project) {                
                 if (project["length"] > 0) {
                     project["length"] -= 1;
-                    firmList[project["ownerID"]]["money"] -= project["quarterCost"]; // remove some part of money
-                    project["quarterCost"] = project["estimateCost"] / project["totalLength"]; // reset the quarterCost
+                    if(project["additionalCost"]){
+                                firmList[project["ownerID"]]["money"] -= project["additionalCost"] // remove some part of money
+                                project["additionalCost"] = 0;
+                    }
                 } 
             });
         }

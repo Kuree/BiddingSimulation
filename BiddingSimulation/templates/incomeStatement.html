@@ -65,13 +65,13 @@
                 <td>{{ intWithCommas(int(round(project["gaOverhead"] * firm["GA"] / 100)))}}</td>
                 {% endfor %}
             </tr>
-            <tr>
+            <!--<tr>
                 <td>Actual Profit for Project</td>
                 {% for project in projects%}
                 <td>{{ intWithCommas(int(round(project["profit"])))}}</td>
                 {% endfor %}
                 
-            </tr>
+            </tr>-->
             <tr>
                 <td>Accumulated Quarter Profit to Date</td>
                 {% for project in projects%}
